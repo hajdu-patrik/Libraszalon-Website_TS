@@ -1,26 +1,262 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   Design tokens
+   Colours and typefaces are lifted verbatim from the original Elementor kit
+   (wp-content/uploads/elementor/css/post-319.css) so the rebuild keeps the
+   salon's established visual identity.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Palette */
+  --color-ink: #2c2828; /* e-global-color-primary + text */
+  --color-gold: #cc9955; /* e-global-color-secondary */
+  --color-muted: #585151; /* e-global-color-accent */
+  --color-surface: #ffffff;
+  --color-subtle: #fafafa;
+  --color-line: #e8e4e0;
+
+  /* #cc9955 only reaches 2.6:1 on white — fine for rules, stars and icons,
+     not for text. This darker step clears 4.5:1 for gold-coloured copy. */
+  --color-gold-ink: #a2732f;
+
+  /* Typefaces (bound to next/font in app/layout.tsx) */
+  --font-heading: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-caveat), ui-serif, cursive;
+
+  /* Fluid type scale — the lower bound is tuned for a 320px viewport */
+  --text-hero: clamp(1.75rem, 1.1rem + 3.2vw, 3.5rem);
+  --text-h1: clamp(1.875rem, 1.3rem + 2.6vw, 3rem);
+  --text-h2: clamp(1.5rem, 1.15rem + 1.7vw, 2.25rem);
+  --text-h3: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --text-price: clamp(1.5rem, 1.2rem + 1.4vw, 2rem);
+  --text-eyebrow: 0.8125rem;
+
+  /* Layout */
+  --container-width: 1140px;
+  --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 16px 40px rgb(44 40 40 / 0.1);
+  --header-height: 4.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor jumps must clear the sticky header. */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.75;
+    /* The site is a single fixed-width column; nothing should ever be able to
+       push the viewport sideways. This is the backstop for the 320px target. */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Hungarian compounds ("ajándékutalvány", "állapotfelmérés") overflow narrow
+     columns without help. <html lang="hu"> supplies the hyphenation rules. */
+  p,
+  li,
+  blockquote {
+    hyphens: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+
+@utility container-page {
+  width: 100%;
+  max-width: calc(var(--container-width) + var(--container-pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+@utility eyebrow {
+  font-family: var(--font-heading);
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold-ink);
+}
+
+/* Readable measure for long-form pages (house rules, first massage). */
+@utility prose-measure {
+  max-width: 68ch;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+   Every animation below is transform/opacity only, so it stays on the
+   compositor and never triggers layout.
+   --------------------------------------------------------------------------- */
+
+/* Scroll reveal. Elements start hidden and are released by an
+   IntersectionObserver adding [data-revealed]. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: calc(var(--reveal-index, 0) * 80ms);
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal="left"] {
+  transform: translateX(-28px);
+}
+
+[data-reveal="right"] {
+  transform: translateX(28px);
+}
+
+[data-reveal="zoom"] {
+  transform: scale(0.96);
+}
+
+[data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The hero quote wipes upward line by line. */
+@keyframes line-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-image {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   One switch that neutralises every animation on the site. Content must be
+   fully visible and usable with motion disabled.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

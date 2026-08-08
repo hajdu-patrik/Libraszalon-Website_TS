@@ -6,6 +6,9 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // The scripts/ folder is run directly by tsx, where explicit .ts specifiers
+    // are the correct ESM form. Safe here because nothing is ever emitted.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

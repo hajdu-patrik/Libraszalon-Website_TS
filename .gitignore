@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# original images downloaded from the legacy WordPress site
+# (inputs to scripts/optimize-images.ts; the shipped output lives in public/images)
+/assets/raw

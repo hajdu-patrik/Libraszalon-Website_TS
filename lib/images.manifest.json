@@ -1,0 +1,212 @@
+{
+  "logo": {
+    "width": 320,
+    "height": 233,
+    "widths": [
+      320
+    ]
+  },
+  "mark": {
+    "width": 512,
+    "height": 512,
+    "widths": [
+      512
+    ]
+  },
+  "hero": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      320,
+      640,
+      960,
+      1280,
+      1920
+    ]
+  },
+  "service-aromatherapy": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "service-swedish": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "service-cupping": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "service-voucher": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "avatar-male": {
+    "width": 128,
+    "height": 128,
+    "widths": [
+      128
+    ]
+  },
+  "avatar-female": {
+    "width": 128,
+    "height": 128,
+    "widths": [
+      128
+    ]
+  },
+  "about-portrait": {
+    "width": 1280,
+    "height": 853,
+    "widths": [
+      320,
+      640,
+      960,
+      1280
+    ]
+  },
+  "about-room": {
+    "width": 1280,
+    "height": 853,
+    "widths": [
+      320,
+      640,
+      960,
+      1280
+    ]
+  },
+  "about-detail": {
+    "width": 1280,
+    "height": 1920,
+    "widths": [
+      320,
+      640,
+      960,
+      1280
+    ]
+  },
+  "cupping-plastic": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "cupping-silicone": {
+    "width": 960,
+    "height": 540,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "quote-mark": {
+    "width": 160,
+    "height": 160,
+    "widths": [
+      160
+    ]
+  },
+  "pass-front": {
+    "width": 960,
+    "height": 529,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "pass-back": {
+    "width": 960,
+    "height": 528,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "business-card": {
+    "width": 960,
+    "height": 532,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "bg-home": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      320,
+      640,
+      960,
+      1280,
+      1920
+    ]
+  },
+  "bg-about": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      320,
+      640,
+      960,
+      1280,
+      1920
+    ]
+  },
+  "bg-prices": {
+    "width": 1280,
+    "height": 853,
+    "widths": [
+      320,
+      640,
+      960,
+      1280
+    ]
+  },
+  "bg-prices-alt": {
+    "width": 1280,
+    "height": 854,
+    "widths": [
+      320,
+      640,
+      960,
+      1280
+    ]
+  },
+  "bg-first-massage": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      320,
+      640,
+      960,
+      1280,
+      1920
+    ]
+  }
+}
