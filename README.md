@@ -197,6 +197,7 @@ kimenet `out`. Netlify ugyanez. Kódot nem kell módosítani.
 - **Statikus exportban a `next.config.ts` `headers()` nem fut.** A cache- és
   biztonsági fejlécek a `vercel.json`-ban vannak.
 - **Emoji nincs az oldalon.** A scraper is kiszűri a bejövő véleményekből.
-- **A `#CC9955` arany szövegre nem elég kontrasztos** fehér háttéren (2.6:1).
+- **A `#CC9955` arany szövegre nem elég kontrasztos** fehér háttéren (2,54:1).
   Vonalakhoz, csillagokhoz, ikonokhoz használd (`text-gold`), szöveghez a
-  sötétebb `text-gold-ink` változatot.
+  sötétebb `text-gold-ink` változatot — az `#936728`, és mind a három tényleges
+  háttéren (fehér, `--color-subtle`, közleménysáv) 4,5:1 fölött van.

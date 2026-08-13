@@ -16,9 +16,14 @@
   --color-subtle: #fafafa;
   --color-line: #e8e4e0;
 
-  /* #cc9955 only reaches 2.6:1 on white — fine for rules, stars and icons,
-     not for text. This darker step clears 4.5:1 for gold-coloured copy. */
-  --color-gold-ink: #a2732f;
+  /* #cc9955 only reaches 2.54:1 on white — fine for rules, stars and icons,
+     not for text. This darker step clears 4.5:1 for gold-coloured copy on
+     every background it actually runs on: 4.99:1 on white, 4.78:1 on
+     --color-subtle, and 4.60:1 on the notice bar, which is the tightest of
+     the three. Darken it further and the 35 degree amber starts turning
+     brown; lighten it by one step (#96692a) and the notice bar drops to
+     4.45:1. */
+  --color-gold-ink: #936728;
 
   /* Typefaces (bound to next/font in app/layout.tsx) */
   --font-heading: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
