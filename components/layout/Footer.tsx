@@ -27,9 +27,11 @@ export function Footer() {
             <ul className="space-y-1">
               {[homeItem, ...navItems].map((item) => (
                 <li key={item.href}>
+                  {/* Full-width rather than inline: "Árak" is only 34px of
+                      text, so the row itself has to carry the 44px target. */}
                   <Link
                     href={item.href}
-                    className="inline-flex min-h-9 items-center text-muted transition-colors hover:text-gold-ink"
+                    className="flex min-h-11 items-center text-muted transition-colors hover:text-gold-ink"
                   >
                     {item.label}
                   </Link>
@@ -45,7 +47,7 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${site.email}`}
-                  className="inline-flex min-h-9 items-center gap-2.5 break-all transition-colors hover:text-gold-ink"
+                  className="inline-flex min-h-11 items-center gap-2.5 break-all transition-colors hover:text-gold-ink"
                 >
                   <MailIcon className="size-[18px] shrink-0 text-gold" />
                   {site.email}
@@ -54,7 +56,7 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${site.phoneHref}`}
-                  className="inline-flex min-h-9 items-center gap-2.5 transition-colors hover:text-gold-ink"
+                  className="inline-flex min-h-11 items-center gap-2.5 transition-colors hover:text-gold-ink"
                 >
                   <PhoneIcon className="size-[18px] shrink-0 text-gold" />
                   <span dir="ltr">{site.phone}</span>
@@ -65,7 +67,7 @@ export function Footer() {
                   href={site.social.googleMaps}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-9 items-start gap-2.5 transition-colors hover:text-gold-ink"
+                  className="inline-flex min-h-11 items-start gap-2.5 transition-colors hover:text-gold-ink"
                 >
                   <PinIcon className="mt-[3px] size-[18px] shrink-0 text-gold" />
                   {site.address.formatted}

@@ -44,13 +44,27 @@ Ellenőrzések:
 ```bash
 npm run lint
 npm run typecheck
-npx tsx scripts/verify.mts    # reszponzivitás-audit, futó szerver mellett
+npm run build && npm run verify    # reszponzivitás- és viselkedés-audit
 ```
 
-A `verify.mts` mind a 6 oldalt végigjárja 320 / 360 / 390 / 768 / 1024 / 1440
-px-en, és hibát jelez, ha vízszintes túlcsordulás van, ha egy scroll-animáció
-nem fut le (ilyenkor tartalom maradna láthatatlan), ha egy oldalon nem pontosan
-egy `<h1>` van, vagy ha egy kattintható elem 24 px alatti.
+A `verify` az `out/`-ot maga szolgálja ki (ha a 4877-es porton már fut szerver,
+azt használja), és mind a 6 oldalt végigjárja nyolc konfigurációban:
+
+| Konfiguráció | Mit fed le |
+|---|---|
+| 320 / 360 / 390 / 768 / 1024 / 1440 px | a támogatott szélességek |
+| 320×256 | WCAG 1.4.10 reflow — az 1280 px @ 400% page zoom geometriai megfelelője |
+| 1280×1024 @ 200% szöveg | WCAG 1.4.4 resize text — itt csak a `rem` nő, a `vw` nem |
+
+Hibát jelez, ha egy elem túlcsordul vízszintesen (elemenkénti méréssel, tehát a
+`body { overflow-x: hidden }` backstop mellett is), ha egy scroll-animáció nem
+fut le (ilyenkor tartalom maradna láthatatlan), ha egy oldalon nem pontosan egy
+`<h1>` van, vagy ha egy kattintható elem 44 px alatti. Végül JavaScript nélkül
+is betölti mind a 6 oldalt, és ellenőrzi, hogy minden tartalom látható.
+
+A célméret-ellenőrzés alól két kivétel van: a folyó szövegbe ágyazott
+(`display: inline`) linkek, és amire a kódban `data-target-exempt="indoklás"`
+attribútum került.
 
 ---
 

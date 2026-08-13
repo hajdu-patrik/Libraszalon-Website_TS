@@ -71,6 +71,13 @@
     font-family: var(--font-body);
     font-size: var(--text-body);
     line-height: 1.75;
+    /* Hungarian compounds ("ajándékutalvány", "masszázsszolgáltatásaimat" at
+       24 letters) overflow narrow columns without help. Inherited from body so
+       figcaptions, card headings and table cells are covered too, not just the
+       three text tags; <html lang="hu"> supplies the hyphenation rules.
+       Not overflow-wrap: break-word — that breaks anywhere, which in Hungarian
+       is unreadable. auto only breaks where the dictionary allows. */
+    hyphens: auto;
     /* The site is a single fixed-width column; nothing should ever be able to
        push the viewport sideways. This is the backstop for the 320px target. */
     overflow-x: hidden;
@@ -88,14 +95,6 @@
 
   p {
     text-wrap: pretty;
-  }
-
-  /* Hungarian compounds ("ajándékutalvány", "állapotfelmérés") overflow narrow
-     columns without help. <html lang="hu"> supplies the hyphenation rules. */
-  p,
-  li,
-  blockquote {
-    hyphens: auto;
   }
 
   :focus-visible {
@@ -154,14 +153,19 @@
    --------------------------------------------------------------------------- */
 
 /* Scroll reveal. Elements start hidden and are released by an
-   IntersectionObserver adding [data-revealed]. */
+   IntersectionObserver adding [data-revealed].
+
+   350ms, not 700: above 500ms a scroll fade reads as slow. The softness comes
+   from --ease-out-expo, not from the duration — the same curve at half the
+   length is just as soft without the wait. Reveal.tsx caps --reveal-index at
+   3, so the last element of a group starts 180ms in, never later. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 0.7s var(--ease-out-expo),
-    transform 0.7s var(--ease-out-expo);
-  transition-delay: calc(var(--reveal-index, 0) * 80ms);
+    opacity 0.35s var(--ease-out-expo),
+    transform 0.35s var(--ease-out-expo);
+  transition-delay: calc(var(--reveal-index, 0) * 60ms);
 }
 
 [data-reveal="fade"] {

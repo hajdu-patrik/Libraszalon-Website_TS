@@ -141,8 +141,10 @@ export function MobileNav({ pathname }: MobileNavProps) {
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
+                    // Five items, so the last one starts at 200ms — the whole
+                    // menu is settled inside 600ms of the tap.
                     style={{
-                      transitionDelay: open ? `${120 + index * 40}ms` : '0ms',
+                      transitionDelay: open ? `${60 + index * 35}ms` : '0ms',
                     }}
                     className={`flex min-h-14 items-center font-heading text-lg transition-all duration-400 ease-[var(--ease-out-expo)] ${
                       open ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'

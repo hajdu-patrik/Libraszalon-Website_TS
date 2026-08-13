@@ -30,7 +30,7 @@ export function PageHeader({ eyebrow, title, background }: PageHeaderProps) {
       <div className="container-page">
         <div
           className="text-center"
-          style={{ animation: 'fade-in 0.7s var(--ease-out-expo) both' }}
+          style={{ animation: 'fade-in 0.35s var(--ease-out-expo) both' }}
         >
           {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
           <h1 className="text-[length:var(--text-h1)] text-ink">{title}</h1>

@@ -97,7 +97,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           type="button"
           onClick={() => setExpanded((value) => !value)}
           aria-expanded={expanded}
-          className="mt-3 inline-flex min-h-9 items-center self-start font-heading text-sm font-semibold text-gold-ink transition-colors hover:text-ink"
+          className="mt-3 inline-flex min-h-11 min-w-11 items-center self-start font-heading text-sm font-semibold text-gold-ink transition-colors hover:text-ink"
         >
           {expanded ? 'Kevesebb' : 'Tovább'}
         </button>

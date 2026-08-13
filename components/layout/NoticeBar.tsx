@@ -62,7 +62,7 @@ export function NoticeBar() {
   return (
     <aside
       aria-label={notice.title}
-      style={{ animation: 'slide-down 0.5s var(--ease-out-expo) both' }}
+      style={{ animation: 'slide-down 0.35s var(--ease-out-expo) both' }}
       className="relative z-30 border-b border-gold/30 bg-[color-mix(in_srgb,var(--color-gold)_10%,white)]"
     >
       <div className="container-page flex items-start gap-3 py-3 sm:gap-4 sm:py-4">
@@ -82,7 +82,7 @@ export function NoticeBar() {
             onClick={() => setExpanded((value) => !value)}
             aria-expanded={expanded}
             aria-controls="notice-body"
-            className="mt-1 inline-flex min-h-9 items-center font-heading text-sm font-semibold text-gold-ink transition-colors hover:text-ink sm:hidden"
+            className="mt-1 inline-flex min-h-11 items-center font-heading text-sm font-semibold text-gold-ink transition-colors hover:text-ink sm:hidden"
           >
             {expanded ? 'Kevesebb' : 'Részletek'}
           </button>
@@ -91,7 +91,7 @@ export function NoticeBar() {
           type="button"
           onClick={dismiss}
           aria-label={notice.dismissLabel}
-          className="-mt-1 -mr-2 inline-flex size-9 shrink-0 items-center justify-center rounded text-muted transition-colors hover:bg-gold/10 hover:text-ink"
+          className="-mt-2 -mr-3 inline-flex size-11 shrink-0 items-center justify-center rounded text-muted transition-colors hover:bg-gold/10 hover:text-ink"
         >
           <CloseIcon className="size-[18px]" />
         </button>

@@ -28,7 +28,9 @@ export function Header() {
         <Link
           href={homeItem.href}
           aria-label={`${site.legalName} — ${homeItem.label}`}
-          className="group flex shrink-0 items-center"
+          // min-h-11 on the link, not the image: the logo shrinks to 40px in
+          // the scrolled state, and the tap target must not shrink with it.
+          className="group flex min-h-11 shrink-0 items-center"
         >
           <Picture
             slug="logo"
@@ -40,7 +42,10 @@ export function Header() {
 
         {/* Desktop navigation */}
         <nav aria-label="Főmenü" className="hidden lg:block">
-          <ul className="flex items-center gap-7">
+          {/* gap-3 + px-2 on the links, not gap-7 on bare text: the visual
+              rhythm is the same 28px, but "Árak" is 32px wide and needs the
+              padding to reach a 44px target. */}
+          <ul className="flex items-center gap-3">
             {navItems.map((item) => {
               const active = pathname === item.href;
               return (
@@ -48,12 +53,12 @@ export function Header() {
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    className="group relative inline-flex min-h-11 items-center font-heading text-[1.0625rem] text-ink transition-colors duration-200 hover:text-gold-ink aria-[current=page]:text-gold-ink"
+                    className="group relative inline-flex min-h-11 items-center px-2 font-heading text-[1.0625rem] text-ink transition-colors duration-200 hover:text-gold-ink aria-[current=page]:text-gold-ink"
                   >
                     {item.label}
                     <span
                       aria-hidden="true"
-                      className={`absolute inset-x-0 -bottom-0.5 h-px origin-center bg-gold transition-transform duration-300 ease-[var(--ease-out-expo)] ${
+                      className={`absolute inset-x-2 -bottom-0.5 h-px origin-center bg-gold transition-transform duration-300 ease-[var(--ease-out-expo)] ${
                         active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                       }`}
                     />

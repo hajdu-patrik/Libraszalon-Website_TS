@@ -119,6 +119,9 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
               aria-current={index === active ? 'true' : undefined}
               // 24x44: meets the WCAG 2.2 minimum target size on the narrow
               // axis while still leaving the arrows their full 44px at 320px.
+              // The gate reads the reason off the attribute rather than
+              // carrying a component name of its own.
+              data-target-exempt="24x44 dot: seven of these plus two 44px arrows have to fit 320px"
               className="group inline-flex h-11 w-6 shrink-0 items-center justify-center"
             >
               <span

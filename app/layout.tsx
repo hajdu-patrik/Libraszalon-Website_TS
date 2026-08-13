@@ -67,6 +67,24 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       lang={site.lang}
       className={`${sourceSans.variable} ${roboto.variable} ${caveat.variable} h-full antialiased`}
     >
+      <head>
+        {/*
+          [data-reveal] hides content from the stylesheet, but the attribute
+          that releases it is set by an observer after hydration — so without
+          JavaScript most of the page would stay invisible for good.
+
+          A <noscript> override rather than a js class on <html>: the export is
+          fully rendered HTML, so nothing has to run at all, and there is no
+          window in which elements could flash visible and then disappear.
+          dangerouslySetInnerHTML because React cannot hydrate parsed children
+          inside <noscript> — the browser hands it back as text.
+        */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: '<style>[data-reveal]{opacity:1;transform:none}</style>',
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <a
           href="#tartalom"

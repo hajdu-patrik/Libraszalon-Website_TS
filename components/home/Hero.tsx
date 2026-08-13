@@ -20,8 +20,8 @@ export function Hero() {
                 <span
                   className="block"
                   style={{
-                    animation: `line-rise 0.9s var(--ease-out-expo) both`,
-                    animationDelay: `${0.15 + index * 0.14}s`,
+                    animation: `line-rise 0.35s var(--ease-out-expo) both`,
+                    animationDelay: `${0.06 + index * 0.1}s`,
                   }}
                 >
                   {line}
@@ -33,8 +33,8 @@ export function Hero() {
           <div
             className="overflow-hidden rounded"
             style={{
-              animation: 'hero-image 1.1s var(--ease-out-expo) both',
-              animationDelay: '0.2s',
+              animation: 'hero-image 0.4s var(--ease-out-expo) both',
+              animationDelay: '0.1s',
             }}
           >
             <Picture

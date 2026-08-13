@@ -22,7 +22,8 @@ export function StarRating({ rating, animate = true }: StarRatingProps) {
           {...(animate && {
             style: {
               animation: 'fade-in 0.4s var(--ease-out-expo) both',
-              animationDelay: `${index * 70}ms`,
+              // Five stars, so the last one starts at 180ms.
+              animationDelay: `${index * 45}ms`,
             },
           })}
         />

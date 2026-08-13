@@ -6,7 +6,7 @@ type RevealProps = {
   children: ReactNode;
   /** Direction the element travels in from. */
   variant?: 'up' | 'fade' | 'left' | 'right' | 'zoom';
-  /** Position within a staggered group; each step adds 80ms. */
+  /** Position within a staggered group; each step adds 60ms. */
   index?: number;
   as?: ElementType;
   className?: string;
@@ -64,11 +64,15 @@ export function Reveal({
     return () => observer.disconnect();
   }, []);
 
+  // Capped at 3 so a long list cannot push its tail past the 200ms budget:
+  // an eighth card waiting half a second is not a stagger, it is a queue.
+  const step = Math.min(index, 3);
+
   return (
     <Tag
       ref={ref}
       data-reveal={variant === 'up' ? '' : variant}
-      style={index ? ({ '--reveal-index': index } as React.CSSProperties) : undefined}
+      style={step ? ({ '--reveal-index': step } as React.CSSProperties) : undefined}
       className={className}
     >
       {children}
