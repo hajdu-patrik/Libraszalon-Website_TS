@@ -1,203 +1,63 @@
-# Libraszalon
+# Custom Website for Libra Masszázs Szalon
 
-A [libraszalon.hu](https://libraszalon.hu) weboldala — a Libra Masszázs Szalon
-(Dévényi Krisztina, okleveles gyógymasszőr, Budapest II. kerület) bemutatkozó
-oldala.
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-flat&logo=typescript&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-flat&logo=next.js&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-flat&logo=tailwind-css&logoColor=white)
+![Static Export](https://img.shields.io/badge/Static_Export-Zero_Runtime-6E4B1F?style=for-the-flat&logo=htmx&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployment-Vercel-000000?style=for-the-flat&logo=vercel&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-flat)
+![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-flat)
 
-Ez a projekt a korábbi WordPress + Elementor oldal kiváltása. A tartalom és a
-vizuális karakter változatlan; a technikai megvalósítás teljesen új.
+This repository contains the source code for the official website of **Libra Masszázs Szalon**, a massage studio in Budapest's 2nd district run by a certified medical masseuse.
 
----
-
-## Mi ez technikailag
-
-| | |
-|---|---|
-| Framework | Next.js 16, App Router, TypeScript |
-| Kimenet | **Statikus export** (`output: 'export'`) — tiszta HTML, nincs szerver |
-| Stílus | Tailwind CSS v4, CSS-first tokenekkel |
-| Betűtípus | Source Sans 3, Roboto, Caveat — `next/font`-tal self-hosted |
-| Kép | Build előtt előfeldolgozott AVIF + WebP szettek |
-| Analytics | Vercel Web Analytics + Speed Insights (süti nélküli) |
-
-A statikus kimenet miatt az oldal **bárhol futtatható**: Vercel, Cloudflare
-Pages, Netlify, vagy bármilyen statikus tárhely — ugyanaz az `out/` könyvtár.
+The project replaces a legacy WordPress + Elementor installation. The content and the visual character were deliberately preserved; the technical foundation was rebuilt from scratch around a zero-runtime, accessibility-first architecture.
 
 ---
 
-## Fejlesztés
+## 🚀 Live Production
 
-```bash
-npm install
-npm run dev          # http://localhost:3000
-```
-
-Produkciós build és helyi kiszolgálás:
-
-```bash
-npm run build        # -> out/
-npx serve out -l 4877
-```
-
-Ellenőrzések:
-
-```bash
-npm run lint
-npm run typecheck
-npm run build && npm run verify    # reszponzivitás- és viselkedés-audit
-```
-
-A `verify` az `out/`-ot maga szolgálja ki (ha a 4877-es porton már fut szerver,
-azt használja), és mind a 6 oldalt végigjárja nyolc konfigurációban:
-
-| Konfiguráció | Mit fed le |
-|---|---|
-| 320 / 360 / 390 / 768 / 1024 / 1440 px | a támogatott szélességek |
-| 320×256 | WCAG 1.4.10 reflow — az 1280 px @ 400% page zoom geometriai megfelelője |
-| 1280×1024 @ 200% szöveg | WCAG 1.4.4 resize text — itt csak a `rem` nő, a `vw` nem |
-
-Hibát jelez, ha egy elem túlcsordul vízszintesen (elemenkénti méréssel, tehát a
-`body { overflow-x: hidden }` backstop mellett is), ha egy scroll-animáció nem
-fut le (ilyenkor tartalom maradna láthatatlan), ha egy oldalon nem pontosan egy
-`<h1>` van, vagy ha egy kattintható elem 44 px alatti. Végül JavaScript nélkül
-is betölti mind a 6 oldalt, és ellenőrzi, hogy minden tartalom látható.
-
-A célméret-ellenőrzés alól két kivétel van: a folyó szövegbe ágyazott
-(`display: inline`) linkek, és amire a kódban `data-target-exempt="indoklás"`
-attribútum került.
+**The application is deployed and accessible at:**
+👉 **[https://libraszalon.hu](https://libraszalon.hu)**
 
 ---
 
-## Hol van a tartalom
+## ✨ Key Engineering Features
 
-**Minden szöveg és ár a `content/` mappában van, nem a komponensekben.**
-Egy ár módosításához nem kell a HTML-hez nyúlni.
-
-| Fájl | Mit tartalmaz |
-|---|---|
-| `content/site.ts` | Név, telefon, e-mail, cím, nyitvatartás, közösségi linkek |
-| `content/prices.ts` | A 7 ársor |
-| `content/services.ts` | A főoldal 4 szolgáltatás-blokkja |
-| `content/reviews.json` | A Google vélemények |
-| `content/notice.ts` | A „Kedves Látogató" közlemény |
-| `content/seo.ts` | Oldalankénti title és description |
-| `content/pages/*.ts` | A hosszabb oldalak szövegei |
-
-Például az árak módosítása:
-
-```ts
-// content/prices.ts
-{
-  duration: '60 / 90 perc',
-  title: 'Klasszikus svédmasszázs',
-  price: '14.000 Ft / 19.000 Ft',   // <- itt
-  amounts: [14000, 19000],          // <- és itt, a strukturált adatok miatt
-}
-```
-
-Commit + push, és a Vercel automatikusan újraépíti.
+* **Zero-Runtime Static Architecture:** The entire site is pre-rendered to plain HTML (`output: 'export'`), so there is no server, no database and no runtime dependency — the same `out/` directory runs on any static host.
+* **Content–Presentation Separation:** Every piece of copy, price and opening hour lives in the typed `src/content/` layer rather than inside components, so editorial changes never touch markup.
+* **Automated Accessibility Gate:** A custom Playwright-driven audit (`npm run verify`) walks all six pages in eight configurations, enforcing WCAG 1.4.10 reflow, 1.4.4 text resize, 44 px target sizes, single-`<h1>` structure and full no-JavaScript rendering.
+* **Performance-First Assets:** Images are pre-processed at build time into responsive AVIF + WebP sets with intrinsic dimensions baked into a manifest, holding Cumulative Layout Shift at zero.
+* **Privacy-Conscious Delivery:** Self-hosted typefaces via `next/font` and cookieless Vercel Analytics mean the site issues no third-party requests and needs no consent banner.
 
 ---
 
-## Vélemények
+## 🛠️ Technology Stack
 
-A `content/reviews.json` a forrás. A megjelenítés szabályai a
-`content/reviews.ts`-ben vannak, egy helyen:
-
-- csak **4 csillag vagy afölött** jelenik meg
-- egyszerre legfeljebb **7** vélemény kerül a karusszelbe
-
-### Automatikus frissítés
-
-A `.github/workflows/reviews.yml` naponta 04:00 UTC-kor lefuttatja a
-`scripts/scrape-reviews.ts`-t. Ha új vélemény érkezett, commitolja, és a push
-elindítja a deployt. Kézzel is indítható az Actions fülről.
-
-**Ez best-effort, nem garancia.** A Google csak egyetlen támogatott csatornán
-adja ki a véleményeket: a Places API „Enterprise + Atmosphere" SKU-ján, amihez
-bankkártyás Google Cloud projekt kell. Az ingyenes utakat aktívan védi — a
-belső `listugcposts` végpont 403-at ad, a hely oldala JavaScript-váz, és a
-böngészővel való kiolvasás is csak időszakosan működik. A scraper ezért úgy
-készült, hogy **soha ne rontson el semmit**:
-
-- meglévő véleményt soha nem töröl
-- üres listát soha nem ír ki
-- hiba esetén is `0`-val lép ki, a fájl érintetlen marad
-
-### Vélemény felvétele kézzel
-
-Ez a megbízható út, és fél percbe telik. Nyisd meg a `content/reviews.json`-t,
-és tedd az új bejegyzést a `reviews` tömb elejére:
-
-```json
-{
-  "id": "sajat-egyedi-azonosito",
-  "author": "Kovács Anna",
-  "rating": 5,
-  "text": "A vélemény szövege, emoji nélkül.",
-  "avatar": "female",
-  "source": "google"
-}
-```
-
-Az `id` bármi lehet, csak legyen egyedi. Az `avatar` `"female"` vagy `"male"`.
+* **Framework:** [Next.js 16](https://nextjs.org/) (App Router, static export)
+* **Language:** [TypeScript](https://www.typescriptlang.org/) (Strictly typed for enterprise-grade reliability)
+* **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (CSS-first design tokens)
+* **Typography:** [next/font](https://nextjs.org/docs/app/api-reference/components/font) (Source Sans 3, Roboto, Caveat — self-hosted)
+* **Imaging:** [Sharp](https://sharp.pixelplumbing.com/) (Build-time AVIF/WebP pipeline)
+* **Quality Gate:** [Playwright](https://playwright.dev/) (Responsive & accessibility auditing)
+* **CI/CD:** [Vercel](https://vercel.com/) + [GitHub Actions](https://github.com/features/actions) (Automated builds & deployments)
 
 ---
 
-## Képek
+## ⚠️ Important Notice: Project Status
 
-A képek a régi WordPress oldalról származnak. Az eredetik nincsenek a repóban
-(`assets/raw/` gitignore-olt); a `public/images/` alatti, kiszolgált változatok
-viszont igen, így a build nem függ hálózattól.
+This repository is published **for portfolio and demonstration purposes only**.
 
-Új kép hozzáadása:
+This was a private, commercial project developed for a specific client. The intellectual property and all rights to the code belong to the client.
 
-1. vedd fel a `scripts/assets.ts` `RAW_ASSETS` listájába
-2. `npm run assets` — letölti és legenerálja az AVIF/WebP szetteket
-3. hivatkozz rá a slug nevével: `<Picture slug="uj-kep" alt="..." />`
-
-A `<Picture>` a `lib/images.manifest.json`-ból veszi a méreteket, és minden
-`<img>`-re kiírja a `width`/`height`-et — ettől marad a layout shift nullán.
+**This is not an open-source project.** You are strictly prohibited from copying, distributing, modifying, or using this code for any academic, commercial, or personal projects. Please see the `LICENSE.md` file for a detailed breakdown of these restrictions.
 
 ---
 
-## Deploy
+## 📦 Deployment
 
-### Vercel
+This project is configured for automated deployment via **Vercel**.
+Any push to the `main` branch automatically triggers a new build and deployment.
 
-1. GitHub repo importálása a Vercelen
-2. A framework automatikusan felismerésre kerül; build `npm run build`, kimenet `out`
-3. A dashboardon kapcsold be a **Web Analytics**-et és a **Speed Insights**-ot
-   (helyben ezek 404-et adnak a konzolba, ez normális)
-
-### Domain átállítása
-
-Csak akkor, ha a preview minden oldalon rendben van:
-
-1. A domain maradhat a jelenlegi regisztrátornál
-2. Vercelen add hozzá a `libraszalon.hu` és `www.libraszalon.hu` domaineket
-3. A regisztrátornál állítsd az `A` rekordot a Vercel dashboard által kiírt
-   IP-re, a `www` CNAME-et pedig `cname.vercel-dns.com`-ra
-4. A tanúsítvány automatikusan kiállítódik
-5. A WP-hostingot **csak azután** mondd fel, hogy az új oldal minden URL-en
-   helyesen válaszol
-
-### Más tárhelyre
-
-Az `out/` könyvtár önmagában elég. Cloudflare Pages: build `npm run build`,
-kimenet `out`. Netlify ugyanez. Kódot nem kell módosítani.
-
----
-
-## Amire figyelni kell
-
-- **Az URL-ek nem változhatnak.** A `trailingSlash: true` miatt minden cím a
-  WordPress-szel azonos (`/arak/`, nem `/arak`). Az oldal évek óta indexelt;
-  egy átnevezés eldobná a felépített helyezéseket.
-- **Statikus exportban a `next.config.ts` `headers()` nem fut.** A cache- és
-  biztonsági fejlécek a `vercel.json`-ban vannak.
-- **Emoji nincs az oldalon.** A scraper is kiszűri a bejövő véleményekből.
-- **A `#CC9955` arany szövegre nem elég kontrasztos** fehér háttéren (2,54:1).
-  Vonalakhoz, csillagokhoz, ikonokhoz használd (`text-gold`), szöveghez a
-  sötétebb `text-gold-ink` változatot — az `#936728`, és mind a három tényleges
-  háttéren (fehér, `--color-subtle`, közleménysáv) 4,5:1 fölött van.
+| Environment | Status |
+| :--- | :--- |
+| **Production** | [![Vercel App](https://img.shields.io/badge/Visit-Live_App-success?style=for-the-badge&logo=vercel)](https://libraszalon.hu) |

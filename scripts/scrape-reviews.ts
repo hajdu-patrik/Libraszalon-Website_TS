@@ -1,5 +1,5 @@
 /**
- * Pulls the salon's Google reviews and merges them into content/reviews.json.
+ * Pulls the salon's Google reviews and merges them into src/content/reviews.json.
  *
  *   npm run reviews:scrape
  *
@@ -30,7 +30,7 @@
  *   3. Never exit non-zero on failure. A broken scrape is not a broken site,
  *      and a red workflow every night just teaches people to ignore it.
  *
- * When it does not work, adding a review by hand to content/reviews.json takes
+ * When it does not work, adding a review by hand to src/content/reviews.json takes
  * about thirty seconds and is the dependable path. See README.md.
  * ---------------------------------------------------------------------------
  */
@@ -38,9 +38,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { chromium, type Browser, type Page } from 'playwright-core';
-import { site } from '../content/site.ts';
+import { site } from '../src/content/site.ts';
 
-const REVIEWS_PATH = new URL('../content/reviews.json', import.meta.url);
+const REVIEWS_PATH = new URL('../src/content/reviews.json', import.meta.url);
 
 /** Reviews below this rating are never published on the site. */
 const MIN_RATING = 4;
@@ -283,7 +283,7 @@ async function main() {
   if (scraped.length === 0) {
     console.warn('');
     console.warn('Nem sikerult velemenyt lekerni a Google-tol.');
-    console.warn('A content/reviews.json valtozatlan marad, az oldal a meglevo');
+    console.warn('A src/content/reviews.json valtozatlan marad, az oldal a meglevo');
     console.warn('velemenyekkel mukodik tovabb. Uj velemenyt kezzel is fel lehet');
     console.warn('venni a fajlba — reszletek a README-ben.');
     return;

@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
 
   reactStrictMode: true,
+
+  /** Don't emit AGENTS.md / CLAUDE.md on dev startup — they are editor scaffolding,
+   *  not part of the site, and only add noise to the repo. */
+  agentRules: false,
 };
 
 export default nextConfig;

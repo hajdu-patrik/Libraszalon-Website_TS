@@ -10,35 +10,56 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
 # next.js
 /.next/
 /out/
 
 # production
 /build
+/dist
 
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
+# testing / tooling caches
+/coverage
+/test-results
+/playwright-report
+/.turbo
+/.eslintcache
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+logs
+*.log
+
+# deployment
+.vercel
+.netlify
+
+# editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
+
+# os
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# certificates
+*.pem
 
 # original images downloaded from the legacy WordPress site
 # (inputs to scripts/optimize-images.ts; the shipped output lives in public/images)

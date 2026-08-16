@@ -79,4 +79,4 @@ export const RESPONSIVE_WIDTHS = [320, 640, 960, 1280, 1920] as const;
 
 export const RAW_DIR = 'assets/raw';
 export const OUT_DIR = 'public/images';
-export const MANIFEST_PATH = 'lib/images.manifest.json';
+export const MANIFEST_PATH = 'src/lib/images.manifest.json';

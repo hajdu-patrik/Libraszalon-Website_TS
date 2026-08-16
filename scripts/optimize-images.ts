@@ -106,12 +106,20 @@ async function buildIcons() {
   const base = sharp(mark).flatten({ background: '#ffffff' });
 
   await base.clone().resize(180, 180, { fit: 'contain', background: '#ffffff' })
-    .png().toFile('app/apple-icon.png');
+    .png().toFile('src/app/apple-icon.png');
 
   await base.clone().resize(32, 32, { fit: 'contain', background: '#ffffff' })
-    .png().toFile('app/icon.png');
+    .png().toFile('src/app/icon.png');
 
-  console.log('  icons                  app/icon.png, app/apple-icon.png');
+  // PWA / web-manifest icons. Installable prompts want a 192 and a 512, which
+  // the 32px favicon and 180px apple-icon cannot satisfy.
+  await base.clone().resize(192, 192, { fit: 'contain', background: '#ffffff' })
+    .png().toFile('public/icon-192.png');
+
+  await base.clone().resize(512, 512, { fit: 'contain', background: '#ffffff' })
+    .png().toFile('public/icon-512.png');
+
+  console.log('  icons                  src/app/icon.png, src/app/apple-icon.png, public/icon-{192,512}.png');
 }
 
 /** 1200x630 Open Graph card built from the hero photograph. */

@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+
+   The palette keeps the salon's established identity — the Elementor kit's
+   gold (#cc9955) and warm ink (#2c2828) — but rebuilds everything around it:
+   a warm cream replaces the sterile near-white, a deep espresso carries the
+   dark sections, and a serif display face (Cormorant Garamond) gives the
+   headings the editorial weight the photographs deserve.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Palette */
+  --color-ink: #2c2828; /* body text + brand dark */
+  --color-ink-deep: #211d1c; /* dark sections: hero scrim, reviews, footer */
+  --color-gold: #cc9955; /* brand gold — rules, icons, accents on dark */
+  --color-muted: #585151; /* secondary copy on light */
+  --color-surface: #ffffff;
+  --color-cream: #faf7f2; /* warm tinted background */
+  --color-line: #eae3d9; /* warm hairline */
+  --color-cream-text: #f5efe6; /* primary copy on dark */
+  --color-cream-muted: #cbc0b4; /* secondary copy on dark, 8.5:1 on ink-deep */
+
+  /* #cc9955 only reaches 2.54:1 on white — fine for rules, stars and icons,
+     not for text. This darker step clears 4.5:1 for gold-coloured copy on
+     every light background it runs on: 4.99:1 on white and 4.7:1 on
+     --color-cream. On the dark surfaces the raw gold itself clears 5.7:1
+     against --color-ink-deep, so dark sections use --color-gold directly. */
+  --color-gold-ink: #936728;
+
+  /* Typefaces (bound to next/font in src/app/layout.tsx) */
+  --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-body: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-caveat), ui-serif, cursive;
+
+  /* Fluid type scale — the lower bound is tuned for a 320px viewport.
+     Cormorant has a small x-height, so the serif steps run larger than the
+     old sans scale did. */
+  --text-hero: clamp(2.375rem, 1.2rem + 5.9vw, 5rem);
+  --text-h1: clamp(2.25rem, 1.55rem + 3.4vw, 3.75rem);
+  --text-h2: clamp(1.875rem, 1.45rem + 2.1vw, 2.875rem);
+  --text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
+  --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --text-price: clamp(1.75rem, 1.4rem + 1.7vw, 2.5rem);
+  --text-eyebrow: 0.75rem;
+
+  /* Layout */
+  --container-width: 1200px;
+  --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
+}
+
+:root {
+  --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
+  --header-height: 4.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor jumps must clear the sticky header. */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.75;
+    /* Hungarian compounds ("ajándékutalvány", "masszázsszolgáltatásaimat" at
+       24 letters) overflow narrow columns without help. Inherited from body so
+       figcaptions, card headings and table cells are covered too, not just the
+       three text tags; <html lang="hu"> supplies the hyphenation rules.
+       Not overflow-wrap: break-word — that breaks anywhere, which in Hungarian
+       is unreadable. auto only breaks where the dictionary allows. */
+    hyphens: auto;
+    /* The site is a single fixed-width column; nothing should ever be able to
+       push the viewport sideways. This is the backstop for the 320px target. */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+
+@utility container-page {
+  width: 100%;
+  max-width: calc(var(--container-width) + var(--container-pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+@utility eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-ink);
+}
+
+/* The same label on a dark surface, where the raw gold is the readable step. */
+@utility eyebrow-dark {
+  font-family: var(--font-body);
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+/* Readable measure for long-form pages (house rules, first massage). */
+@utility prose-measure {
+  max-width: 68ch;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+   Every animation below is transform/opacity only, so it stays on the
+   compositor and never triggers layout.
+   --------------------------------------------------------------------------- */
+
+/* Scroll reveal. Elements start hidden and are released by an
+   IntersectionObserver adding [data-revealed].
+
+   450ms with --ease-out-expo: most of the travel happens in the first 200ms,
+   so it reads as immediate, and the long tail is what makes it feel soft.
+   Reveal.tsx caps --reveal-index at 3, so the last element of a group starts
+   210ms in, never later. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.45s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo);
+  transition-delay: calc(var(--reveal-index, 0) * 70ms);
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal="left"] {
+  transform: translateX(-32px);
+}
+
+[data-reveal="right"] {
+  transform: translateX(32px);
+}
+
+[data-reveal="zoom"] {
+  transform: scale(0.95);
+}
+
+[data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The hero quote wipes upward line by line. */
+@keyframes line-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The hero photograph settles out of a slow zoom while the scrim holds. */
+@keyframes hero-image {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   One switch that neutralises every animation on the site. Content must be
+   fully visible and usable with motion disabled.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
