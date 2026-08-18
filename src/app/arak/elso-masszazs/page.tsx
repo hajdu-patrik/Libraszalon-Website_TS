@@ -79,7 +79,7 @@ export default function FirstMassagePage() {
               key={tip.slice(0, 40)}
               as="li"
               index={index % 2}
-              className="flex gap-5 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,border-color,box-shadow] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-[var(--shadow-lift)]"
+              className="card-interactive flex gap-5 rounded-2xl bg-surface p-6"
             >
               <span
                 aria-hidden="true"

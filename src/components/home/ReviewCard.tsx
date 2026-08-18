@@ -57,7 +57,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
   }, [expanded]);
 
   return (
-    <article className="flex h-full snap-start flex-col rounded-2xl bg-surface p-7 shadow-[var(--shadow-card)]">
+    <article className="card-interactive flex h-full snap-start flex-col rounded-2xl bg-surface p-7">
       <StarRating rating={review.rating} />
 
       <p

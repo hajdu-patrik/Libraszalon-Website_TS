@@ -106,7 +106,7 @@ export default function HouseRulesPage() {
               key={rule.question}
               as="li"
               index={index % 2}
-              className="mb-5 flex break-inside-avoid gap-4 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-(--dur-base) ease-smooth hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:gap-5 md:mb-6 lg:gap-6 lg:p-7"
+              className="card-interactive mb-5 flex break-inside-avoid gap-4 rounded-2xl bg-surface p-6 sm:gap-5 md:mb-6 lg:gap-6 lg:p-7"
             >
               <span
                 aria-hidden="true"
