@@ -108,12 +108,12 @@
      matches what it is, not a number that happened to look right:
 
        quick  a control answering a pointer — underline, burger, icon nudge
-       base   the default: colour, border, shadow, a card lifting, and a
-              photograph scaling under the cursor — a hover is a hover, so it
-              resolves on the same clock whether the thing that moves is a
-              button or an image
-       slow   a large surface travelling far on its own — the hero's opening
-              zoom, which nobody asked for and so must not hurry
+       base   the default: colour, border, shadow, a card lifting
+       slow   a large surface: the hero's opening zoom, and a photograph
+              scaling under the cursor. A hover is not always a hover — 2px
+              under a button has to answer at once, while a 480px image has
+              far enough to travel that arriving quickly is the whole
+              problem. Paired with --ease-gentle, never with --ease-smooth
        enter  something arriving on screen for the first time
 
      Paired with --ease-smooth, which front-loads the travel: at 600ms most of
