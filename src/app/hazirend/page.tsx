@@ -36,7 +36,26 @@ export default function HouseRulesPage() {
       */}
       <Section spacing="normal">
         <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-14">
-          <Reveal>
+          {/* The callout's own inset, less one step — 1.75rem against its 2rem.
+
+              items-start already lines the two *boxes* up, but a reader does
+              not see boxes. The callout's first line starts a padding step
+              below its top edge, so against a paragraph that starts at its own
+              edge the columns read 32px out of true; mirroring the padding
+              exactly still leaves 4px, because the two first lines are not the
+              same kind of line. The callout opens on a 12px heading, and the
+              base layer sets line-height 1.12 on headings, so its glyphs sit
+              almost flush with the top of their line box. The paragraph is
+              17px at 1.75, and half of that leading — a little over 4px — sits
+              above its first glyph before any text is drawn.
+
+              1.75rem instead of 2rem pays that difference back. In rem, so it
+              survives text zoom: both the leading and the correction scale
+              together. Measured at 1024, 1280 and 1440: 0px apart.
+
+              Only from lg, the one place the two are side by side. Stacked,
+              the padding would just be a gap. */}
+          <Reveal className="lg:pt-7">
             <p className="text-muted">{houseRules.intro}</p>
           </Reveal>
 
