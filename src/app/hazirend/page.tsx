@@ -69,7 +69,7 @@ export default function HouseRulesPage() {
                       slug={item.slug}
                       alt={item.caption}
                       sizes="(max-width: 1024px) min(100vw, 24rem), 24rem"
-                      className="w-full object-cover transition-transform duration-(--dur-slow) ease-smooth hover:scale-[1.03]"
+                      className="w-full object-cover transition-transform duration-(--dur-base) ease-gentle hover:scale-[1.02]"
                     />
                   </div>
                   <figcaption className="mt-3 text-sm text-muted">

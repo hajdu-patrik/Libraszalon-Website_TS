@@ -27,11 +27,16 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         className={flipped ? 'lg:order-2' : undefined}
       >
         <div className="group overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
+          {/* 2%, on the button clock and the gentle curve. The zoom used to be
+              4% over 700ms of --ease-smooth, which on a photograph this size
+              meant ~19px of travel almost all of it spent in the first frames:
+              a snap, then nothing. Two percent is still ~10px — plainly visible
+              — and it now takes the whole 400ms to get there. */}
           <Picture
             slug={service.image}
             alt={service.alt}
             sizes="(max-width: 1024px) 100vw, 480px"
-            className="aspect-[4/3] w-full object-cover transition-transform duration-(--dur-slow) ease-smooth group-hover:scale-[1.04]"
+            className="aspect-[4/3] w-full object-cover transition-transform duration-(--dur-base) ease-gentle group-hover:scale-[1.02]"
           />
         </div>
       </Reveal>

@@ -72,6 +72,18 @@
      so they are consumed as `duration-(--dur-base)`. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* The one exception, and it earns its place: --ease-smooth is an expo-out
+     curve that spends roughly 80% of its travel in the first fifth of its
+     duration. On a button moving 2px that front-loading is what makes the
+     control feel answered instantly. On a 480px photograph scaling up it is
+     the opposite — the image has effectively arrived before the eye can
+     follow it, which reads as a jump rather than a movement, and then crawls
+     through a long invisible tail.
+
+     This is a quad-out: gentler at the start, so a large surface is seen to
+     travel the whole way. Photograph zooms are the only thing that use it. */
+  --ease-gentle: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
   /* The default any bare `transition-*` picks up — and most of the site's
      transitions are bare `transition-colors` on links. Tailwind ships 150ms on
      its own curve, so leaving these alone would mean every link on the site
@@ -96,8 +108,12 @@
      matches what it is, not a number that happened to look right:
 
        quick  a control answering a pointer — underline, burger, icon nudge
-       base   the default: colour, border, shadow, a card lifting
-       slow   a large surface travelling far — a photograph scaling on hover
+       base   the default: colour, border, shadow, a card lifting, and a
+              photograph scaling under the cursor — a hover is a hover, so it
+              resolves on the same clock whether the thing that moves is a
+              button or an image
+       slow   a large surface travelling far on its own — the hero's opening
+              zoom, which nobody asked for and so must not hurry
        enter  something arriving on screen for the first time
 
      Paired with --ease-smooth, which front-loads the travel: at 600ms most of
