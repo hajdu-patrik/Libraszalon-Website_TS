@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { GoldRule } from '@/components/ui/GoldRule';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { houseRules } from '@/content/pages/house-rules';
@@ -20,63 +19,33 @@ export default function HouseRulesPage() {
         background="bg-prices-alt"
       />
 
-      {/* The pass sits here rather than at the foot of the page: it is the one
-          thing on /hazirend/ a visitor might be looking for by sight, and the
-          rules that govern it — payment, expiry, late cancellation — are all
-          below. Showing it up front means the reader has seen the object before
-          the first rule mentions it. */}
+      {/*
+        Two text blocks across the full width.
+
+        The pass photographs used to hold the right-hand third of this row, and
+        the introduction was squeezed into what was left. They are gone (the
+        copy for them is still in the content file), so the two things a reader
+        has to take in before the rules start — why the rules exist, and what
+        the salon actually offers — get a column each instead of one column and
+        a picture.
+
+        Side by side rather than stacked because the two run to almost the same
+        length; stacked, each would have made a 75-character line of a paragraph
+        that is already dense. items-start so the callout keeps its own height
+        instead of being stretched to match the paragraph beside it.
+      */}
       <Section spacing="normal">
-        <div className="grid items-start gap-12 lg:grid-cols-[1fr_minmax(0,24rem)] lg:gap-16">
-          <div>
-            <Reveal>
-              <p className="prose-measure text-muted">{houseRules.intro}</p>
-            </Reveal>
+        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-14">
+          <Reveal>
+            <p className="text-muted">{houseRules.intro}</p>
+          </Reveal>
 
-            {/* The scope statement gets callout treatment: it is the sentence
-                the whole page hangs on. */}
-            <Reveal index={1} className="mt-12">
-              <div className="rounded-r-2xl border-l-[3px] border-gold bg-cream p-6 sm:p-8">
-                <p className="eyebrow">{houseRules.scope.heading}</p>
-                <p className="mt-4 text-muted">{houseRules.scope.body}</p>
-              </div>
-            </Reveal>
-          </div>
-
-          <Reveal
-            variant="right"
-            index={2}
-            className="mx-auto w-full max-w-sm lg:sticky lg:top-28 lg:mx-0 lg:max-w-none"
-          >
-            <p className="eyebrow">{houseRules.passHeading}</p>
-            <div className="mt-5 space-y-6">
-              {(
-                [
-                  {
-                    slug: 'pass-front',
-                    caption: houseRules.passCaptions.front,
-                    label: houseRules.passLabels.front,
-                  },
-                  {
-                    slug: 'pass-back',
-                    caption: houseRules.passCaptions.back,
-                    label: houseRules.passLabels.back,
-                  },
-                ] as const
-              ).map((item) => (
-                <figure key={item.slug}>
-                  <div className="overflow-hidden rounded-2xl shadow-[var(--shadow-card)]">
-                    <Picture
-                      slug={item.slug}
-                      alt={item.caption}
-                      sizes="(max-width: 1024px) min(100vw, 24rem), 24rem"
-                      className="w-full object-cover transition-transform duration-(--dur-base) ease-gentle hover:scale-[1.02]"
-                    />
-                  </div>
-                  <figcaption className="mt-3 text-sm text-muted">
-                    {item.label}
-                  </figcaption>
-                </figure>
-              ))}
+          {/* The scope statement gets callout treatment: it is the sentence
+              the whole page hangs on. */}
+          <Reveal variant="right" index={1}>
+            <div className="rounded-r-2xl border-l-[3px] border-gold bg-cream p-6 sm:p-8">
+              <h2 className="eyebrow">{houseRules.scope.heading}</h2>
+              <p className="mt-4 text-muted">{houseRules.scope.body}</p>
             </div>
           </Reveal>
         </div>
@@ -91,26 +60,34 @@ export default function HouseRulesPage() {
         </Reveal>
 
         {/*
-          Fourteen rules in a single 48rem column ran for most of a screen and
-          a half of near-identical cards. Paired up they read as a reference
-          table, which is what they are.
+          Multi-column, not a two-track grid.
 
-          items-start rather than the default stretch: rule 14 is one sentence
-          and rule 8 is most of a page, and a stretched row would blow the short
-          one up to match, leaving a card that is four fifths empty. Each card
-          keeps its own height instead.
+          A grid with items-start stops a short card being stretched to its
+          neighbour's height, but it cannot stop the row itself: rules 2 and 5
+          are one sentence and rule 8 is most of a page, so every row was as
+          tall as its tallest card and the short ones left a hole underneath.
+          Fourteen rules of wildly uneven length produced a column of holes.
 
-          The stagger is index % 2, so the pair that arrives together is offset
-          against itself — the same trick the tips grid on /arak/elso-masszazs/
-          uses — instead of the whole list queueing behind one delay chain.
+          `columns-2` takes the rows out of the equation. The list is one flow
+          that the browser balances into two columns of equal height, so a short
+          rule is followed immediately by the next one — the masonry effect,
+          from the layout mode that has always done it, with no script and no
+          measuring. It also splits the list roughly 1-7 / 8-14, which is the
+          right reading order for something numbered: down one column, then down
+          the next.
+
+          break-inside-avoid is not optional here. Without it the browser is
+          free to end a column halfway through rule 8 and resume it at the top
+          of the next one, which for a numbered rule is not a wrap, it is a
+          different rule.
         */}
-        <ol className="mt-12 grid items-start gap-5 md:grid-cols-2 md:gap-6">
+        <ol className="mt-12 gap-6 md:columns-2">
           {houseRules.rules.map((rule, index) => (
             <Reveal
               key={rule.question}
               as="li"
               index={index % 2}
-              className="flex gap-4 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-(--dur-base) ease-smooth hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:gap-5 lg:gap-6 lg:p-7"
+              className="mb-5 flex break-inside-avoid gap-4 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-(--dur-base) ease-smooth hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:gap-5 md:mb-6 lg:gap-6 lg:p-7"
             >
               <span
                 aria-hidden="true"

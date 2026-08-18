@@ -78,7 +78,15 @@ export const houseRules = {
     },
   ],
 
-  /** Label for the pass images that open the page beside the introduction. */
+  /**
+   * Copy for the pass photographs.
+   *
+   * Nothing renders these at the moment — the two images were taken off
+   * /hazirend/ so the introduction and the scope statement could have the
+   * full width. The strings stay because the removal is a layout decision,
+   * not an editorial one, and re-adding the figures should not mean
+   * rewriting their alternative text from scratch.
+   */
   passHeading: '10 alkalmas bérlet',
 
   /**
