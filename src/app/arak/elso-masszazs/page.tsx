@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { GoldRule } from '@/components/ui/GoldRule';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Picture } from '@/components/ui/Picture';
@@ -23,7 +21,7 @@ export default function FirstMassagePage() {
       />
 
       <Section spacing="normal">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,22rem)] lg:gap-16">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16">
           <Reveal>
             <h2 className="text-[length:var(--text-h2)] text-ink">
               {firstMassage.assessment.heading}
@@ -34,12 +32,22 @@ export default function FirstMassagePage() {
             </p>
           </Reveal>
 
-          <Reveal variant="right" index={1} className="lg:sticky lg:top-28">
+          {/* This is the longest passage on the site, so the photograph is
+              given real presence rather than being sized down to keep pace:
+              26rem wide, cropped to the source's own 2:3 on desktop so nothing
+              is thrown away, and the arch radius set to exactly half the column
+              width so the crown resolves as a true half-round. Sticking holds
+              it beside the text for the whole read. */}
+          <Reveal
+            variant="right"
+            index={1}
+            className="mx-auto w-full max-w-md lg:sticky lg:top-28 lg:mx-0 lg:max-w-none"
+          >
             <Picture
               slug="about-detail"
               alt="Masszázs közben a Libra Masszázs Szalonban"
-              sizes="(max-width: 1024px) 100vw, 22rem"
-              className="aspect-[3/4] w-full rounded-b-3xl rounded-t-[10rem] object-cover shadow-[var(--shadow-lift)]"
+              sizes="(max-width: 1024px) min(100vw, 28rem), 26rem"
+              className="aspect-[3/4] w-full rounded-b-3xl rounded-t-[10rem] object-cover shadow-[var(--shadow-lift)] lg:aspect-[2/3] lg:rounded-t-[13rem]"
             />
           </Reveal>
         </div>
@@ -83,16 +91,6 @@ export default function FirstMassagePage() {
             </Reveal>
           ))}
         </ol>
-
-        <Reveal className="mt-12">
-          <Button
-            href={pageSeo.houseRules.path}
-            variant="dark"
-            icon={<ArrowRight className="size-[18px]" strokeWidth={1.8} />}
-          >
-            Házirend
-          </Button>
-        </Reveal>
       </Section>
 
       <script

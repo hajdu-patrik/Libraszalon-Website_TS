@@ -17,11 +17,22 @@ export const firstMassage = {
   tips: {
     heading: 'Pár jó, gyakorlati tanács',
     subheading: 'Nem csak az első alkalomra',
+    /**
+     * Seven of the eight are verbatim from the legacy page. The fifth is newly
+     * written to even out the two-column grid: it covers the one piece of
+     * preparation the original list leaves out — what to put on, and take off,
+     * before setting out — so it earns its place rather than padding the list,
+     * and it keeps the same second-person voice as the rest.
+     *
+     * Ordering is chronological on purpose: everything you do at home, then
+     * everything immediately before the treatment, then aftercare last.
+     */
     items: [
       'Időpontfoglalás előtt kérlek mindenképpen olvasd el a házirendet. Az ebben foglaltak a kölcsönös tiszteletre alapulva szolgálják közös érdekeinket, biztonságunkat, egészségünket. Ha ezekkel nem értesz egyet, nem tudsz velük azonosulni, akkor kérlek inkább ne foglalj hozzám időpontot.',
       'Ne a legújabb, legféltettebb fehérneműdben érkezz masszázsra. Bár az általam használt anyagok kimoshatóak, nem hagynak maradandó foltot a ruhán, azért nem árt az óvatosság.',
       'Urak esetén a „fecske” típusú alsónemű ajánlott.',
       'A masszázs során tarkó tájon óhatatlanul kicsit olajos/krémes lesz a hajad, ezért a frissen mosott haj nem a legideálisabb. Vigyázok, de óhatatlanul felkenődik egy kis mennyiség.',
+      'A kezelés előtt ne használj testápolót és erős parfümöt: a bőrön maradó krémréteg megváltoztatja a fogások csúszását, az intenzív illat pedig összekeveredik a masszázsolaj illatával. Az ékszereket, órát és karkötőt érdemes már otthon levenned, de nálam is biztonságos helyen elteheted őket.',
       'Masszázs előtt közvetlenül ne egyél nagy mennyiséget, mert úgy nem lesz komfortos hason feküdni.',
       'Masszázs előtt érdemes meglátogatni a mosdót, mely nálam természetesen biztosított.',
       'A masszázs után fontos a bő folyadék fogyasztás és a nagy fizikai aktivitást pár órán keresztül érdemes kerülni. Nálam természetesen ihatsz, meg foglak kínálni vízzel.',

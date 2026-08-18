@@ -24,15 +24,23 @@ export default function AboutPage() {
 
       {/* Portrait and professional background */}
       <Section spacing="normal">
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-16">
-          <Reveal variant="left">
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,28rem)_1fr] lg:gap-16">
+          {/* Dropped by 3.5rem on desktop so the crown of the arch starts level
+              with the opening paragraph rather than with the name above it —
+              the portrait then reads as set into the text block instead of
+              floating alongside the heading. */}
+          <Reveal
+            variant="left"
+            className="mx-auto w-full max-w-md lg:mx-0 lg:mt-14 lg:max-w-none"
+          >
             {/* The arch crown is the page's signature shape — a quiet nod to
-                doorways and spa architecture. */}
+                doorways and spa architecture. Its radius tracks the column so
+                the crown stays a true half-round at every size. */}
             <Picture
               slug="about-portrait"
               alt={`${about.name}, ${site.ownerTitle}, a ${site.legalName} alapítója`}
-              sizes="(max-width: 1024px) 100vw, 24rem"
-              className="aspect-[4/5] w-full rounded-b-3xl rounded-t-[12rem] object-cover shadow-[var(--shadow-lift)]"
+              sizes="(max-width: 1024px) min(100vw, 28rem), 28rem"
+              className="aspect-[4/5] w-full rounded-b-3xl rounded-t-[12rem] object-cover shadow-[var(--shadow-lift)] lg:rounded-t-[14rem]"
             />
           </Reveal>
 
@@ -65,7 +73,13 @@ export default function AboutPage() {
 
       {/* The balance the salon is named after */}
       <Section tone="cream" background="bg-about" spacing="normal">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        {/* items-start, not items-center: the copy in this column runs a good
+            deal taller than a landscape photograph, so centring left the frame
+            hanging in the middle with an unequal margin above and below and
+            nothing to line up with. Top-aligned it shares an edge with the first
+            line of text, and sticking on desktop keeps it in view for the whole
+            passage instead of scrolling away halfway through. */}
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-16">
           <Reveal variant="left">
             <p className="prose-measure text-muted">{about.balance}</p>
             <p className="mt-8 font-script text-[1.6rem] leading-snug text-gold-ink">
@@ -73,40 +87,18 @@ export default function AboutPage() {
             </p>
           </Reveal>
 
-          <Reveal variant="right" index={1}>
+          <Reveal
+            variant="right"
+            index={1}
+            className="mx-auto w-full max-w-md lg:sticky lg:top-28 lg:mx-0 lg:max-w-none"
+          >
             <Picture
               slug="about-room"
               alt="A Libra Masszázs Szalon kezelőhelyisége"
-              sizes="(max-width: 1024px) 100vw, 560px"
-              className="w-full rounded-3xl object-cover shadow-[var(--shadow-lift)]"
+              sizes="(max-width: 1024px) min(100vw, 28rem), 28rem"
+              className="aspect-[4/3] w-full rounded-3xl object-cover shadow-[var(--shadow-lift)]"
             />
           </Reveal>
-        </div>
-      </Section>
-
-      {/* Cupping tools */}
-      <Section spacing="normal">
-        <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
-          {(
-            [
-              { slug: 'cupping-plastic', caption: about.cuppingCaptions.plastic },
-              { slug: 'cupping-silicone', caption: about.cuppingCaptions.silicone },
-            ] as const
-          ).map((item, index) => (
-            <Reveal key={item.slug} index={index} as="figure">
-              <div className="overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
-                <Picture
-                  slug={item.slug}
-                  alt={item.caption}
-                  sizes="(max-width: 640px) 100vw, 560px"
-                  className="w-full object-cover transition-transform duration-(--dur-slow) ease-smooth hover:scale-[1.03]"
-                />
-              </div>
-              <figcaption className="mt-4 text-sm text-muted">
-                {item.caption}
-              </figcaption>
-            </Reveal>
-          ))}
         </div>
       </Section>
 
