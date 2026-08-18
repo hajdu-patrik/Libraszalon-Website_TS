@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { PriceCard } from '@/components/prices/PriceCard';
+import { GoldRule } from '@/components/ui/GoldRule';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -53,6 +55,58 @@ export default function PricesPage() {
             ))}
           </div>
         </div>
+
+        {/*
+          The pass, at the foot of the list.
+
+          Fenced off with a hairline and a wide inset rather than its own
+          section: it is not a price, but it is the last thing the price list
+          has to say, and a full section break here would read as a new topic.
+
+          Side by side from sm, stacked and centred below it. Each frame is
+          capped at 24rem so the pair never stretches to fill a 1200px row —
+          two photographs of a card printed the size of a card. The images
+          themselves need no sizing rules: `img { max-width: 100%; height:
+          auto }` in the base layer already holds them inside their frame at
+          every width, down to 320px.
+        */}
+        <Reveal className="mt-16 border-t border-line pt-14 sm:mt-20 sm:pt-16">
+          <h2 className="text-center text-[length:var(--text-h3)] text-ink">
+            {pricesPage.pass.heading}
+          </h2>
+          <GoldRule centered className="mt-5" />
+
+          <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:justify-center">
+            {(
+              [
+                {
+                  slug: 'pass-front',
+                  caption: pricesPage.pass.captions.front,
+                  label: pricesPage.pass.labels.front,
+                },
+                {
+                  slug: 'pass-back',
+                  caption: pricesPage.pass.captions.back,
+                  label: pricesPage.pass.labels.back,
+                },
+              ] as const
+            ).map((item) => (
+              <figure key={item.slug} className="w-full max-w-sm">
+                <div className="overflow-hidden rounded-2xl shadow-[var(--shadow-card)]">
+                  <Picture
+                    slug={item.slug}
+                    alt={item.caption}
+                    sizes="(max-width: 640px) min(100vw, 24rem), 24rem"
+                    className="w-full object-cover transition-transform duration-(--dur-slow) ease-gentle hover:scale-[1.02]"
+                  />
+                </div>
+                <figcaption className="mt-3 text-center text-sm text-muted">
+                  {item.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Reveal>
       </Section>
 
       <script

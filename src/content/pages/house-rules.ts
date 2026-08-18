@@ -77,31 +77,4 @@ export const houseRules = {
       text: 'Tilos a dohányzás, kérlek mellőzd az e-cigi használatát is!',
     },
   ],
-
-  /**
-   * Copy for the pass photographs.
-   *
-   * Nothing renders these at the moment — the two images were taken off
-   * /hazirend/ so the introduction and the scope statement could have the
-   * full width. The strings stay because the removal is a layout decision,
-   * not an editorial one, and re-adding the figures should not mean
-   * rewriting their alternative text from scratch.
-   */
-  passHeading: '10 alkalmas bérlet',
-
-  /**
-   * Two layers of text per image: the caption is the alternative text, written
-   * to stand on its own for a screen reader, and the short label is what is
-   * printed under the frame, where the surrounding heading already supplies
-   * the context.
-   */
-  passCaptions: {
-    front: 'A Libra Masszázs Szalon 10 alkalmas bérlete, előlap',
-    back: 'A Libra Masszázs Szalon 10 alkalmas bérlete, hátlap',
-  },
-
-  passLabels: {
-    front: 'Előlap',
-    back: 'Hátlap',
-  },
 } as const;
