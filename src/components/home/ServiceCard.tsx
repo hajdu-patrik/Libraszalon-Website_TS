@@ -26,12 +26,16 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         variant={flipped ? 'right' : 'left'}
         className={flipped ? 'lg:order-2' : undefined}
       >
-        <div className="group overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
+        {/* No hover on the photograph, by decision rather than omission: the
+            images on this site are not controls and do not lead anywhere, so
+            there is nothing for a hover state to promise. overflow-hidden
+            stays — it is what clips the image to the rounded frame. */}
+        <div className="overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
           <Picture
             slug={service.image}
             alt={service.alt}
             sizes="(max-width: 1024px) 100vw, 480px"
-            className="aspect-[4/3] w-full object-cover transition-transform duration-(--dur-slow) ease-smooth group-hover:scale-[1.04]"
+            className="aspect-[4/3] w-full object-cover"
           />
         </div>
       </Reveal>

@@ -44,7 +44,7 @@ export function PriceCard({ item, index, featured = false }: PriceCardProps) {
     <Reveal
       as="article"
       index={index % 3}
-      className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-(--dur-base) ease-smooth hover:-translate-y-1 hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:p-7"
+      className="card-interactive group flex h-full flex-col rounded-2xl bg-surface p-6 sm:p-7"
     >
       <p className="eyebrow">{item.duration}</p>
 
@@ -57,7 +57,7 @@ export function PriceCard({ item, index, featured = false }: PriceCardProps) {
       )}
 
       {/* Pushed to the bottom so prices line up across a row of cards; the
-          hairline warms to gold with the card's hover lift. */}
+          hairline warms to gold along with the card's own border. */}
       <div className="mt-auto pt-6">
         <span
           aria-hidden="true"

@@ -69,13 +69,17 @@ export function Header() {
             aria-label={`${site.legalName} — ${homeItem.label}`}
             // min-h-11 on the link, not the image: the logo shrinks to 40px in
             // the scrolled state, and the tap target must not shrink with it.
-            className="group flex min-h-11 shrink-0 items-center"
+            className="flex min-h-11 shrink-0 items-center"
           >
+            {/* The transition is for the height alone: the logo shrinks when
+                the header does, and that travel wants easing. It carried a
+                hover dim as well, which is gone — no image on the site reacts
+                to the cursor. The link keeps its focus ring. */}
             <Picture
               slug="logo"
               alt=""
               sizes="220px"
-              className="h-11 w-auto transition-[height,opacity] duration-(--dur-base) ease-smooth group-hover:opacity-85 sm:h-14 in-data-scrolled:h-10 sm:in-data-scrolled:h-11"
+              className="h-11 w-auto transition-[height] duration-(--dur-base) ease-smooth sm:h-14 in-data-scrolled:h-10 sm:in-data-scrolled:h-11"
             />
           </Link>
 

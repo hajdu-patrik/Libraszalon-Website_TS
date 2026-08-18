@@ -42,6 +42,15 @@
   --text-h2: clamp(1.875rem, 1.45rem + 2.1vw, 2.875rem);
   --text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
   --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  /* One step above body, for a short centred block that has to carry a whole
+     section on its own — the contact page's standing notice. Tops out at
+     1.25rem: large enough to read as an introduction, small enough that it
+     never competes with an h3. The floor is 1.125rem rather than the next
+     step up from body, because --text-body is itself nearly flat (1rem to
+     1.0625rem) — a lead that started at 1.0625rem would be indistinguishable
+     from ordinary copy on exactly the screens where the size is doing the
+     most work. */
+  --text-lead: clamp(1.125rem, 1.02rem + 0.5vw, 1.25rem);
   --text-price: clamp(1.75rem, 1.4rem + 1.7vw, 2.5rem);
   --text-eyebrow: 0.75rem;
 
@@ -88,7 +97,9 @@
 
        quick  a control answering a pointer — underline, burger, icon nudge
        base   the default: colour, border, shadow, a card lifting
-       slow   a large surface travelling far — a photograph scaling on hover
+       slow   the hero's opening zoom — now the only thing on the site that
+              moves a large surface a long way, since the photographs stopped
+              reacting to the cursor at all
        enter  something arriving on screen for the first time
 
      Paired with --ease-smooth, which front-loads the travel: at 600ms most of
@@ -199,6 +210,51 @@
   max-width: 68ch;
 }
 
+/* ---------------------------------------------------------------------------
+   The card hover
+
+   One gesture, one definition. The price cards, the house rules, the first-
+   massage tips and the review cards all answer the pointer the same way: the
+   hairline warms to gold and the resting shadow opens into the lifted one.
+   Nothing moves.
+
+   It was written out by hand on each of them before, which is how three
+   copies of "the same" hover ended up with three different transition
+   property lists and three different vertical nudges — none, 2px and 4px.
+   A card is a card; it should not matter which page it is on.
+
+   Layout shift is handled by the border being there all along and only
+   changing colour. That is the same guarantee `border: 2px solid transparent`
+   buys, without giving up the hairline — the resting border is part of the
+   design here, not scaffolding for the hover, so there is nothing to fake.
+   box-shadow and border-color cannot reflow a page in any case; neither is
+   a layout property.
+
+   The transition sits on the resting state, never under `&:hover`, so the
+   way back is the same length as the way there. The hover block only names
+   the end values.
+
+   `(hover: hover)` keeps it off touch screens, where :hover latches after a
+   tap and leaves a card looking picked up until you touch something else.
+
+   color-mix in oklab rather than a second colour token: it is the exact
+   expansion Tailwind's own `border-gold/50` produces, so the utility and any
+   remaining utility-class usage render identically. */
+@utility card-interactive {
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--dur-base) var(--ease-smooth),
+    box-shadow var(--dur-base) var(--ease-smooth);
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: color-mix(in oklab, var(--color-gold) 50%, transparent);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -224,10 +280,28 @@
 [data-reveal] {
   opacity: 0;
   transform: translateY(var(--enter-shift));
-  transition:
-    opacity var(--dur-enter) var(--ease-smooth),
-    transform var(--dur-enter) var(--ease-smooth);
-  transition-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
+
+  /* Four properties, not two, and this rule has to be the one that lists
+     them.
+
+     `transition` is a single shorthand, and this block is unlayered — it
+     beats every Tailwind utility, `card-interactive` included. Most reveal
+     targets are wrappers and it never mattered, but the price cards, the
+     house rules and the first-massage tips are the reveal element *and* the
+     card, so this declaration was quietly deciding what their hover could
+     animate. It listed opacity and transform, so border-color and box-shadow
+     were not in the set: those cards snapped to their hover state and snapped
+     back, on every page, since the day the hover was written. Naming all four
+     here is what actually makes the card hover smooth.
+
+     The delay is per-property for the same reason. The stagger belongs to the
+     entrance; inherited by the hover it would mean a card three deep in a
+     grid waited 210ms before acknowledging the pointer. */
+  --reveal-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
+  transition-property: opacity, transform, border-color, box-shadow;
+  transition-duration: var(--dur-enter), var(--dur-enter), var(--dur-base), var(--dur-base);
+  transition-timing-function: var(--ease-smooth);
+  transition-delay: var(--reveal-delay), var(--reveal-delay), 0s, 0s;
 }
 
 [data-reveal="fade"] {

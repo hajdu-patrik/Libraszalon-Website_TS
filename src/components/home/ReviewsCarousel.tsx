@@ -13,17 +13,28 @@ type ReviewsCarouselProps = {
 const AUTO_ADVANCE_MS = 4000;
 
 /**
- * Both arrows sit in a row beneath the strip rather than floating on its
- * flanks.
+ * The arrows flank the strip from md up and sit in a row beneath it below that.
  *
- * The cards are `min(85vw, 22rem)` wide and the strip bleeds into the container
- * gutter, so there is no vertical band on either side that stays clear of a
- * card at every width — on a phone a flanking disc always ends up resting on
- * the review text. Below the strip they never cover anything, and the same
- * placement holds from 320px to full width.
+ * Flanking is the placement the control wants: it puts "next" where the next
+ * card is coming from, and it costs the strip no vertical space. It only works
+ * where the disc can hang off the strip's edge without hanging off the screen,
+ * and that is a question of one measurement — how much room the container
+ * gutter has.
+ *
+ * From md the gutter is 27px and climbing (`--container-pad` is a clamp on
+ * vw), so a 48px disc pulled half outside the column still clears the viewport
+ * edge, and the 24px it keeps inside lands on the card's 28px padding rather
+ * than on its text. At 320px the gutter is 16px against a 22px overhang: the
+ * disc would push the document sideways, and the cards are `min(85vw, 22rem)`
+ * there, so what it did not overhang it would cover. Below md they stay under
+ * the strip, where they cover nothing at any width.
+ *
+ * Transparent no longer works either way. Half of each disc now sits over a
+ * white review card, so it carries its own dark ground and a lift shadow to
+ * separate it from both surfaces it crosses.
  */
 const ARROW_CLASS =
-  'inline-flex size-11 items-center justify-center rounded-full border border-cream-text/25 bg-transparent text-cream-text transition-[background-color,border-color,color] duration-(--dur-base) ease-smooth hover:border-gold hover:bg-ink-deep hover:text-gold sm:size-12';
+  'inline-flex size-11 items-center justify-center rounded-full border border-cream-text/25 bg-ink-deep text-cream-text shadow-[var(--shadow-lift)] transition-[background-color,border-color,color] duration-(--dur-base) ease-smooth hover:border-gold hover:bg-ink hover:text-gold sm:size-12 md:absolute md:top-1/2 md:z-20 md:-translate-y-1/2';
 
 /**
  * Endless, self-advancing review strip.
@@ -114,6 +125,7 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
 
   return (
     <div
+      className="relative"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -152,12 +164,19 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
         })}
       </ul>
 
-      <div className="mt-7 flex justify-center gap-3">
+      {/* `md:contents` is what lets one pair of buttons be both layouts. Below
+          md this is an ordinary centred flex row under the strip; at md the
+          wrapper stops generating a box entirely, its two children become
+          children of the relative wrapper above for layout purposes, and the
+          `md:absolute` in ARROW_CLASS resolves against that instead of against
+          this row. No duplicated markup, so nothing is rendered twice to the
+          accessibility tree and there is no `hidden` copy to keep in sync. */}
+      <div className="mt-7 flex justify-center gap-3 md:contents">
         <button
           type="button"
           onClick={() => advance(-1)}
           aria-label="Előző vélemény"
-          className={ARROW_CLASS}
+          className={`${ARROW_CLASS} md:left-0 md:-translate-x-1/2`}
         >
           <ArrowLeft aria-hidden="true" className="size-5" strokeWidth={1.8} />
         </button>
@@ -166,7 +185,7 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
           type="button"
           onClick={() => advance(1)}
           aria-label="Következő vélemény"
-          className={ARROW_CLASS}
+          className={`${ARROW_CLASS} md:right-0 md:translate-x-1/2`}
         >
           <ArrowRight aria-hidden="true" className="size-5" strokeWidth={1.8} />
         </button>

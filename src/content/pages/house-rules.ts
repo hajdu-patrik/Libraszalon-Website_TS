@@ -77,23 +77,4 @@ export const houseRules = {
       text: 'Tilos a dohányzás, kérlek mellőzd az e-cigi használatát is!',
     },
   ],
-
-  /** Label for the pass images that open the page beside the introduction. */
-  passHeading: '10 alkalmas bérlet',
-
-  /**
-   * Two layers of text per image: the caption is the alternative text, written
-   * to stand on its own for a screen reader, and the short label is what is
-   * printed under the frame, where the surrounding heading already supplies
-   * the context.
-   */
-  passCaptions: {
-    front: 'A Libra Masszázs Szalon 10 alkalmas bérlete, előlap',
-    back: 'A Libra Masszázs Szalon 10 alkalmas bérlete, hátlap',
-  },
-
-  passLabels: {
-    front: 'Előlap',
-    back: 'Hátlap',
-  },
 } as const;
