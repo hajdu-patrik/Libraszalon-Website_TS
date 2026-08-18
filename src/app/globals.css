@@ -42,6 +42,15 @@
   --text-h2: clamp(1.875rem, 1.45rem + 2.1vw, 2.875rem);
   --text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
   --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  /* One step above body, for a short centred block that has to carry a whole
+     section on its own — the contact page's standing notice. Tops out at
+     1.25rem: large enough to read as an introduction, small enough that it
+     never competes with an h3. The floor is 1.125rem rather than the next
+     step up from body, because --text-body is itself nearly flat (1rem to
+     1.0625rem) — a lead that started at 1.0625rem would be indistinguishable
+     from ordinary copy on exactly the screens where the size is doing the
+     most work. */
+  --text-lead: clamp(1.125rem, 1.02rem + 0.5vw, 1.25rem);
   --text-price: clamp(1.75rem, 1.4rem + 1.7vw, 2.5rem);
   --text-eyebrow: 0.75rem;
 

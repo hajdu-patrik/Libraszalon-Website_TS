@@ -1,13 +1,24 @@
 /**
  * /kapcsolat/ — copy verbatim from the legacy page.
  *
- * The directions carry inline emphasis on the original site; the `strong`
- * segments below reproduce that without embedding markup in the copy.
+ * Both intro paragraphs carry inline emphasis on the original site; the
+ * segments below reproduce that without embedding markup in the copy. The
+ * booking notice is split around one more seam than emphasis alone needs:
+ * a sentence that tells a visitor to read the house rules before booking
+ * should be able to take them there.
  */
 
 export const contact = {
   eyebrow: 'Kérdésed van? Időpontot foglalnál?',
   title: 'Lépj velem kapcsolatba',
+
+  booking: {
+    lead: 'Az időpont foglalással automatikusan elfogadod a Libra Masszázs Szalon aktuális ',
+    rulesLabel: 'házirendjét',
+    rulesHref: '/hazirend/',
+    body:
+      ', ezért kérlek ezt foglalás előtt mindenképpen olvasd el. Előzzük meg az esetleges kellemetlenségeket és félreértéseket. Köszönöm! Időpontfoglaláshoz telefonszámomon várom hívásod. Kérlek légy türelemmel! Ha dolgozok, nem tudom felvenni a telefont, de vissza foglak hívni. Téged is meg foglak tisztelni azzal, hogy amíg nálam vagy csak rád irányul a figyelmem és nem fogok mással beszélgetni.',
+  },
 
   directions: {
     parking: 'Ingyenes parkolás',

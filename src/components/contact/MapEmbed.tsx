@@ -16,7 +16,7 @@ import { mapsEmbedSrc } from '@/content/site';
  */
 export function MapEmbed() {
   return (
-    <div className="relative h-72 w-full overflow-hidden rounded-3xl border border-line bg-cream shadow-[var(--shadow-card)] sm:h-80 md:h-full md:min-h-[24rem] lg:min-h-[26rem]">
+    <div className="relative h-72 w-full overflow-hidden rounded-3xl border border-line bg-surface shadow-[var(--shadow-card)] sm:h-80 md:h-full md:min-h-[24rem] lg:min-h-[26rem]">
       <iframe
         src={mapsEmbedSrc}
         title={contact.map.frameTitle}
