@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Clock, Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { navItems } from '@/content/nav';
 import { site } from '@/content/site';
 
@@ -17,6 +18,15 @@ type MobileNavProps = {
  * Framer Motion mounts the drawer only while it is open, which also solves an
  * old layout problem for free: a permanently rendered off-canvas panel counts
  * toward the document's scroll width and shows up as horizontal overflow.
+ *
+ * The overlay is portalled to <body> rather than rendered where it is declared,
+ * and that is load-bearing, not tidiness. The sticky header carries
+ * `backdrop-blur-md`, and backdrop-filter makes an element a containing block
+ * for its fixed-position descendants — exactly like transform does. Left in
+ * place, the drawer's `fixed inset-0` resolved against the header's own box
+ * instead of the viewport, so the full-height panel collapsed into a 320x68
+ * stub pinned over the header. Portalling moves it out of that subtree, which
+ * is the only fix that does not cost the header its blur.
  */
 export function MobileNav({ pathname }: MobileNavProps) {
   const [open, setOpen] = useState(false);
@@ -75,6 +85,101 @@ export function MobileNav({ pathname }: MobileNavProps) {
     };
   }, [open]);
 
+  // The portal target only exists in the browser, so the first client render
+  // has to match the server's (no overlay) before it can be used.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const overlay = (
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-40 overflow-hidden lg:hidden">
+          {/* Backdrop */}
+          <motion.div
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduced ? 0 : 0.25 }}
+            className="absolute inset-0 bg-ink-deep/40 backdrop-blur-[2px]"
+          />
+
+          {/* Drawer */}
+          <motion.div
+            ref={panelRef}
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Főmenü"
+            initial={reduced ? { opacity: 0 } : { x: '100%' }}
+            animate={reduced ? { opacity: 1 } : { x: 0 }}
+            exit={reduced ? { opacity: 0 } : { x: '100%' }}
+            transition={{ duration: reduced ? 0.01 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-y-0 right-0 flex w-[min(21rem,85vw)] flex-col overflow-y-auto bg-ink-deep px-7 pt-24 pb-10 text-cream-text shadow-[var(--shadow-lift)]"
+          >
+            <nav aria-label="Mobil főmenü">
+              <ul className="flex flex-col">
+                {navItems.map((item, index) => {
+                  const active = pathname === item.href;
+                  return (
+                    <motion.li
+                      key={item.href}
+                      initial={reduced ? false : { opacity: 0, x: 16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.16, 1, 0.3, 1],
+                        delay: reduced ? 0 : 0.08 + index * 0.045,
+                      }}
+                      className="border-b border-cream-text/10 last:border-b-0"
+                    >
+                      <Link
+                        href={item.href}
+                        aria-current={active ? 'page' : undefined}
+                        className={`flex min-h-14 items-center font-heading text-2xl transition-colors hover:text-gold ${
+                          active ? 'text-gold' : 'text-cream-text'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </nav>
+
+            <motion.div
+              initial={reduced ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: reduced ? 0 : 0.3 }}
+              className="mt-auto space-y-1 pt-10"
+            >
+              <a
+                href={`tel:${site.phoneHref}`}
+                className="flex min-h-11 items-center gap-3 text-cream-muted transition-colors hover:text-gold"
+              >
+                <Phone aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
+                <span dir="ltr">{site.phone}</span>
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="flex min-h-11 items-center gap-3 break-all text-cream-muted transition-colors hover:text-gold"
+              >
+                <Mail aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
+                {site.email}
+              </a>
+              <span className="flex min-h-11 items-center gap-3 text-cream-muted">
+                <Clock aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
+                {site.openingHoursDisplay}
+              </span>
+            </motion.div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <>
       <button
@@ -106,93 +211,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
         </span>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <div className="fixed inset-0 z-40 overflow-hidden lg:hidden">
-            {/* Backdrop */}
-            <motion.div
-              onClick={() => setOpen(false)}
-              aria-hidden="true"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.25 }}
-              className="absolute inset-0 bg-ink-deep/40 backdrop-blur-[2px]"
-            />
-
-            {/* Drawer */}
-            <motion.div
-              ref={panelRef}
-              id="mobile-menu"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Főmenü"
-              initial={reduced ? { opacity: 0 } : { x: '100%' }}
-              animate={reduced ? { opacity: 1 } : { x: 0 }}
-              exit={reduced ? { opacity: 0 } : { x: '100%' }}
-              transition={{ duration: reduced ? 0.01 : 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-y-0 right-0 flex w-[min(21rem,85vw)] flex-col overflow-y-auto bg-ink-deep px-7 pt-24 pb-10 text-cream-text shadow-[var(--shadow-lift)]"
-            >
-              <nav aria-label="Mobil főmenü">
-                <ul className="flex flex-col">
-                  {navItems.map((item, index) => {
-                    const active = pathname === item.href;
-                    return (
-                      <motion.li
-                        key={item.href}
-                        initial={reduced ? false : { opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          duration: 0.4,
-                          ease: [0.16, 1, 0.3, 1],
-                          delay: reduced ? 0 : 0.08 + index * 0.045,
-                        }}
-                        className="border-b border-cream-text/10 last:border-b-0"
-                      >
-                        <Link
-                          href={item.href}
-                          aria-current={active ? 'page' : undefined}
-                          className={`flex min-h-14 items-center font-heading text-2xl transition-colors hover:text-gold ${
-                            active ? 'text-gold' : 'text-cream-text'
-                          }`}
-                        >
-                          {item.label}
-                        </Link>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              </nav>
-
-              <motion.div
-                initial={reduced ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: reduced ? 0 : 0.3 }}
-                className="mt-auto space-y-1 pt-10"
-              >
-                <a
-                  href={`tel:${site.phoneHref}`}
-                  className="flex min-h-11 items-center gap-3 text-cream-muted transition-colors hover:text-gold"
-                >
-                  <Phone aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
-                  <span dir="ltr">{site.phone}</span>
-                </a>
-                <a
-                  href={`mailto:${site.email}`}
-                  className="flex min-h-11 items-center gap-3 break-all text-cream-muted transition-colors hover:text-gold"
-                >
-                  <Mail aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
-                  {site.email}
-                </a>
-                <span className="flex min-h-11 items-center gap-3 text-cream-muted">
-                  <Clock aria-hidden="true" className="size-4 shrink-0 text-gold" strokeWidth={1.8} />
-                  {site.openingHoursDisplay}
-                </span>
-              </motion.div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {mounted && createPortal(overlay, document.body)}
     </>
   );
 }

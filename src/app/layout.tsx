@@ -99,7 +99,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 
         <a
           href="#tartalom"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-surface"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded focus:bg-ink focus:px-4 focus:text-surface"
         >
           Ugrás a tartalomhoz
         </a>
