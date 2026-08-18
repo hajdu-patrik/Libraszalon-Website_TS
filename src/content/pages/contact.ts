@@ -32,6 +32,22 @@ export const contact = {
   detailsHeading: 'Elérhetőségek',
   socialHeading: 'Social',
 
+  /**
+   * Accessible names for the contact links.
+   *
+   * Each one is composed as "<visible text> — <label>" (or the reverse where
+   * the verb leads), never as the label alone: WCAG 2.5.3 Label in Name asks
+   * that the accessible name contain the visible text, so a speech-input user
+   * can say what they can see. "Hívás" on its own would break that; "Hívás:
+   * +36 30 853 2729" does not.
+   */
+  labels: {
+    call: 'Telefonhívás',
+    email: 'E-mail írása',
+    maps: 'megnyitás a Google Térképen (új lapon nyílik)',
+    facebook: 'Facebook-oldal (új lapon nyílik)',
+  },
+
   map: {
     frameTitle: 'A Libra Masszázs Szalon helye a térképen',
   },

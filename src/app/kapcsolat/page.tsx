@@ -23,68 +23,76 @@ export default function ContactPage() {
       />
 
       {/*
-        1 — What to know before you call.
+        The whole page is one card.
 
-        A single centred column on white, set one step above body size. This is
-        the page's actual message: everything below it is reference material a
-        visitor looks up once they have decided. Capped at 48rem and centred so
-        the measure stays readable — centred text past ~75 characters a line is
-        where the eye starts losing the return sweep.
-      */}
-      <Section spacing="tight">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="text-[length:var(--text-lead)] leading-relaxed text-ink">
-            {contact.booking.lead}
-            <Link
-              href={contact.booking.rulesHref}
-              className="font-semibold text-gold-ink underline decoration-gold/50 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/50"
-            >
-              {contact.booking.rulesLabel}
-            </Link>
-            {contact.booking.body}
-          </p>
-        </Reveal>
+        There are four facts, two paragraphs and a map here — not enough to
+        justify three separate framed widgets floating in a 1200px column, which
+        is what it was. Held in a single panel they read as one thing: what to
+        know, then where it is and how to reach me.
 
-        <Reveal index={1}>
-          <GoldRule centered className="mt-10" />
-        </Reveal>
+        56.25rem = 900px at the default root size, but written in rem on
+        purpose. At 200% text zoom a px cap would hold the card at 900px while
+        the copy inside it doubled; in rem the frame grows with its contents and
+        the measure stays where it was designed.
 
-        {/* Wayfinding, kept deliberately: the map pin lands on the building but
-            the salon is on its top floor, reached from the car park, and the
-            bus stop is the thing most visitors actually navigate to. */}
-        <Reveal index={2} className="mx-auto mt-10 max-w-3xl text-center">
-          <p className="text-[length:var(--text-lead)] leading-relaxed text-muted">
-            <strong className="font-semibold text-ink">
-              {contact.directions.parking}
-            </strong>
-            {contact.directions.parkingBody}
-            <span className="font-semibold text-ink">
-              {contact.directions.transitLabel}
-            </span>
-            {contact.directions.transitBody}
-          </p>
-        </Reveal>
-      </Section>
-
-      {/*
-        2 — Where it is and how to reach it.
-
-        Two panels on the warm cream, which is what lets both of them be white:
-        on the surface tone the details card would have no edge to show. Map
-        left, details right. `items-stretch` is what makes the split work: the
-        details card sets the row height from its content and the map, which
-        has none of its own, matches it. Below md the same two children stack.
+        The padding is the other half of the effect. It is deliberately larger
+        than the site's usual card inset and scales with the viewport — with
+        this little content, the space around it is what reads as considered
+        rather than sparse.
       */}
       <Section tone="cream" spacing="normal">
-        <div className="grid items-stretch gap-6 md:grid-cols-2 lg:gap-8">
-          <Reveal variant="left" className="h-full">
-            <MapEmbed />
-          </Reveal>
+        <Reveal className="mx-auto w-full max-w-[56.25rem]">
+          <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-lift)] sm:p-10 lg:p-14">
+            {/* Gold signature line across the top of the card. */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 block h-1 bg-gradient-to-r from-gold via-gold/60 to-transparent"
+            />
 
-          <Reveal variant="right" index={1} className="h-full">
-            <ContactDetails />
-          </Reveal>
-        </div>
+            {/* What to know before booking. Capped tighter than the card so a
+                centred line never runs past the length the eye can sweep back
+                from, however wide the panel gets. */}
+            <div className="mx-auto max-w-[42rem] text-center">
+              <p className="text-[length:var(--text-lead)] leading-relaxed text-ink">
+                {contact.booking.lead}
+                <Link
+                  href={contact.booking.rulesHref}
+                  className="font-semibold text-gold-ink underline decoration-gold/50 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/50"
+                >
+                  {contact.booking.rulesLabel}
+                </Link>
+                {contact.booking.body}
+              </p>
+
+              <GoldRule centered className="mt-8" />
+
+              {/* Wayfinding, kept deliberately: the map pin lands on the
+                  building but the salon is on its top floor, reached from the
+                  car park, and the bus stop is the thing most visitors actually
+                  navigate to. */}
+              <p className="mt-8 text-[length:var(--text-lead)] leading-relaxed text-muted">
+                <strong className="font-semibold text-ink">
+                  {contact.directions.parking}
+                </strong>
+                {contact.directions.parkingBody}
+                <span className="font-semibold text-ink">
+                  {contact.directions.transitLabel}
+                </span>
+                {contact.directions.transitBody}
+              </p>
+            </div>
+
+            {/* Map and details, level with each other on the default stretch:
+                the details column sets the row height and the map, which has no
+                height of its own, matches it. Below md the same two children
+                stack. The hairline is what keeps the panel one object rather
+                than a paragraph sitting on top of two columns. */}
+            <div className="mt-10 grid gap-6 border-t border-line pt-10 sm:mt-12 sm:pt-12 md:grid-cols-2 md:gap-8">
+              <MapEmbed />
+              <ContactDetails />
+            </div>
+          </div>
+        </Reveal>
       </Section>
 
       <script
