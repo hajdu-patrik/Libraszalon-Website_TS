@@ -68,7 +68,8 @@ export default function PricesPage() {
           two photographs of a card printed the size of a card. The images
           themselves need no sizing rules: `img { max-width: 100%; height:
           auto }` in the base layer already holds them inside their frame at
-          every width, down to 320px.
+          every width, down to 320px. No hover state, like every other
+          photograph on the site.
         */}
         <Reveal className="mt-16 border-t border-line pt-14 sm:mt-20 sm:pt-16">
           <h2 className="text-center text-[length:var(--text-h3)] text-ink">
@@ -97,7 +98,7 @@ export default function PricesPage() {
                     slug={item.slug}
                     alt={item.caption}
                     sizes="(max-width: 640px) min(100vw, 24rem), 24rem"
-                    className="w-full object-cover transition-transform duration-(--dur-slow) ease-gentle hover:scale-[1.02]"
+                    className="w-full object-cover"
                   />
                 </div>
                 <figcaption className="mt-3 text-center text-sm text-muted">
