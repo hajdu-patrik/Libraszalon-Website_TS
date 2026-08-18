@@ -9,12 +9,19 @@
  * horizontal overflow at 320px, scroll reveals that never fire (which would
  * leave content invisible), tap targets under 44px, and content that stays
  * hidden when JavaScript never runs.
+ *
+ * One pass is not about the page at rest: auditMobileDrawer opens the mobile
+ * menu and measures it. See the comment there for why a resting audit cannot
+ * see the class of bug that pass exists to catch.
  */
 
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer, type Server } from 'node:http';
 import { extname, join, resolve, sep } from 'node:path';
 import { chromium, type Browser, type Page } from 'playwright-core';
+import { navItems } from '../src/content/nav.ts';
+import { noticeStorageKey } from '../src/content/notice.ts';
+import { INTRO_STORAGE_KEY } from '../src/lib/intro.ts';
 
 const PORT = 4877;
 const BASE = process.env.BASE ?? `http://localhost:${PORT}`;
@@ -252,6 +259,12 @@ async function auditPage(page: Page, path: string, config: Config) {
  * M3: the hidden state comes from the stylesheet, the release comes from an
  * observer. Without JS every [data-reveal] element would stay at opacity 0
  * forever, and no run with scripting enabled can see it.
+ *
+ * The same pass also asks whether the site is still navigable at all. The
+ * mobile menu is a React control, so with scripting off the hamburger is inert
+ * and every route has to be reachable some other way. It is — the footer
+ * renders the full navigation — but nothing enforced that, and losing it would
+ * strand a no-JS visitor on whichever page they landed on.
  */
 async function auditWithoutScript(browser: Browser, path: string) {
   const context = await browser.newContext({ locale: 'hu-HU', javaScriptEnabled: false });
@@ -259,11 +272,12 @@ async function auditWithoutScript(browser: Browser, path: string) {
   await page.setViewportSize({ width: 390, height: 900 });
   await page.goto(`${BASE}${path}`, { waitUntil: 'load', timeout: 30_000 });
 
-  const result = await page.evaluate(() => {
+  const result = await page.evaluate((hrefs: string[]) => {
     const all = [...document.querySelectorAll('[data-reveal]')];
     const hidden = all.filter((el) => getComputedStyle(el).opacity !== '1');
-    return { total: all.length, hidden: hidden.length };
-  });
+    const unreachable = hrefs.filter((h) => !document.querySelector(`a[href="${h}"]`));
+    return { total: all.length, hidden: hidden.length, unreachable };
+  }, navItems.map((item) => item.href));
 
   await context.close();
 
@@ -275,7 +289,216 @@ async function auditWithoutScript(browser: Browser, path: string) {
     });
   }
 
+  if (result.unreachable.length > 0) {
+    problems.push({
+      page: path,
+      config: 'no-JS',
+      issue: `JS nelkul elerhetetlen nav cel: ${result.unreachable.join(', ')}`,
+    });
+  }
+
   return result;
+}
+
+/**
+ * The mobile drawer, opened.
+ *
+ * Every other pass measures the page at rest, and that is precisely how a
+ * broken mobile menu shipped once already. The sticky header carries
+ * `backdrop-blur-md`; backdrop-filter makes an element a containing block for
+ * its fixed-position descendants, exactly as transform does. The drawer's
+ * `fixed inset-0` therefore resolved against the header's own 320x68 box
+ * instead of the viewport, and the full-height panel became a 272x136 stub
+ * parked at y=-68. Closed, the drawer is not mounted at all, so no resting
+ * measurement could ever have seen it.
+ *
+ * The geometry assertion below is deliberately not a scan for offending
+ * ancestor styles. transform, filter, contain and will-change all produce this
+ * same symptom, and a check written against the symptom never needs updating
+ * when a new cause turns up.
+ *
+ * Runs on one page: the header is layout-level and identical everywhere, so
+ * repeating it per route would buy nothing.
+ */
+async function auditMobileDrawer(page: Page, config: Config) {
+  await page.setViewportSize({ width: config.width, height: config.height });
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 30_000 });
+
+  const at = (issue: string) =>
+    problems.push({ page: '/ (menu)', config: config.label, issue });
+
+  const toggle = page.locator('button[aria-expanded]').first();
+  if ((await toggle.count()) === 0) {
+    at('nincs hamburger gomb a fejlecben');
+    return null;
+  }
+
+  await toggle.click();
+  // The panel slides in over 0.45s; measuring sooner catches it mid-travel and
+  // reports a false failure on the geometry assertion.
+  await page.waitForTimeout(700);
+
+  const result = await page.evaluate(() => {
+    const drawer = document.querySelector('#mobile-menu');
+    if (!drawer) return null;
+
+    const overlay = drawer.parentElement;
+    const box = drawer.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    const style = getComputedStyle(drawer);
+
+    // Anonymous callbacks only, all the way down: tsx compiles every *named*
+    // function with an esbuild `__name` helper that does not exist in the page.
+    return {
+      expanded: document
+        .querySelector('button[aria-expanded]')
+        ?.getAttribute('aria-expanded'),
+      box: {
+        top: Math.round(box.top),
+        right: Math.round(box.right),
+        width: Math.round(box.width),
+        height: Math.round(box.height),
+      },
+      viewport: { w: vw, h: vh },
+      // Content taller than the panel is fine, but only if it can be reached.
+      // At 320x256 the drawer is shorter than its own contents by design.
+      clipped:
+        drawer.scrollHeight > drawer.clientHeight + 1 &&
+        style.overflowY !== 'auto' &&
+        style.overflowY !== 'scroll',
+      drawerLinks: [...drawer.querySelectorAll('nav a[href]')].map(
+        (a) => new URL((a as HTMLAnchorElement).href).pathname,
+      ),
+      desktopLinks: [
+        ...document.querySelectorAll('header nav[aria-label="Főmenü"] a[href]'),
+      ].map((a) => new URL((a as HTMLAnchorElement).href).pathname),
+      small: [...drawer.querySelectorAll('a[href], button')]
+        .filter((el) => getComputedStyle(el).display !== 'inline')
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0 && (r.height < 44 || r.width < 44);
+        })
+        .slice(0, 4)
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          const name = (el.textContent || el.getAttribute('aria-label') || '').trim();
+          return `${el.tagName}"${name.slice(0, 18)}" ${Math.round(r.width)}x${Math.round(r.height)}`;
+        }),
+      overflowing: (overlay ? [...overlay.querySelectorAll('*')] : [])
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && (r.right > vw + 1 || r.left < -1);
+        })
+        .slice(0, 3)
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return `${el.tagName} ${Math.round(r.left)}..${Math.round(r.right)}`;
+        }),
+    };
+  });
+
+  if (!result) {
+    at('a hamburgerre kattintva nem nyilt meg a fiok (#mobile-menu hianyzik)');
+    return null;
+  }
+
+  if (result.expanded !== 'true') {
+    at(`aria-expanded="${result.expanded}" nyitott fiok mellett (true kell)`);
+  }
+
+  // The assertion this whole pass exists for.
+  if (
+    Math.abs(result.box.height - result.viewport.h) > 1 ||
+    Math.abs(result.box.top) > 1
+  ) {
+    at(
+      `a fiok nem tolti ki a viewport magassagat: ${result.box.width}x${result.box.height} @ top ${result.box.top} ` +
+        `(vart ${result.box.width}x${result.viewport.h} @ top 0) — ` +
+        'valoszinuleg egy os elem containing blockot hoz letre (transform/filter/backdrop-filter/contain)',
+    );
+  }
+
+  if (Math.abs(result.box.right - result.viewport.w) > 1) {
+    at(
+      `a fiok nem fekszik fel a jobb szelre: jobb szel ${result.box.right} (vart ${result.viewport.w})`,
+    );
+  }
+
+  if (result.overflowing.length > 0) {
+    at(`nyitott fiok vizszintes tulcsordulas: ${result.overflowing.join(', ')}`);
+  }
+
+  if (result.small.length > 0) {
+    at(`tul kicsi kattinthato elem a fiokban: ${result.small.join(' | ')}`);
+  }
+
+  if (result.clipped) {
+    at('a fiok tartalma magasabb a panelnel, de a panel nem gorgetheto');
+  }
+
+  if (result.drawerLinks.length === 0) {
+    at('a fiok nem tartalmaz nav linket');
+  }
+
+  // Without this the parity check below is a no-op that always passes: an
+  // empty desktop list has nothing missing from it. The selector carries a
+  // non-ASCII label, so a normalisation slip would silently empty it.
+  if (result.desktopLinks.length === 0) {
+    at('nem talalhato az asztali nav (header nav[aria-label=Fomenu]) — a link-paritas vakon futna');
+  }
+
+  const missing = result.desktopLinks.filter((href) => !result.drawerLinks.includes(href));
+  if (missing.length > 0) {
+    at(`az asztali navbol hianyzo link a fiokban: ${missing.join(', ')}`);
+  }
+
+  // Escape closes it, so the next config starts from a clean slate.
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(700);
+  if ((await page.locator('#mobile-menu').count()) > 0) {
+    at('Escape utan is nyitva maradt a fiok');
+  }
+
+  return result.box;
+}
+
+/**
+ * Opening the drawer is only half the contract — it also has to get out of the
+ * way. MobileNav closes it during render when the route changes rather than in
+ * an effect, so a stale drawer is never committed over the page the visitor
+ * just navigated to. Nothing enforced that behaviour until now.
+ */
+async function auditDrawerNavigation(page: Page) {
+  const target = '/hazirend/';
+  const at = (issue: string) => problems.push({ page: '/ (menu)', config: 'nav', issue });
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 30_000 });
+
+  await page.locator('button[aria-expanded]').first().click();
+  await page.waitForTimeout(700);
+
+  const link = page.locator(`#mobile-menu nav a[href="${target}"]`);
+  if ((await link.count()) === 0) {
+    at(`nincs ${target} link a fiokban`);
+    return;
+  }
+
+  await link.first().click();
+  await page.waitForTimeout(900);
+
+  const after = await page.evaluate(() => ({
+    path: location.pathname,
+    open: !!document.querySelector('#mobile-menu'),
+  }));
+
+  if (after.path !== target) {
+    at(`a fiok nav linkje nem navigalt: ${after.path} (vart ${target})`);
+  }
+  if (after.open) {
+    at('a fiok nyitva maradt a navigacio utan');
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -316,6 +539,38 @@ for (const path of PAGES) {
 }
 
 await context.close();
+
+// A fresh context with the two dismissable overlays already dismissed. The
+// notice card and the intro curtain are both storage-gated, and seeding those
+// keys before the first paint keeps the drawer measurement free of anything
+// that only appears on a visitor's first load.
+console.log('');
+console.log('Mobil menu (nyitott fiok):');
+const menuContext = await browser.newContext({ locale: 'hu-HU' });
+await menuContext.addInitScript(
+  ([noticeKey, introKey]: string[]) => {
+    try {
+      window.localStorage.setItem(noticeKey, 'dismissed');
+      window.sessionStorage.setItem(introKey, '1');
+    } catch {
+      // Storage disabled: the overlays show, which the pass survives anyway.
+    }
+  },
+  [noticeStorageKey, INTRO_STORAGE_KEY],
+);
+const menuPage = await menuContext.newPage();
+
+// The hamburger is lg:hidden, so it only exists below 1024px. The 200% run is
+// 1280px wide and has no hamburger to open.
+const marks: string[] = [];
+for (const config of CONFIGS.filter((c) => c.width < 1024)) {
+  const box = await auditMobileDrawer(menuPage, config);
+  marks.push(`${config.label}:${box ? `${box.width}x${box.height}` : 'HIBA'}`);
+}
+console.log(`${'/ (menu)'.padEnd(24)} fiok     ${marks.join('  ')}`);
+
+await auditDrawerNavigation(menuPage);
+await menuContext.close();
 
 console.log('');
 console.log('JavaScript nelkul (M3):');

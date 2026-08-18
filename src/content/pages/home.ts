@@ -25,12 +25,6 @@ export const home = {
     title: 'Szolgáltatások',
   },
 
-  info: {
-    addressLabel: 'Cím',
-    hoursLabel: 'Nyitvatartás',
-    phoneLabel: 'Telefon',
-  },
-
   reviews: {
     eyebrow: 'Érdekel mások véleménye? Kíváncsi vagy mások mit gondolnak?',
     title: 'Vélemények',

@@ -61,7 +61,7 @@ export function Header() {
 
       <header
         data-scrolled={scrolled || undefined}
-        className="sticky top-0 z-40 border-b border-transparent bg-surface/85 backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-300 ease-[var(--ease-out-expo)] data-scrolled:border-line data-scrolled:bg-surface/95 data-scrolled:shadow-[0_1px_20px_rgb(44_40_40_/_0.07)]"
+        className="sticky top-0 z-40 border-b border-transparent bg-surface/85 backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-(--dur-base) ease-smooth data-scrolled:border-line data-scrolled:bg-surface/95 data-scrolled:shadow-[0_1px_20px_rgb(44_40_40_/_0.07)]"
       >
         <div className="container-page flex items-center justify-between gap-4 py-3">
           <Link
@@ -75,7 +75,7 @@ export function Header() {
               slug="logo"
               alt=""
               sizes="220px"
-              className="h-11 w-auto transition-[height,opacity] duration-300 ease-[var(--ease-out-expo)] group-hover:opacity-85 sm:h-14 in-data-scrolled:h-10 sm:in-data-scrolled:h-11"
+              className="h-11 w-auto transition-[height,opacity] duration-(--dur-base) ease-smooth group-hover:opacity-85 sm:h-14 in-data-scrolled:h-10 sm:in-data-scrolled:h-11"
             />
           </Link>
 
@@ -92,12 +92,12 @@ export function Header() {
                     <Link
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
-                      className="group relative inline-flex min-h-11 items-center px-3 font-body text-[0.9375rem] font-semibold tracking-wide text-ink transition-colors duration-200 hover:text-gold-ink aria-[current=page]:text-gold-ink"
+                      className="group relative inline-flex min-h-11 items-center px-3 font-body text-[0.9375rem] font-semibold tracking-wide text-ink transition-colors duration-(--dur-quick) ease-smooth hover:text-gold-ink aria-[current=page]:text-gold-ink"
                     >
                       {item.label}
                       <span
                         aria-hidden="true"
-                        className={`absolute inset-x-3 bottom-1 h-px origin-center bg-gold transition-transform duration-300 ease-[var(--ease-out-expo)] ${
+                        className={`absolute inset-x-3 bottom-1 h-px origin-center bg-gold transition-transform duration-(--dur-quick) ease-smooth ${
                           active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                         }`}
                       />
@@ -111,7 +111,7 @@ export function Header() {
           {/* Booking CTA — the single action the whole site funnels toward. */}
           <a
             href={`tel:${site.phoneHref}`}
-            className="hidden min-h-11 items-center gap-2 rounded-full bg-gold px-5 font-body text-sm font-semibold tracking-wide text-ink-deep shadow-[var(--shadow-card)] transition-all duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:bg-gold-ink hover:text-surface lg:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full bg-gold px-5 font-body text-sm font-semibold tracking-wide text-ink-deep shadow-[var(--shadow-card)] transition-all duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:bg-gold-ink hover:text-surface lg:inline-flex"
           >
             <Phone aria-hidden="true" className="size-4" strokeWidth={1.8} />
             Időpontfoglalás

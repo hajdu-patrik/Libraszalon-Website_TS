@@ -18,9 +18,4 @@ export const about = {
 
   closing:
     'Köszönöm a figyelmed, szeretettel várlak, hogy együtt sokat tegyünk az egészségedért!',
-
-  cuppingCaptions: {
-    plastic: 'Műanyag köpölyök a fascia mobilizálásához',
-    silicone: 'Szilikon köpölyök a lágyabb, mélyebb kezelésekhez',
-  },
 } as const;

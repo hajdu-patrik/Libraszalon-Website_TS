@@ -1,6 +1,5 @@
 'use client';
 
-import { Quote } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { StarRating } from '@/components/home/StarRating';
 import { Picture } from '@/components/ui/Picture';
@@ -58,12 +57,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
   }, [expanded]);
 
   return (
-    <article className="relative flex h-full snap-start flex-col rounded-2xl bg-surface p-6 shadow-[var(--shadow-card)] sm:p-7">
-      <Quote
-        aria-hidden="true"
-        className="absolute top-5 right-6 size-7 fill-gold/25 text-gold/25"
-      />
-
+    <article className="flex h-full snap-start flex-col rounded-2xl bg-surface p-7 shadow-[var(--shadow-card)]">
       <StarRating rating={review.rating} />
 
       <p

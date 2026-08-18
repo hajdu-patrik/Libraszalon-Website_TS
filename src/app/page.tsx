@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Clock, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { Hero } from '@/components/home/Hero';
 import { ReviewsCarousel } from '@/components/home/ReviewsCarousel';
 import { ServiceCard } from '@/components/home/ServiceCard';
@@ -41,73 +41,6 @@ export default function HomePage() {
         />
         <div className="mt-12">
           <ReviewsCarousel reviews={publishedReviews} />
-        </div>
-      </Section>
-
-      {/* Practical facts at a glance */}
-      <Section spacing="tight">
-        <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
-          {(
-            [
-              {
-                label: home.info.addressLabel,
-                value: site.address.formatted,
-                href: site.social.googleMaps,
-                external: true,
-                Icon: MapPin,
-              },
-              {
-                label: home.info.hoursLabel,
-                value: site.openingHoursDisplay,
-                Icon: Clock,
-              },
-              {
-                label: home.info.phoneLabel,
-                value: site.phone,
-                href: `tel:${site.phoneHref}`,
-                Icon: Phone,
-              },
-            ] as const
-          ).map((item, index) => {
-            const inner = (
-              <>
-                <span
-                  aria-hidden="true"
-                  className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold-ink"
-                >
-                  <item.Icon className="size-5" strokeWidth={1.8} />
-                </span>
-                <span className="min-w-0">
-                  <span className="eyebrow block">{item.label}</span>
-                  <span className="mt-1 block text-[0.9375rem] text-ink" dir="ltr">
-                    {item.value}
-                  </span>
-                </span>
-              </>
-            );
-            const cardClass =
-              'flex h-full items-center gap-4 rounded-2xl border border-line bg-surface p-5 shadow-[var(--shadow-card)]';
-
-            return (
-              <Reveal key={item.label} index={index}>
-                {'href' in item && item.href ? (
-                  <a
-                    href={item.href}
-                    {...('external' in item &&
-                      item.external && {
-                        target: '_blank',
-                        rel: 'noopener noreferrer',
-                      })}
-                    className={`${cardClass} transition-[transform,border-color,box-shadow] duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-[var(--shadow-lift)]`}
-                  >
-                    {inner}
-                  </a>
-                ) : (
-                  <div className={cardClass}>{inner}</div>
-                )}
-              </Reveal>
-            );
-          })}
         </div>
       </Section>
 

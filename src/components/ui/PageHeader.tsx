@@ -37,7 +37,9 @@ export function PageHeader({ eyebrow, title, background }: PageHeaderProps) {
       )}
 
       <div className="container-page pt-24 pb-10 sm:pt-32 sm:pb-14">
-        <div style={{ animation: 'fade-in 0.5s var(--ease-out-expo) both' }}>
+        <div
+          style={{ animation: 'enter-rise var(--dur-enter) var(--ease-smooth) both' }}
+        >
           {eyebrow && <p className="eyebrow-dark mb-4">{eyebrow}</p>}
           <h1 className="max-w-3xl text-[length:var(--text-h1)] text-cream-text hyphens-none">
             {title}

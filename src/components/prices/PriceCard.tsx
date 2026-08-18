@@ -44,7 +44,7 @@ export function PriceCard({ item, index, featured = false }: PriceCardProps) {
     <Reveal
       as="article"
       index={index % 3}
-      className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:p-7"
+      className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-(--dur-base) ease-smooth hover:-translate-y-1 hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:p-7"
     >
       <p className="eyebrow">{item.duration}</p>
 
@@ -61,7 +61,7 @@ export function PriceCard({ item, index, featured = false }: PriceCardProps) {
       <div className="mt-auto pt-6">
         <span
           aria-hidden="true"
-          className="block h-px w-full bg-line transition-colors duration-500 group-hover:bg-gold/40"
+          className="block h-px w-full bg-line transition-colors duration-(--dur-base) ease-smooth group-hover:bg-gold/40"
         />
         <p className="mt-5 font-heading text-[length:var(--text-price)] font-semibold text-ink">
           {item.price}

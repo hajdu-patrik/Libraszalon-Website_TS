@@ -27,7 +27,7 @@ export function Button({
   className = '',
 }: ButtonProps) {
   const base =
-    'group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-7 py-3 font-body text-[0.9375rem] font-semibold tracking-wide transition-[background-color,color,border-color,transform,box-shadow] duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 active:translate-y-0';
+    'group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-7 py-3 font-body text-[0.9375rem] font-semibold tracking-wide transition-[background-color,color,border-color,transform,box-shadow] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 active:translate-y-0';
 
   const styles = {
     // Ink on gold clears 5.7:1; the hover deepens to the text-safe gold step.
@@ -55,7 +55,7 @@ export function Button({
       {icon && (
         <span
           aria-hidden="true"
-          className="transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover/btn:translate-x-0.5"
+          className="transition-transform duration-(--dur-quick) ease-smooth group-hover/btn:translate-x-0.5"
         >
           {icon}
         </span>

@@ -31,7 +31,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
             slug={service.image}
             alt={service.alt}
             sizes="(max-width: 1024px) 100vw, 480px"
-            className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+            className="aspect-[4/3] w-full object-cover transition-transform duration-(--dur-slow) ease-smooth group-hover:scale-[1.04]"
           />
         </div>
       </Reveal>
