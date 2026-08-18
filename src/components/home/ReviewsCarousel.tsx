@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReviewCard } from '@/components/home/ReviewCard';
 import type { Review } from '@/content/reviews';
@@ -12,9 +12,18 @@ type ReviewsCarouselProps = {
 /** How long each card rests before the strip advances to the next one. */
 const AUTO_ADVANCE_MS = 4000;
 
-/** Round control button, styled for the dark reviews band. */
-const CONTROL_CLASS =
-  'inline-flex size-12 shrink-0 items-center justify-center rounded-full border border-cream-text/25 bg-transparent text-cream-text transition-all duration-(--dur-base) ease-smooth hover:border-gold hover:text-gold';
+/**
+ * Both arrows sit in a row beneath the strip rather than floating on its
+ * flanks.
+ *
+ * The cards are `min(85vw, 22rem)` wide and the strip bleeds into the container
+ * gutter, so there is no vertical band on either side that stays clear of a
+ * card at every width — on a phone a flanking disc always ends up resting on
+ * the review text. Below the strip they never cover anything, and the same
+ * placement holds from 320px to full width.
+ */
+const ARROW_CLASS =
+  'inline-flex size-11 items-center justify-center rounded-full border border-cream-text/25 bg-transparent text-cream-text transition-[background-color,border-color,color] duration-(--dur-base) ease-smooth hover:border-gold hover:bg-ink-deep hover:text-gold sm:size-12';
 
 /**
  * Endless, self-advancing review strip.
@@ -28,9 +37,8 @@ const CONTROL_CLASS =
  * The loop is seamless because the list is rendered twice: when the strip
  * reaches the start of the second copy it snaps back to the first instantly,
  * which is invisible since the two are identical. WCAG 2.2.2 needs moving
- * content to be pausable, so it stops on hover, on focus, when the tab is
- * hidden, and on the explicit pause button — and never starts at all under
- * prefers-reduced-motion.
+ * content to be pausable, so it stops on hover, on focus and when the tab is
+ * hidden — and never starts at all under prefers-reduced-motion.
  */
 export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
   const trackRef = useRef<HTMLUListElement>(null);
@@ -106,7 +114,6 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
 
   return (
     <div
-      className="relative"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -118,15 +125,23 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
         ref={trackRef}
         tabIndex={0}
         aria-label="Vélemények"
-        className="no-scrollbar -mx-[var(--container-pad)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--container-pad)] py-2 sm:gap-5"
+        // scroll-px matching the padding is not decoration. Scroll snapping
+        // measures against the snapport, which is the scrollport inset by
+        // scroll-padding and knows nothing about ordinary padding — so
+        // without it the first card snapped 32px left of where the JS had
+        // just scrolled to, every programmatic move got nudged back after
+        // the fact, and the strip sat a gutter's width out of line with the
+        // heading above it.
+        className="no-scrollbar -mx-[var(--container-pad)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[var(--container-pad)] py-2 scroll-px-[var(--container-pad)] sm:gap-5"
       >
         {loop.map((review, index) => {
           const duplicate = index >= reviews.length;
           return (
             <li
               key={`${review.id}-${index}`}
-              // The second copy exists only to make the wrap seamless; hide it
-              // from assistive tech and keyboard focus so nothing reads twice.
+              // The second copy exists only to make the wrap seamless; hide
+              // it from assistive tech and keyboard focus so nothing reads
+              // twice.
               aria-hidden={duplicate || undefined}
               inert={duplicate || undefined}
               className="flex w-[min(85vw,22rem)] shrink-0 snap-start lg:w-[22rem]"
@@ -137,39 +152,21 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
         })}
       </ul>
 
-      <div className="mt-8 flex items-center justify-center gap-3 sm:gap-4">
+      <div className="mt-7 flex justify-center gap-3">
         <button
           type="button"
           onClick={() => advance(-1)}
           aria-label="Előző vélemény"
-          className={CONTROL_CLASS}
+          className={ARROW_CLASS}
         >
           <ArrowLeft aria-hidden="true" className="size-5" strokeWidth={1.8} />
-        </button>
-
-        {/* Always rendered so the control row is structurally identical on the
-            server and the client — reduced-motion only gates the auto-play, not
-            the DOM. A visitor who prefers reduced motion sees a resting strip
-            and can still step through it or leave it paused. */}
-        <button
-          type="button"
-          onClick={() => setPaused((value) => !value)}
-          aria-label={paused ? 'Vélemények indítása' : 'Vélemények szüneteltetése'}
-          aria-pressed={paused}
-          className={CONTROL_CLASS}
-        >
-          {paused ? (
-            <Play aria-hidden="true" className="size-4 fill-current" />
-          ) : (
-            <Pause aria-hidden="true" className="size-4 fill-current" />
-          )}
         </button>
 
         <button
           type="button"
           onClick={() => advance(1)}
           aria-label="Következő vélemény"
-          className={CONTROL_CLASS}
+          className={ARROW_CLASS}
         >
           <ArrowRight aria-hidden="true" className="size-5" strokeWidth={1.8} />
         </button>
