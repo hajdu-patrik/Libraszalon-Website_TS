@@ -14,7 +14,7 @@ const AUTO_ADVANCE_MS = 4000;
 
 /** Round control button, styled for the dark reviews band. */
 const CONTROL_CLASS =
-  'inline-flex size-12 shrink-0 items-center justify-center rounded-full border border-cream-text/25 bg-transparent text-cream-text transition-all duration-300 ease-[var(--ease-out-expo)] hover:border-gold hover:text-gold';
+  'inline-flex size-12 shrink-0 items-center justify-center rounded-full border border-cream-text/25 bg-transparent text-cream-text transition-all duration-(--dur-base) ease-smooth hover:border-gold hover:text-gold';
 
 /**
  * Endless, self-advancing review strip.

@@ -99,7 +99,7 @@ export default function AboutPage() {
                   slug={item.slug}
                   alt={item.caption}
                   sizes="(max-width: 640px) 100vw, 560px"
-                  className="w-full object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] hover:scale-[1.03]"
+                  className="w-full object-cover transition-transform duration-(--dur-slow) ease-smooth hover:scale-[1.03]"
                 />
               </div>
               <figcaption className="mt-4 text-sm text-muted">

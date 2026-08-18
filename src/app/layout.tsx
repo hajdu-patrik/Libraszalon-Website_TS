@@ -5,9 +5,11 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { IntroVeil } from '@/components/layout/IntroVeil';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
 import { BackToTop } from '@/components/ui/BackToTop';
 import { businessJsonLd } from '@/lib/jsonld';
+import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
 import './globals.css';
 
@@ -84,8 +86,17 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             __html: '<style>[data-reveal]{opacity:1;transform:none}</style>',
           }}
         />
+
+        {/*
+          Decides whether the intro curtain plays, and must do so before the
+          first paint — hence a blocking inline script rather than an effect.
+          Static, built from our own constants; see src/lib/intro.ts.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP }} />
       </head>
       <body className="flex min-h-full flex-col">
+        <IntroVeil />
+
         <a
           href="#tartalom"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-surface"

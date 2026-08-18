@@ -41,7 +41,7 @@ export default function PricesPage() {
               {pricesPage.firstMassageLinkLabel}
               <ArrowRight
                 aria-hidden="true"
-                className="size-4 transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1"
+                className="size-4 transition-transform duration-(--dur-quick) ease-smooth group-hover:translate-x-1"
                 strokeWidth={1.8}
               />
             </Link>

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CalendarClock, X } from 'lucide-react';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { notice, noticeStorageKey } from '@/content/notice';
+import { INTRO_ATTRIBUTE, INTRO_TOTAL_MS } from '@/lib/intro';
 
 /**
  * The salon's standing capacity notice, delivered as a corner card that slides
@@ -56,7 +57,13 @@ export function WelcomeModal() {
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    const id = window.setTimeout(() => setReady(true), ENTER_DELAY_MS);
+    // On the first load of a visit the intro curtain is still lifting at
+    // ENTER_DELAY_MS, so the card would slide in behind it and be revealed
+    // already half-arrived. Queue behind the curtain instead.
+    const intro = document.documentElement.hasAttribute(INTRO_ATTRIBUTE)
+      ? INTRO_TOTAL_MS
+      : 0;
+    const id = window.setTimeout(() => setReady(true), ENTER_DELAY_MS + intro);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -134,7 +141,7 @@ export function WelcomeModal() {
             <button
               type="button"
               onClick={dismiss}
-              className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold tracking-wide text-cream-text transition-colors duration-300 hover:bg-gold-ink"
+              className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink"
             >
               {notice.confirmLabel}
             </button>

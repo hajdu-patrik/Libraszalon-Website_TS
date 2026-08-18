@@ -48,7 +48,7 @@ export default function HouseRulesPage() {
             <Reveal
               key={rule.question}
               as="li"
-              className="flex gap-5 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:gap-6 sm:p-7"
+              className="flex gap-5 rounded-2xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-(--dur-base) ease-smooth hover:border-gold/50 hover:shadow-[var(--shadow-lift)] sm:gap-6 sm:p-7"
             >
               <span
                 aria-hidden="true"
@@ -84,7 +84,7 @@ export default function HouseRulesPage() {
                   slug={item.slug}
                   alt={item.caption}
                   sizes="(max-width: 640px) 100vw, 560px"
-                  className="w-full object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] hover:scale-[1.03]"
+                  className="w-full object-cover transition-transform duration-(--dur-slow) ease-smooth hover:scale-[1.03]"
                 />
               </div>
               <figcaption className="mt-4 text-sm text-muted">

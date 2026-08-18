@@ -98,7 +98,7 @@ export default function HomePage() {
                         target: '_blank',
                         rel: 'noopener noreferrer',
                       })}
-                    className={`${cardClass} transition-[transform,border-color,box-shadow] duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-[var(--shadow-lift)]`}
+                    className={`${cardClass} transition-[transform,border-color,box-shadow] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-[var(--shadow-lift)]`}
                   >
                     {inner}
                   </a>

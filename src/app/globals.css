@@ -49,8 +49,28 @@
   --container-width: 1200px;
   --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
 
-  /* Motion */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Motion
+
+     One curve and one duration scale for the whole site, so every moving thing
+     reads as the same gesture rather than a dozen unrelated ones.
+
+     The curve is registered under Tailwind's --ease-* namespace, which is what
+     makes `ease-smooth` a real utility — that is the whole point of naming it
+     here instead of in :root, and it is why the class strings below say
+     `ease-smooth` rather than `ease-[var(...)]`.
+
+     Durations live in :root instead: Tailwind v4 has no --duration-* namespace,
+     so they are consumed as `duration-(--dur-base)`. */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* The default any bare `transition-*` picks up — and most of the site's
+     transitions are bare `transition-colors` on links. Tailwind ships 150ms on
+     its own curve, so leaving these alone would mean every link on the site
+     hovered to a different rhythm than every button and card. Overriding the
+     two defaults here fixes all of them at once, and the explicit
+     `duration-(--dur-*)` utilities elsewhere still win where they appear. */
+  --default-transition-duration: var(--dur-quick);
+  --default-transition-timing-function: var(--ease-smooth);
 }
 
 @theme inline {
@@ -62,6 +82,26 @@
   --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
   --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
   --header-height: 4.5rem;
+
+  /* Four steps, each with one job. Anything that moves picks the step that
+     matches what it is, not a number that happened to look right:
+
+       quick  a control answering a pointer — underline, burger, icon nudge
+       base   the default: colour, border, shadow, a card lifting
+       slow   a large surface travelling far — a photograph scaling on hover
+       enter  something arriving on screen for the first time
+
+     Paired with --ease-smooth, which front-loads the travel: at 600ms most of
+     an entrance is over inside 250ms, so it registers as immediate while the
+     long tail is what actually makes it feel soft. */
+  --dur-quick: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
+  --dur-enter: 600ms;
+
+  /* Entrance geometry, shared by the scroll reveal and the page opener. */
+  --enter-shift: 28px;
+  --enter-stagger: 70ms;
 }
 
 /* ---------------------------------------------------------------------------
@@ -176,17 +216,18 @@
 /* Scroll reveal. Elements start hidden and are released by an
    IntersectionObserver adding [data-revealed].
 
-   450ms with --ease-out-expo: most of the travel happens in the first 200ms,
-   so it reads as immediate, and the long tail is what makes it feel soft.
-   Reveal.tsx caps --reveal-index at 3, so the last element of a group starts
-   210ms in, never later. */
+   This is the site's one entrance gesture: rise and fade over --dur-enter on
+   --ease-smooth. Every direction below is the same timing with a different
+   starting offset, so a card, a photograph and a paragraph all arrive at the
+   same speed. Reveal.tsx caps --reveal-index at 3, so the last element of a
+   group starts 210ms in, never later. */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(var(--enter-shift));
   transition:
-    opacity 0.45s var(--ease-out-expo),
-    transform 0.45s var(--ease-out-expo);
-  transition-delay: calc(var(--reveal-index, 0) * 70ms);
+    opacity var(--dur-enter) var(--ease-smooth),
+    transform var(--dur-enter) var(--ease-smooth);
+  transition-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
 }
 
 [data-reveal="fade"] {
@@ -194,11 +235,11 @@
 }
 
 [data-reveal="left"] {
-  transform: translateX(-32px);
+  transform: translateX(calc(var(--enter-shift) * -1));
 }
 
 [data-reveal="right"] {
-  transform: translateX(32px);
+  transform: translateX(var(--enter-shift));
 }
 
 [data-reveal="zoom"] {
@@ -210,15 +251,18 @@
   transform: none;
 }
 
-/* The hero quote wipes upward line by line. */
-@keyframes line-rise {
+/* The same gesture as [data-reveal], as a keyframe, for the things that arrive
+   without waiting to be scrolled to: the page body on navigation and the
+   header block of a subpage. Keeping them on one shape is what stops a
+   navigation from feeling different to a scroll. */
+@keyframes enter-rise {
   from {
     opacity: 0;
-    transform: translateY(0.55em);
+    transform: translateY(var(--enter-shift));
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -244,6 +288,95 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Intro curtain
+   Plays on the first load of a visit only. The markup ships in every page but
+   stays display:none until the bootstrap script in src/app/layout.tsx sets
+   [data-intro] on <html> — see src/lib/intro.ts for why that runs in <head>.
+
+   Three staggered animations rather than one multi-stage keyframe: each stage
+   then gets --ease-smooth applied over its own span, instead of the easing
+   being stretched across the whole 1.3s (which would collapse everything after
+   the first 200ms into a single frame).
+   --------------------------------------------------------------------------- */
+
+.intro-veil {
+  display: none;
+}
+
+html[data-intro] .intro-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-cream);
+  /* Decorative from first frame to last: the page beneath is never blocked. */
+  pointer-events: none;
+  animation: intro-lift 0.6s var(--ease-smooth) 0.7s forwards;
+}
+
+.intro-veil-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+html[data-intro] .intro-veil-inner {
+  animation: intro-mark 0.65s var(--ease-smooth) both;
+}
+
+/* Drawn from the centre outwards, which reads as a hairline being ruled. */
+.intro-veil-rule {
+  display: block;
+  width: 6rem;
+  height: 2px;
+  border-radius: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
+}
+
+html[data-intro] .intro-veil-rule {
+  animation: intro-rule 0.55s var(--ease-smooth) 0.25s both;
+}
+
+@keyframes intro-lift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    /* 101% so no sliver of the panel is left behind on fractional heights. */
+    transform: translateY(-101%);
+  }
+}
+
+@keyframes intro-mark {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intro-rule {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Reduced motion
    One switch that neutralises every animation on the site. Content must be
    fully visible and usable with motion disabled.
@@ -252,6 +385,13 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* Not "instant" — absent. The blanket rule below collapses durations but not
+     delays, so the curtain would still hold the screen for 0.7s for exactly
+     the visitors who asked for no motion. */
+  html[data-intro] .intro-veil {
+    display: none;
   }
 
   *,

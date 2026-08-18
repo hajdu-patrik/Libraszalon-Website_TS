@@ -89,17 +89,17 @@ export function MobileNav({ pathname }: MobileNavProps) {
         <span aria-hidden="true" className="relative block h-4 w-6">
           {/* Three bars that fold into an X. */}
           <span
-            className={`absolute left-0 block h-px w-full bg-current transition-all duration-300 ease-[var(--ease-out-expo)] ${
+            className={`absolute left-0 block h-px w-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
               open ? 'top-1/2 rotate-45' : 'top-0'
             }`}
           />
           <span
-            className={`absolute top-1/2 left-0 block h-px w-full bg-current transition-all duration-200 ${
+            className={`absolute top-1/2 left-0 block h-px w-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
               open ? 'opacity-0' : 'opacity-100'
             }`}
           />
           <span
-            className={`absolute left-0 block h-px w-full bg-current transition-all duration-300 ease-[var(--ease-out-expo)] ${
+            className={`absolute left-0 block h-px w-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
               open ? 'top-1/2 -rotate-45' : 'top-full'
             }`}
           />

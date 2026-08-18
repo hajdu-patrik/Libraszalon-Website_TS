@@ -10,9 +10,17 @@ import { site } from '@/content/site';
  * brand quote set large in the serif display face, and the two actions the
  * whole site funnels toward.
  *
- * Animated with plain CSS rather than a Reveal wrapper because this is above
- * the fold on every device — it should start the moment the HTML paints, not
- * after hydration installs an observer.
+ * The copy is deliberately not animated. It is the first thing on the site and
+ * it sits behind the intro curtain, so a staggered entrance would land after
+ * the curtain had already lifted — the visitor watches an empty scrim, then
+ * words assembling, before reading a single one. Rendering it at rest means
+ * the quote is legible in the same frame the curtain clears.
+ *
+ * Only the photograph moves: it settles out of a slow zoom under the copy,
+ * which reads as the shot breathing rather than as the page loading. That runs
+ * as plain CSS rather than a Reveal wrapper because it is above the fold on
+ * every device and must start when the HTML paints, not after hydration
+ * installs an observer.
  */
 export function Hero() {
   return (
@@ -20,7 +28,7 @@ export function Hero() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div
           className="h-full w-full"
-          style={{ animation: 'hero-image 0.9s var(--ease-out-expo) both' }}
+          style={{ animation: 'hero-image var(--dur-slow) var(--ease-smooth) both' }}
         >
           <Picture
             slug="hero"
@@ -37,42 +45,25 @@ export function Hero() {
 
       <div className="container-page py-20 sm:py-28">
         <div className="max-w-3xl">
-          <p
-            className="eyebrow-dark"
-            style={{ animation: 'line-rise 0.5s var(--ease-out-expo) both', animationDelay: '0.05s' }}
-          >
+          <p className="eyebrow-dark">
             {site.legalName} · {home.hero.location}
           </p>
 
           {/* hyphens-none: the body turns on Hungarian hyphenation, but a
               display headline must break at word boundaries only. */}
           <h1 className="mt-6 text-[length:var(--text-hero)] leading-[1.08] text-cream-text hyphens-none">
-            {home.heroQuote.map((line, index) => (
-              <span key={line} className="block overflow-hidden">
-                <span
-                  className="block"
-                  style={{
-                    animation: 'line-rise 0.55s var(--ease-out-expo) both',
-                    animationDelay: `${0.12 + index * 0.12}s`,
-                  }}
-                >
-                  {line}
-                </span>
+            {home.heroQuote.map((line) => (
+              <span key={line} className="block">
+                {line}
               </span>
             ))}
           </h1>
 
-          <p
-            className="mt-6 text-lg text-cream-muted"
-            style={{ animation: 'line-rise 0.5s var(--ease-out-expo) both', animationDelay: '0.4s' }}
-          >
+          <p className="mt-6 text-lg text-cream-muted">
             {site.owner} · {site.ownerTitle}
           </p>
 
-          <div
-            className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
-            style={{ animation: 'line-rise 0.5s var(--ease-out-expo) both', animationDelay: '0.5s' }}
-          >
+          <div className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
             <Button
               href={`tel:${site.phoneHref}`}
               icon={<Phone className="size-[18px]" strokeWidth={1.8} />}
@@ -85,10 +76,7 @@ export function Hero() {
           </div>
 
           {reviewStats.count > 0 && (
-            <div
-              className="mt-10 flex items-center gap-3"
-              style={{ animation: 'fade-in 0.6s var(--ease-out-expo) both', animationDelay: '0.65s' }}
-            >
+            <div className="mt-10 flex items-center gap-3">
               <span
                 role="img"
                 aria-label={`${reviewStats.average} csillag az 5-ből`}
@@ -106,11 +94,15 @@ export function Hero() {
                   />
                 ))}
               </span>
+              {/* The average carries the proof; the raw count is deliberately
+                  not shown — a small honest number reads as a weakness next to
+                  a five-star average. reviewStats.count still gates the block,
+                  so nothing is claimed when there are no reviews. */}
               <p className="text-sm text-cream-muted">
                 <span className="font-semibold text-cream-text">
                   {reviewStats.average.toLocaleString('hu-HU')} / 5
                 </span>{' '}
-                — {reviewStats.count} {home.hero.ratingSuffix}
+                — {home.hero.ratingSuffix}
               </p>
             </div>
           )}
