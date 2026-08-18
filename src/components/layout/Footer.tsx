@@ -1,9 +1,11 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 import { FacebookIcon } from '@/components/ui/FacebookIcon';
+import { GitHubIcon } from '@/components/ui/GitHubIcon';
+import { LinkedInIcon } from '@/components/ui/LinkedInIcon';
 import Link from 'next/link';
 import { CurrentYear } from '@/components/ui/CurrentYear';
 import { homeItem, navItems } from '@/content/nav';
-import { site } from '@/content/site';
+import { developer, site } from '@/content/site';
 
 /**
  * Dark closing panel. The logo image is drawn for a white ground, so the brand
@@ -17,7 +19,7 @@ export function Footer() {
   return (
     <footer className="bg-ink-deep text-cream-text">
       <div className="container-page pt-14 pb-8 sm:pt-20 sm:pb-10">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:gap-14">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1.2fr_0.9fr] lg:gap-12">
           {/* Brand */}
           <div>
             <Link
@@ -103,6 +105,29 @@ export function Footer() {
                   {site.social.facebookLabel}
                 </a>
               </li>
+            </ul>
+          </div>
+
+          {/* Credit */}
+          <div>
+            <h2 className="eyebrow-dark mb-4">{developer.heading}</h2>
+            <ul>
+              {[
+                { ...developer.github, Icon: GitHubIcon },
+                { ...developer.linkedin, Icon: LinkedInIcon },
+              ].map(({ href, label, Icon }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-3 text-cream-muted transition-colors hover:text-gold"
+                  >
+                    <Icon className="size-4 shrink-0 text-gold" />
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

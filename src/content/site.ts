@@ -66,6 +66,19 @@ export const site = {
   copyright: 'Minden jog fenntartva',
 } as const;
 
+/** Credit block for the footer: who built the site and where to find them. */
+export const developer = {
+  heading: 'Oldalkészítő',
+  github: {
+    label: 'GitHub profil',
+    href: 'https://github.com/hajdu-patrik',
+  },
+  linkedin: {
+    label: 'LinkedIn profil',
+    href: 'https://www.linkedin.com/in/hajdu-patrik/',
+  },
+} as const;
+
 export const mapsEmbedSrc =
   'https://maps.google.com/maps?q=' +
   encodeURIComponent('Budapest, Hidegkúti út 174, 1028') +
