@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-08",
+  "updatedAt": "2026-08-19",
   "reviews": [
     {
       "id": "seed-hajdu-patrik",
@@ -56,6 +56,15 @@
       "text": "Visszajáró vendég vagyok a szalon megnyitása óta. Kriszti nagyon körültekintö, empatikus módon kezel. Nagyon jónak tartom, hogy ala pos állapotfelmérést készit az elsö kezelés elött. Mindenképpen jó kézben vagy, ha öt választod, legyen az relaxáló masszázs vagy talpmasszázs.",
       "avatar": "female",
       "source": "google"
+    },
+    {
+      "id": "seed-sara-kovacs",
+      "author": "Sára Kovács",
+      "rating": 5,
+      "text": "Visszajáró vendége vagyok Krisztinek, csoda kezei vannak és nagyon jó társaság is. Csak ajánlani tudom.",
+      "avatar": "female",
+      "source": "google",
+      "publishedAt": "2024-08-19"
     }
   ]
 }
