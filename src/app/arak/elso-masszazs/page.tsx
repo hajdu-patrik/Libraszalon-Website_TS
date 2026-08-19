@@ -47,7 +47,7 @@ export default function FirstMassagePage() {
               slug="about-detail"
               alt="Masszázs közben a Libra Masszázs Szalonban"
               sizes="(max-width: 1024px) min(100vw, 28rem), 26rem"
-              className="aspect-[3/4] w-full rounded-b-3xl rounded-t-[10rem] object-cover shadow-[var(--shadow-lift)] lg:aspect-[2/3] lg:rounded-t-[13rem]"
+              className="card-interactive aspect-[3/4] w-full rounded-b-3xl rounded-t-[10rem] object-cover lg:aspect-[2/3] lg:rounded-t-[13rem]"
             />
           </Reveal>
         </div>

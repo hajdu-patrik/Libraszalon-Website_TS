@@ -35,12 +35,24 @@ export default function AboutPage() {
           >
             {/* The arch crown is the page's signature shape — a quiet nod to
                 doorways and spa architecture. Its radius tracks the column so
-                the crown stays a true half-round at every size. */}
+                the crown stays a true half-round at every size.
+
+                card-interactive sits on the image itself rather than a
+                wrapper: the arch lives in the border-radius, so the hairline
+                has to be on the element that carries it or it would trace a
+                rectangle around a doorway.
+
+                It also means giving up the resting --shadow-lift this
+                photograph used to have. A hover needs somewhere to travel
+                from, and a picture already resting at the lifted shadow has
+                nowhere to go. It now rests where every card on the site rests
+                and lifts on approach, which is the trade that buys the
+                gesture. */}
             <Picture
               slug="about-portrait"
               alt={`${about.name}, ${site.ownerTitle}, a ${site.legalName} alapítója`}
               sizes="(max-width: 1024px) min(100vw, 28rem), 28rem"
-              className="aspect-[4/5] w-full rounded-b-3xl rounded-t-[12rem] object-cover shadow-[var(--shadow-lift)] lg:rounded-t-[14rem]"
+              className="card-interactive aspect-[4/5] w-full rounded-b-3xl rounded-t-[12rem] object-cover lg:rounded-t-[14rem]"
             />
           </Reveal>
 
@@ -96,7 +108,7 @@ export default function AboutPage() {
               slug="about-room"
               alt="A Libra Masszázs Szalon kezelőhelyisége"
               sizes="(max-width: 1024px) min(100vw, 28rem), 28rem"
-              className="aspect-[4/3] w-full rounded-3xl object-cover shadow-[var(--shadow-lift)]"
+              className="card-interactive aspect-[4/3] w-full rounded-3xl object-cover"
             />
           </Reveal>
         </div>

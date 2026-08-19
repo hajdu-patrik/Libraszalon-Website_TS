@@ -26,11 +26,22 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         variant={flipped ? 'right' : 'left'}
         className={flipped ? 'lg:order-2' : undefined}
       >
-        {/* No hover on the photograph, by decision rather than omission: the
-            images on this site are not controls and do not lead anywhere, so
-            there is nothing for a hover state to promise. overflow-hidden
-            stays — it is what clips the image to the rounded frame. */}
-        <div className="overflow-hidden rounded-3xl shadow-[var(--shadow-card)]">
+        {/* The photograph answers the pointer with the site's one card
+            gesture — card-interactive, the same utility the rule cards, the
+            price cards and the review cards use: the hairline warms to gold
+            and the resting shadow opens into the lifted one.
+
+            Nothing moves, and that is the point. What came off these images
+            was a zoom, and a photograph that travels under the cursor is
+            motion you notice rather than feel. A frame that warms is not
+            that; it is the same acknowledgement every other framed thing on
+            the site already gives.
+
+            card-interactive brings its own resting shadow, so the explicit
+            shadow-card that used to be here would only be saying it twice.
+            overflow-hidden stays — it is what clips the image to the rounded
+            frame and has nothing to do with the hover. */}
+        <div className="card-interactive overflow-hidden rounded-3xl">
           <Picture
             slug={service.image}
             alt={service.alt}

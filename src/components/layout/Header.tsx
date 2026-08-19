@@ -72,9 +72,14 @@ export function Header() {
             className="flex min-h-11 shrink-0 items-center"
           >
             {/* The transition is for the height alone: the logo shrinks when
-                the header does, and that travel wants easing. It carried a
-                hover dim as well, which is gone — no image on the site reacts
-                to the cursor. The link keeps its focus ring. */}
+                the header does, and that travel wants easing.
+
+                It carried a hover dim once, and that stays gone even now the
+                photographs answer the cursor again. The card gesture is a
+                frame warming around a picture; the logo is a wordmark sitting
+                directly on the header with no frame to warm, and drawing one
+                around it would invent a box that is not there. The link keeps
+                its focus ring. */}
             <Picture
               slug="logo"
               alt=""

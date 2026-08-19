@@ -68,8 +68,8 @@ export default function PricesPage() {
           two photographs of a card printed the size of a card. The images
           themselves need no sizing rules: `img { max-width: 100%; height:
           auto }` in the base layer already holds them inside their frame at
-          every width, down to 320px. No hover state, like every other
-          photograph on the site.
+          every width, down to 320px. The frame carries the site's card
+          gesture, like every other photograph on the site.
         */}
         <Reveal className="mt-16 border-t border-line pt-14 sm:mt-20 sm:pt-16">
           <h2 className="text-center text-[length:var(--text-h3)] text-ink">
@@ -93,7 +93,7 @@ export default function PricesPage() {
               ] as const
             ).map((item) => (
               <figure key={item.slug} className="w-full max-w-sm">
-                <div className="overflow-hidden rounded-2xl shadow-[var(--shadow-card)]">
+                <div className="card-interactive overflow-hidden rounded-2xl">
                   <Picture
                     slug={item.slug}
                     alt={item.caption}
