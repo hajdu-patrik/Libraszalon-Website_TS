@@ -57,19 +57,29 @@ export default function PricesPage() {
         </div>
 
         {/*
-          The pass, at the foot of the list.
+          The pass and the névjegy, at the foot of the list.
 
           Fenced off with a hairline and a wide inset rather than its own
-          section: it is not a price, but it is the last thing the price list
-          has to say, and a full section break here would read as a new topic.
+          section: neither is a price, but they are the last thing the price
+          list has to say, and a full section break here would read as a new
+          topic.
 
-          Side by side from sm, stacked and centred below it. Each frame is
-          capped at 24rem so the pair never stretches to fill a 1200px row —
-          two photographs of a card printed the size of a card. The images
-          themselves need no sizing rules: `img { max-width: 100%; height:
-          auto }` in the base layer already holds them inside their frame at
-          every width, down to 320px. The frame carries the site's card
-          gesture, like every other photograph on the site.
+          Three equal tracks from md, stacked and centred below it. A grid
+          rather than the flex row this was: three items on one flex line
+          divide the leftover space, not the space itself, so a card with a
+          slightly different aspect ratio would take a slightly wider slot and
+          the three frames would not line up. Equal tracks make them
+          identical, which is what a row of printed cards has to look like.
+
+          The 24rem cap is gone with the third image — it existed so a pair
+          would not stretch across a 1200px row, and three across fill that row
+          honestly. It survives only in the stacked state, where a single frame
+          at the full container width would be a card printed the size of a
+          poster.
+
+          The images themselves need no sizing rules: `img { max-width: 100%;
+          height: auto }` in the base layer already holds them inside their
+          frame at every width, down to 320px.
         */}
         <Reveal className="mt-16 border-t border-line pt-14 sm:mt-20 sm:pt-16">
           <h2 className="text-center text-[length:var(--text-h3)] text-ink">
@@ -77,7 +87,7 @@ export default function PricesPage() {
           </h2>
           <GoldRule centered className="mt-5" />
 
-          <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:justify-center">
+          <div className="mt-10 grid justify-items-center gap-5 md:grid-cols-3 md:gap-6">
             {(
               [
                 {
@@ -90,14 +100,19 @@ export default function PricesPage() {
                   caption: pricesPage.pass.captions.back,
                   label: pricesPage.pass.labels.back,
                 },
+                {
+                  slug: 'business-card',
+                  caption: pricesPage.pass.captions.card,
+                  label: pricesPage.pass.labels.card,
+                },
               ] as const
             ).map((item) => (
-              <figure key={item.slug} className="w-full max-w-sm">
+              <figure key={item.slug} className="w-full max-w-sm md:max-w-none">
                 <div className="card-interactive overflow-hidden rounded-2xl">
                   <Picture
                     slug={item.slug}
                     alt={item.caption}
-                    sizes="(max-width: 640px) min(100vw, 24rem), 24rem"
+                    sizes="(max-width: 767px) min(100vw, 24rem), min(30vw, 24rem)"
                     className="w-full object-cover"
                   />
                 </div>

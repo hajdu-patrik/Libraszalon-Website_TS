@@ -21,14 +21,19 @@ export const pricesPage = {
    * the context.
    */
   pass: {
-    heading: '10 alkalmas bérlet',
+    // Broadened from '10 alkalmas bérlet' when the névjegy joined the row: a
+    // business card is not a pass, and a heading that says it is would be the
+    // one piece of copy on the page that is simply untrue.
+    heading: 'Bérlet és névjegy',
     captions: {
       front: 'A Libra Masszázs Szalon 10 alkalmas bérlete, előlap',
       back: 'A Libra Masszázs Szalon 10 alkalmas bérlete, hátlap',
+      card: 'A Libra Masszázs Szalon névjegykártyája',
     },
     labels: {
-      front: 'Előlap',
-      back: 'Hátlap',
+      front: 'Bérlet, előlap',
+      back: 'Bérlet, hátlap',
+      card: 'Névjegy',
     },
   },
 } as const;
