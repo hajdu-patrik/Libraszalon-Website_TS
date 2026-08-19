@@ -24,8 +24,16 @@ export type Review = {
 /** Reviews below this rating are never published on the site. */
 export const MIN_RATING = 4;
 
-/** How many reviews the carousel holds at once. */
-export const REVIEWS_DISPLAY_LIMIT = 7;
+/**
+ * How many reviews the carousel holds at once.
+ *
+ * A ceiling, not a target. The strip loops, so length costs nothing to read —
+ * the only reason to cap it at all is that every card is rendered twice to
+ * make the wrap seamless, and a very long list would start to weigh on a
+ * phone. Twenty is far above the salon's current count and well below where
+ * that matters, so in practice every eligible review is published.
+ */
+export const REVIEWS_DISPLAY_LIMIT = 20;
 
 const all = data.reviews as Review[];
 

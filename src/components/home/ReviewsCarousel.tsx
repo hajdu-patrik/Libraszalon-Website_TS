@@ -124,10 +124,29 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
   const loop = [...reviews, ...reviews];
 
   return (
+    /* Held still while the visitor is reading.
+     *
+     * Four ways in, because "I am reading this one" looks different on every
+     * input. A pointer resting on the strip is the desktop tell; focus is the
+     * keyboard one; and a finger held on a card is the phone one — which the
+     * mouse handlers alone never caught, since a touch screen fires
+     * mouseenter on tap and then nothing until the next tap, so the strip
+     * either kept moving under the thumb or latched paused for good.
+     *
+     * onTouchEnd and onTouchCancel both release. Cancel matters: sliding the
+     * finger off the strip, or the browser claiming the gesture for a scroll,
+     * ends the touch without a touchend, and without it the strip would stay
+     * frozen until the page was touched again.
+     *
+     * A touch-drag on the strip is a scroll, so pausing during it also stops
+     * the auto-advance fighting the flick the visitor just made. */
     <div
       className="relative"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+      onTouchCancel={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(false);
