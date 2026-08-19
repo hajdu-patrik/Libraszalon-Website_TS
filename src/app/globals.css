@@ -54,6 +54,29 @@
   --text-price: clamp(1.75rem, 1.4rem + 1.7vw, 2.5rem);
   --text-eyebrow: 0.75rem;
 
+  /* House rules cards.
+
+     Their own steps rather than the shared scale, because the rules grid is
+     the one place on the site where type size is load-bearing for layout: at
+     320px a card has 288px to spend, and every pixel the number or the padding
+     takes is a pixel the measure loses. Measured on the built page, the old
+     fixed sizes left the body copy 198px — 26 characters a line, where prose
+     wants 45 to 75 and rule 8 ran to 33 lines. The floors below are what bring
+     it back to 250px, and they are floors, not compromises: the ceilings are
+     the sizes the old markup already used at lg. */
+  --text-rule-num: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  --text-rule-title: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+  --text-rule-body: clamp(0.9375rem, 0.91rem + 0.12vw, 1rem);
+
+  /* Deliberately outside Tailwind's --spacing-* and --radius-* namespaces:
+     these are consumed by var() inside the two utilities below and nowhere
+     else, and generating a p-rule-card-pad utility for them would invite
+     exactly the kind of piecemeal reuse the utilities exist to prevent. */
+  --rule-card-pad: clamp(1.125rem, 0.85rem + 1.4vw, 1.75rem);
+  --rule-card-radius: clamp(0.875rem, 0.7rem + 0.8vw, 1.25rem);
+  --rule-grid-gap: clamp(1rem, 0.7rem + 1.5vw, 1.5rem);
+  --rule-num-gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+
   /* Layout */
   --container-width: 1200px;
   --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
@@ -252,6 +275,95 @@
       border-color: color-mix(in oklab, var(--color-gold) 50%, transparent);
       box-shadow: var(--shadow-lift);
     }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The house rules grid
+
+   Fourteen numbered rules, in two columns, ending level.
+
+   The list used to be `columns-2`. Multi-column balances the two columns to
+   equal height on its own, which sounds like exactly what this needs, but it
+   balances by *height*, not by count: it is free to put the split anywhere.
+   With rules 1-7 holding 1,485 characters against 2,319 in rules 8-14 it did
+   land on 1-7 / 8-14, and then ended the left column 271px short of the right.
+   Measured on the built page at 1440. A numbered document that stops two
+   thirds of the way down one side reads as broken, because the reader knows
+   how many rules there are.
+
+   So: seven explicit rows, filled column by column. Rules 1-7 go down the
+   first column, 8-14 down the second, and rule 7 and rule 14 are both in row
+   seven — their bottom edges are the same edge, by construction rather than by
+   tuning. Rows are `auto`, so each takes the height of its taller card, and
+   `align-items: stretch` (the default, named here because the whole thing
+   collapses if someone sets items-start) makes its row-mate match.
+
+   Not `grid-auto-rows: 1fr`, which is the obvious-looking answer and is wrong
+   twice over. It sizes implicit rows, so with the rows declared here it never
+   applies at all; and `1fr` equalises rows against *each other*, not the two
+   cards within a row. Written as `repeat(7, 1fr)` it does hold the symmetry,
+   but every row inflates to the tallest on the page: 3,237px against 1,833px,
+   and 3,332px of whitespace against 586px.
+
+   The row count comes from the content via --rule-rows rather than being
+   spelled 7 here, because a fifteenth rule would otherwise open an implicit
+   eighth row in the first column and put the columns out of true again.
+
+   Two columns start at 64rem, not at md. At 768 the card is 337px wide and the
+   body copy 237px — 31 characters a line, narrower than the single-column
+   phone layout it would be replacing. 1024 is the first width where the
+   measure reaches 45. */
+@utility rules-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--rule-grid-gap);
+
+  /* One column is not a licence to run the full container width. Uncapped, a
+     768px tablet gave the body copy 618px — 85 characters a line, as far past
+     the readable band on that side as the old two-column tablet layout was on
+     the other. 37rem holds the measure at about 68 characters, and it is inert
+     below 592px, where the container is already narrower than the cap.
+
+     Left-aligned rather than centred, so the list stays flush with the heading
+     and the gold rule above it. */
+  max-width: 37rem;
+
+  @media (width >= 64rem) {
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--rule-rows, 7), auto);
+    grid-auto-flow: column;
+    align-items: stretch;
+  }
+}
+
+/* The card. Composes with card-interactive, which owns the border, the shadow
+   and the hover.
+
+   minmax(0, 1fr) on the text column, never a bare 1fr: a grid track's default
+   minimum is min-content, and "masszázsszolgáltatásaimat" is 25 letters. The
+   track would refuse to go narrower than the word and push the card wide.
+
+   align-content: start keeps the content at the top of a card that was
+   stretched to match its row-mate, so five of the fourteen carry visible slack
+   at the bottom. That is the honest cost of ending both columns level, and it
+   should look like breathing room rather than like a card that failed to fill.
+
+   Below 30rem the number moves above the title. Beside it, it costs the number
+   column plus its gap out of 288px, and on the smallest screens the measure
+   cannot afford either. */
+@utility rule-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  padding: var(--rule-card-pad);
+  border-radius: var(--rule-card-radius);
+  background-color: var(--color-surface);
+
+  @media (width >= 30rem) {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--rule-num-gap);
   }
 }
 

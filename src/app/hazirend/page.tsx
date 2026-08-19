@@ -72,53 +72,65 @@ export default function HouseRulesPage() {
 
       <Section tone="cream" spacing="normal">
         <Reveal>
-          <h2 className="text-[length:var(--text-h2)] text-ink">
+          <h2
+            id="hazirend-szabalyok"
+            className="text-[length:var(--text-h2)] text-ink"
+          >
             {houseRules.rulesHeading}
           </h2>
           <GoldRule className="mt-6" />
         </Reveal>
 
         {/*
-          Multi-column, not a two-track grid.
+          The symmetrical two-column grid — see `rules-grid` in globals.css for
+          why it is built the way it is.
 
-          A grid with items-start stops a short card being stretched to its
-          neighbour's height, but it cannot stop the row itself: rules 2 and 5
-          are one sentence and rule 8 is most of a page, so every row was as
-          tall as its tallest card and the short ones left a hole underneath.
-          Fourteen rules of wildly uneven length produced a column of holes.
+          role="list" is not redundant. Preflight sets list-style: none on every
+          ol, and VoiceOver drops list semantics when it does; this list is the
+          structure of the page, so "list, 14 items" is worth keeping.
 
-          `columns-2` takes the rows out of the equation. The list is one flow
-          that the browser balances into two columns of equal height, so a short
-          rule is followed immediately by the next one — the masonry effect,
-          from the layout mode that has always done it, with no script and no
-          measuring. It also splits the list roughly 1-7 / 8-14, which is the
-          right reading order for something numbered: down one column, then down
-          the next.
-
-          break-inside-avoid is not optional here. Without it the browser is
-          free to end a column halfway through rule 8 and resume it at the top
-          of the next one, which for a numbered rule is not a wrap, it is a
-          different rule.
+          --rule-rows is derived rather than written, so the grid follows the
+          content file. Half the rules, rounded up: with an odd count the first
+          column simply carries the extra one and the columns still end level.
         */}
-        <ol className="mt-12 gap-6 md:columns-2">
+        <ol
+          role="list"
+          aria-labelledby="hazirend-szabalyok"
+          className="rules-grid mt-12"
+          style={
+            {
+              '--rule-rows': Math.ceil(houseRules.rules.length / 2),
+            } as React.CSSProperties
+          }
+        >
           {houseRules.rules.map((rule, index) => (
             <Reveal
               key={rule.question}
               as="li"
               index={index % 2}
-              className="card-interactive mb-5 flex break-inside-avoid gap-4 rounded-2xl bg-surface p-6 sm:gap-5 md:mb-6 lg:gap-6 lg:p-7"
+              className="rule-card card-interactive"
             >
+              {/* gold-ink, not gold. The numerals were text-gold/60, which
+                  composites to #e0c299 on the card and 1.70:1 — under AA for
+                  text, and under even the 3:1 large-text floor the 24-36px
+                  size would otherwise qualify for. Raw gold at full opacity
+                  still only reaches 2.54:1. gold-ink is the same hue taken
+                  dark enough to clear 4.5:1, which is what the palette keeps
+                  it for.
+
+                  aria-hidden because the ol already numbers these; tabular so
+                  the two-digit numerals hold a column. */}
               <span
                 aria-hidden="true"
-                className="font-heading text-3xl leading-none font-medium text-gold/60 lg:text-4xl"
+                className="font-heading text-[length:var(--text-rule-num)] leading-none font-medium text-gold-ink tabular-nums max-[30rem]:mb-1"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
               <div className="min-w-0">
-                <h3 className="font-heading text-[1.25rem] leading-tight text-ink lg:text-[1.375rem]">
+                <h3 className="font-heading text-[length:var(--text-rule-title)] leading-tight text-ink">
                   {rule.question}
                 </h3>
-                <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">
+                <p className="mt-3 text-[length:var(--text-rule-body)] leading-relaxed text-muted">
                   {rule.text}
                 </p>
               </div>
