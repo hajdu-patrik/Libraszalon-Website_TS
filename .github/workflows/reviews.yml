@@ -1,0 +1,93 @@
+# Pulls the salon's Google reviews once a day and commits the result.
+#
+# The commit is the point: pushing src/content/reviews.json triggers the normal
+# deploy, so a new review reaches the live site without anyone touching
+# anything. Nothing here builds or deploys directly.
+#
+# The job is green whether or not reviews were found. Both review scripts exit
+# 0 on failure by design — a fetch that fails leaves the last good data in
+# place and the site keeps working, and a red workflow every night only teaches
+# people to stop reading the notifications. Look at the step summary, not the
+# tick, to see whether anything actually came down.
+name: Reviews
+
+on:
+  schedule:
+    # 04:17 UTC. Off the hour on purpose: scheduled jobs pile up on the hour
+    # across all of GitHub and get queued, and nothing here is time-critical.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+# Needed for the commit below; everything else stays read-only.
+permissions:
+  contents: write
+
+concurrency:
+  group: reviews
+  cancel-in-progress: false
+
+jobs:
+  reviews:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch reviews from the Business Profile API
+        id: fetch
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GOOGLE_LOCATION_NAME: ${{ secrets.GOOGLE_LOCATION_NAME }}
+        run: npm run reviews:fetch 2>&1 | tee fetch.log
+
+      # Only if the API produced nothing — either because the secrets are not
+      # set yet, or because the call failed. The scraper is a long shot (see
+      # its header) but it costs two minutes and cannot make things worse.
+      - name: Fall back to the scraper
+        run: |
+          if git diff --quiet -- src/content/reviews.json; then
+            echo "Az API nem hozott valtozast, megprobalom a scrapert."
+            npx playwright-core install --with-deps chromium
+            npm run reviews:scrape 2>&1 | tee -a fetch.log
+          else
+            echo "Az API frissitette a fajlt, a scraper kimarad."
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo '### Reviews'
+            echo ''
+            if git diff --quiet -- src/content/reviews.json; then
+              echo 'Nincs valtozas.'
+            else
+              echo "Frissult: $(node -p "require('./src/content/reviews.json').reviews.length") velemeny."
+            fi
+            echo ''
+            echo '```'
+            tail -n 25 fetch.log 2>/dev/null || echo '(nincs naplo)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit
+        run: |
+          if git diff --quiet -- src/content/reviews.json; then
+            echo "Nincs mit commitolni."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/reviews.json
+          git commit -m "Frissiti a Google velemenyeket"
+          git push

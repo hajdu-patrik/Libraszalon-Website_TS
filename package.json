@@ -12,6 +12,8 @@
     "assets:fetch": "tsx scripts/fetch-assets.ts",
     "assets:optimize": "tsx scripts/optimize-images.ts",
     "assets": "npm run assets:fetch && npm run assets:optimize",
+    "reviews": "npm run reviews:fetch",
+    "reviews:fetch": "tsx scripts/fetch-reviews.ts",
     "reviews:scrape": "tsx scripts/scrape-reviews.ts"
   },
   "dependencies": {

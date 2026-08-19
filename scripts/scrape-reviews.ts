@@ -1,127 +1,83 @@
 /**
- * Pulls the salon's Google reviews and merges them into src/content/reviews.json.
+ * Last-resort review scraper. Prefer scripts/fetch-reviews.ts.
  *
  *   npm run reviews:scrape
- *
- * Runs daily from .github/workflows/reviews.yml. When the file changes the
- * workflow commits it, and that push triggers a rebuild — so a new review can
- * reach the live site without anyone touching anything.
  *
  * ---------------------------------------------------------------------------
  * READ THIS BEFORE RELYING ON IT
  *
- * This is best-effort, not a guarantee. Google gives away review data through
- * exactly one supported channel — the Places API "Enterprise + Atmosphere" SKU,
- * which needs a Cloud project with a payment card on file. Everything free is
- * something Google actively defends:
+ * As of August 2026 this does not work, and the reason is not a bug that can
+ * be fixed here. Google serves the place page in two shapes and picks between
+ * them per session: one has the tab bar and the review pane, the other is a
+ * stripped panel with the address and the phone number and no tabs at all.
+ * Headless Chromium gets the stripped one — nine consecutive sessions, three
+ * entry URLs each, zero reviews — while an ordinary browser on the same
+ * machine and the same URL gets the full page every time. Pushing harder gets
+ * you a CAPTCHA, which is where this stops.
  *
- *   - the internal listugcposts RPC answers 403 to unauthenticated callers
- *   - the place page ships as a JavaScript shell with no reviews in the HTML
- *   - driving it with a real browser works intermittently; Google serves a
- *     degraded page once it suspects automation, and the class names the
- *     extraction depends on (.d4r55, .wiI7pd) are minified build output that
- *     changes without notice
+ * The extraction below was repaired anyway, because the faults were real and
+ * would have produced wrong data rather than no data on any page that did
+ * load: the entry URLs had rotted, the "Több" control was being matched by the
+ * wrong string so every body arrived truncated at ~240 characters, the author
+ * came through as "Név\n3 vélemény", and the virtualised pane was only ever
+ * read one screenful deep. If a run from another address ever gets the full
+ * page, it will now collect the whole list correctly.
  *
- * So the design goal here is not "always succeeds" — that is not on offer for
- * free. It is "never makes things worse":
+ * The design goal is not "always succeeds" — that was never on offer. It is
+ * "never makes things worse", and those guarantees now live in
+ * scripts/reviews-store.ts, shared with the API path:
  *
- *   1. Never delete a review already in the file.
- *   2. Never write an empty list; a failed scrape must not blank the site.
- *   3. Never exit non-zero on failure. A broken scrape is not a broken site,
- *      and a red workflow every night just teaches people to ignore it.
+ *   1. A thin result may only add; it can never delete.
+ *   2. Never write an empty list; a failed run must not blank the site.
+ *   3. Never exit non-zero. A broken scrape is not a broken site, and a red
+ *      workflow every night just teaches people to ignore it.
  *
- * When it does not work, adding a review by hand to src/content/reviews.json takes
- * about thirty seconds and is the dependable path. See README.md.
+ * Adding a review by hand to src/content/reviews.json takes about thirty
+ * seconds and remains the dependable path until the API access lands.
  * ---------------------------------------------------------------------------
  */
 
-import { readFile, writeFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 import { chromium, type Browser, type Page } from 'playwright-core';
 import { site } from '../src/content/site.ts';
-
-const REVIEWS_PATH = new URL('../src/content/reviews.json', import.meta.url);
-
-/** Reviews below this rating are never published on the site. */
-const MIN_RATING = 4;
+import {
+  MIN_RATING,
+  commitReviews,
+  guessAvatar,
+  reviewId,
+  stripEmoji,
+  type StoredReview,
+} from './reviews-store.ts';
 
 /**
- * Entry points, tried in order. The canonical place URL is the one Google's
- * own share link resolves to and is the most reliable; the data= deep link is
- * kept as a fallback in case the canonical form changes.
+ * Entry points, tried in order.
+ *
+ * The share link goes first because it is the only one that still works. Both
+ * hand-built `data=` deep links now land on the generic map view — Google
+ * drops the place out of the URL and answers with the city, no place panel and
+ * no reviews tab, which is what the "A vélemények fül nem jelent meg" failure
+ * actually was. The short link resolves to the canonical place URL that Google
+ * itself generates, and that one still opens the panel.
+ *
+ * The deep links stay as fallbacks: they cost one page load each when the
+ * share link works, and they are the only thing left if the short link is ever
+ * retired.
  */
 const ENTRY_URLS = [
+  site.social.googleMaps,
   'https://www.google.com/maps/place/Libra+Massz%C3%A1zs+Szalon/@47.5639562,18.958772,17.74z' +
     `/data=!4m7!3m6!1s${site.googleFeatureId}!8m2!3d47.5645843!4d18.9604828` +
     '!15sCgtsaWJyYXN6YWxvbpIBEW1hc3NhZ2VfdGhlcmFwaXN04AEA!16s%2Fg%2F11y314dxdp?hl=hu',
   `https://www.google.com/maps/place/data=!4m5!3m4!1s${site.googleFeatureId}!9m1!1b1?hl=hu&gl=HU`,
 ];
 
-type StoredReview = {
-  id: string;
-  author: string;
-  rating: number;
-  text: string;
-  avatar: 'male' | 'female';
-  source: string;
-  publishedAt?: string;
-};
-
-type ReviewsFile = {
-  updatedAt: string;
-  reviews: StoredReview[];
-};
-
 type ScrapedReview = {
+  /** Google's own review id, used to deduplicate the virtualised pane. */
+  googleId: string;
   author: string;
   rating: number;
   text: string;
   relativeTime: string;
 };
-
-/**
- * Strips emoji and other pictographs.
- *
- * The site has a no-emoji rule and Google reviews routinely contain them.
- * Everything else in the review text is preserved exactly as written.
- */
-function stripEmoji(input: string): string {
-  return input
-    .replace(/[\p{Extended_Pictographic}]/gu, '')
-    .replace(/[\u{FE0F}\u{200D}\u{20E3}]/gu, '')
-    .replace(/[ \t]{2,}/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-/** Stable identity across runs, so re-scraping never duplicates a review. */
-function reviewId(author: string, text: string): string {
-  return createHash('sha1')
-    .update(`${author}::${text.slice(0, 120)}`)
-    .digest('hex')
-    .slice(0, 16);
-}
-
-/**
- * Picks one of the two line-art avatars from the author's given name.
- *
- * The site does not hotlink Google's profile photos — that would leak every
- * visitor's IP to Google on page load. Unrecognised names fall back to the
- * neutral illustration.
- */
-const MALE_NAMES = new Set([
-  'andrás', 'attila', 'balázs', 'bence', 'csaba', 'dániel', 'dávid', 'ferenc',
-  'gábor', 'gergely', 'györgy', 'imre', 'istván', 'jános', 'józsef', 'károly',
-  'lajos', 'lászló', 'levente', 'márk', 'márton', 'máté', 'mihály', 'miklós',
-  'norbert', 'péter', 'richárd', 'róbert', 'sándor', 'szabolcs', 'tamás',
-  'tibor', 'zoltán', 'zsolt', 'ádám', 'ákos', 'árpád', 'patrik', 'kristóf',
-  'krisztián', 'bálint', 'barnabás', 'dénes', 'endre', 'gyula', 'zsombor',
-]);
-
-function guessAvatar(author: string): 'male' | 'female' {
-  const parts = author.toLowerCase().split(/\s+/).filter(Boolean);
-  return parts.some((part) => MALE_NAMES.has(part)) ? 'male' : 'female';
-}
 
 /** Turns "2 hónapja" / "egy éve" into an approximate ISO date. */
 function approximateDate(relative: string, now: Date): string | undefined {
@@ -185,94 +141,153 @@ async function collectFrom(page: Page, url: string): Promise<ScrapedReview[]> {
 
   await page.waitForSelector('[data-review-id]', { timeout: 30_000 });
 
-  // The pane virtualises; scroll it until the count stops growing.
-  let previous = -1;
-  for (let attempt = 0; attempt < 18; attempt++) {
-    const count = await page.locator('[data-review-id]').count();
-    if (count === previous) break;
-    previous = count;
+  /**
+   * Harvest as we scroll, rather than scrolling to the end and reading once.
+   *
+   * The pane is virtualised: it holds a fixed pool of about two dozen nodes
+   * and recycles them as you scroll, so the node count never grows. The old
+   * loop watched that count and stopped on the first pass — one screenful,
+   * and then it read whatever happened to be mounted. Accumulating by Google's
+   * own review id is what actually collects all of them, and it is also what
+   * makes the recycled duplicates harmless.
+   */
+  const collected = new Map<string, ScrapedReview>();
+  let idleRounds = 0;
+
+  for (let attempt = 0; attempt < 30 && idleRounds < 3; attempt++) {
+    // Expand every clamped body currently mounted, before reading it.
+    //
+    // The control is labelled "Több", not "Továbbiak" — the old selector was
+    // matching the aria-label's wording against the visible text and never hit
+    // anything, which is why bodies arrived cut off at ~240 characters with an
+    // ellipsis. The full text is genuinely absent from the DOM until this is
+    // clicked, so there is nothing to recover afterwards.
+    //
+    // It has to be a real click: Google's handler ignores synthetic events.
+    const expanders = page.locator(
+      'button.w8nwRe, button[aria-label="Továbbiak megjelenítése"], button[aria-label="See more"]',
+    );
+    const expanderCount = await expanders.count();
+    for (let i = 0; i < expanderCount; i++) {
+      await expanders.nth(i).click({ timeout: 1_500 }).catch(() => {});
+    }
+    if (expanderCount > 0) await page.waitForTimeout(600);
+
+    const batch = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-review-id]'))
+        .map((card) => {
+          const ratingLabel =
+            card
+              .querySelector(
+                '[role="img"][aria-label*="csillag"], [role="img"][aria-label*="star"]',
+              )
+              ?.getAttribute('aria-label') ?? '';
+
+          // .d4r55 sits inside a button that also carries the author's total
+          // review count, so innerText comes through as "Név\n3 vélemény".
+          // Only the first line is the name.
+          const author =
+            (card.querySelector('.d4r55, .WNxzHc') as HTMLElement | null)?.innerText
+              ?.trim()
+              .split('\n')[0]
+              ?.trim() ?? '';
+
+          return {
+            googleId: card.getAttribute('data-review-id') ?? '',
+            author,
+            rating: Number(ratingLabel.replace(',', '.').match(/[\d.]+/)?.[0] ?? 0),
+            text:
+              (card.querySelector('.wiI7pd, .MyEned') as HTMLElement | null)?.innerText?.trim() ??
+              '',
+            relativeTime:
+              (card.querySelector('.rsqaWe, .xRkPPb') as HTMLElement | null)?.innerText?.trim() ??
+              '',
+          };
+        })
+        .filter((r) => r.googleId && r.author && r.rating > 0),
+    );
+
+    let added = 0;
+    for (const review of batch) {
+      const existing = collected.get(review.googleId);
+      // A recycled node may be re-read before its body has expanded; keep
+      // whichever copy of a review carries the most text.
+      if (!existing || review.text.length > existing.text.length) {
+        if (!existing) added++;
+        collected.set(review.googleId, review);
+      }
+    }
+    idleRounds = added === 0 ? idleRounds + 1 : 0;
+
     await page.evaluate(() => {
       // Walk up from a review card to whichever ancestor actually scrolls.
       let el = document.querySelector('[data-review-id]')?.parentElement ?? null;
       while (el && el.scrollHeight <= el.clientHeight + 50) el = el.parentElement;
-      if (el) el.scrollTop = el.scrollHeight;
+      if (el) el.scrollTop = el.scrollTop + el.clientHeight * 0.9;
     });
-    await page.waitForTimeout(1_600);
+    await page.waitForTimeout(1_400);
   }
 
-  // "Továbbiak" expands a clamped body; without it the text arrives truncated.
-  const more = page.locator('button:has-text("Továbbiak"), button:has-text("More")');
-  const moreCount = await more.count();
-  for (let i = 0; i < moreCount; i++) {
-    await more.nth(i).click({ timeout: 2_000 }).catch(() => {});
-  }
-  await page.waitForTimeout(800);
-
-  return page.evaluate(() =>
-    Array.from(document.querySelectorAll('[data-review-id]'))
-      .map((card) => {
-        const ratingLabel =
-          card
-            .querySelector(
-              '[role="img"][aria-label*="csillag"], [role="img"][aria-label*="star"]',
-            )
-            ?.getAttribute('aria-label') ?? '';
-
-        return {
-          author:
-            (card.querySelector('.d4r55, .WNxzHc') as HTMLElement | null)?.innerText?.trim() ??
-            '',
-          rating: Number(ratingLabel.replace(',', '.').match(/[\d.]+/)?.[0] ?? 0),
-          text:
-            (card.querySelector('.wiI7pd, .MyEned') as HTMLElement | null)?.innerText?.trim() ??
-            '',
-          relativeTime:
-            (card.querySelector('.rsqaWe, .xRkPPb') as HTMLElement | null)?.innerText?.trim() ??
-            '',
-        };
-      })
-      .filter((r) => r.author && r.rating > 0),
-  );
+  return [...collected.values()];
 }
 
+/**
+ * How many fresh browser sessions to try before giving up.
+ *
+ * Google serves the place page in two shapes and picks between them per
+ * session. One has the tab bar and the review pane; the other is a stripped
+ * panel with the address, the phone number and no tabs at all — the same URL,
+ * seconds apart, with nothing in the request to explain the difference. Waiting
+ * longer does not turn the second into the first; only a new session does.
+ *
+ * So the retry is not politeness about slow loading, it is a second draw. Three
+ * sessions is where the odds stop improving much for the time they cost.
+ */
+const SESSION_ATTEMPTS = 3;
+
 async function scrape(): Promise<ScrapedReview[]> {
-  let browser: Browser | undefined;
+  for (let attempt = 1; attempt <= SESSION_ATTEMPTS; attempt++) {
+    let browser: Browser | undefined;
+    try {
+      browser = await chromium.launch({ channel: 'chromium', headless: true });
+      const context = await browser.newContext({
+        locale: 'hu-HU',
+        timezoneId: 'Europe/Budapest',
+        viewport: { width: 1400, height: 1000 },
+      });
+      // Records a cookie choice up front so the consent wall usually never shows.
+      await context.addCookies([
+        { name: 'SOCS', value: 'CAESHAgBEhIaAB', domain: '.google.com', path: '/' },
+      ]);
 
-  try {
-    browser = await chromium.launch({ channel: 'chromium', headless: true });
-    const context = await browser.newContext({
-      locale: 'hu-HU',
-      timezoneId: 'Europe/Budapest',
-      viewport: { width: 1400, height: 1000 },
-    });
-    // Records a cookie choice up front so the consent wall usually never shows.
-    await context.addCookies([
-      { name: 'SOCS', value: 'CAESHAgBEhIaAB', domain: '.google.com', path: '/' },
-    ]);
+      const page = await context.newPage();
 
-    const page = await context.newPage();
-
-    for (const url of ENTRY_URLS) {
-      try {
-        const reviews = await collectFrom(page, url);
-        if (reviews.length > 0) return reviews;
-        console.warn(`  Nem talaltam velemenyt itt: ${url.slice(0, 60)}...`);
-      } catch (error) {
-        console.warn(
-          `  Sikertelen: ${error instanceof Error ? error.message : String(error)}`,
-        );
+      for (const url of ENTRY_URLS) {
+        try {
+          const reviews = await collectFrom(page, url);
+          if (reviews.length > 0) {
+            console.log(`  Sikeres a(z) ${attempt}. probalkozasra.`);
+            return reviews;
+          }
+          console.warn(`  Nem talaltam velemenyt itt: ${url.slice(0, 60)}...`);
+        } catch (error) {
+          console.warn(
+            `  Sikertelen: ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
       }
+    } finally {
+      await browser?.close().catch(() => {});
     }
-    return [];
-  } finally {
-    await browser?.close().catch(() => {});
+
+    if (attempt < SESSION_ATTEMPTS) {
+      console.warn(`  A(z) ${attempt}. munkamenet ures volt, ujraprobalom.`);
+    }
   }
+  return [];
 }
 
 async function main() {
-  const stored = JSON.parse(await readFile(REVIEWS_PATH, 'utf8')) as ReviewsFile;
-  const existingIds = new Set(stored.reviews.map((r) => r.id));
-
   let scraped: ScrapedReview[] = [];
   try {
     scraped = await scrape();
@@ -280,52 +295,32 @@ async function main() {
     console.warn(`Lekeres sikertelen: ${error instanceof Error ? error.message : error}`);
   }
 
-  if (scraped.length === 0) {
-    console.warn('');
-    console.warn('Nem sikerult velemenyt lekerni a Google-tol.');
-    console.warn('A src/content/reviews.json valtozatlan marad, az oldal a meglevo');
-    console.warn('velemenyekkel mukodik tovabb. Uj velemenyt kezzel is fel lehet');
-    console.warn('venni a fajlba — reszletek a README-ben.');
-    return;
-  }
-
   const now = new Date();
   const belowThreshold = scraped.filter((r) => r.rating < MIN_RATING).length;
 
   const incoming = scraped
     .filter((r) => r.rating >= MIN_RATING)
-    .map<StoredReview>((r) => {
-      const text = stripEmoji(r.text);
-      return {
-        id: reviewId(r.author, text),
-        author: r.author,
-        rating: Math.round(r.rating),
-        text,
-        avatar: guessAvatar(r.author),
-        source: 'google',
-        publishedAt: approximateDate(r.relativeTime, now),
-      };
-    })
+    .map<StoredReview>((r) => ({
+      id: reviewId(r.googleId),
+      author: r.author,
+      rating: Math.round(r.rating),
+      text: stripEmoji(r.text),
+      avatar: guessAvatar(r.author),
+      source: 'google',
+      publishedAt: approximateDate(r.relativeTime, now),
+    }))
     .filter((r) => r.text.length > 0);
 
-  const fresh = incoming.filter((r) => !existingIds.has(r.id));
-
-  console.log(`Talalt velemeny:            ${scraped.length}`);
-  console.log(`4 csillag alatt kiszurve:   ${belowThreshold}`);
-  console.log(`Uj velemeny:                ${fresh.length}`);
-
-  if (fresh.length === 0) {
-    console.log('Nincs valtozas.');
-    return;
+  if (scraped.length > 0) {
+    console.log(`Talalt velemeny:            ${scraped.length}`);
+    console.log(`${MIN_RATING} csillag alatt kiszurve:   ${belowThreshold}`);
+    console.log(`Publikalhato:               ${incoming.length}`);
   }
 
-  const merged: ReviewsFile = {
-    updatedAt: now.toISOString().slice(0, 10),
-    reviews: [...fresh, ...stored.reviews],
-  };
-
-  await writeFile(REVIEWS_PATH, JSON.stringify(merged, null, 2) + '\n');
-  console.log(`Frissitve — osszesen ${merged.reviews.length} velemeny.`);
+  const wrote = await commitReviews(incoming, 'scraper');
+  if (!wrote && incoming.length === 0) {
+    console.warn('Uj velemenyt kezzel is fel lehet venni a fajlba — reszletek a README-ben.');
+  }
 }
 
 main().catch((error) => {
