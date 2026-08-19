@@ -3,11 +3,10 @@
  *
  *   npm run reviews:fetch
  *
- * This is the supported channel and the one to trust. The scraper next door
- * exists because this one has a gate in front of it, not because it is better:
- * Google serves an automated browser a stripped place page with no review pane
- * at all, so scripts/scrape-reviews.ts is now a fallback that mostly returns
- * nothing.
+ * This is the only way reviews reach the site. Scraping the public Maps page
+ * was tried and removed: Google serves an automated browser a stripped place
+ * page with no review pane at all, so it returned nothing however it was
+ * written.
  *
  * What this gives that scraping never did: every review rather than the five
  * the Places API caps at, the full body text rather than a 240-character
@@ -187,7 +186,7 @@ async function main() {
     console.warn(`Hianyzo kornyezeti valtozo: ${missing.join(', ')}`);
     console.warn('A Business Profile lekeres kimarad — reszletek a fajl tetejen.');
     // Not an error: this is the expected state on a machine that has not been
-    // set up, and `npm run reviews` falls through to the scraper.
+    // set up; the file simply keeps whatever it already had.
     process.exitCode = 0;
     return;
   }
@@ -231,9 +230,9 @@ async function main() {
 }
 
 main().catch((error) => {
-  // Exits 0 on purpose, like the scraper: a failed fetch leaves the last good
-  // data in place, and the site keeps working. A red job every night only
-  // teaches people to stop reading the notifications.
+  // Exits 0 on purpose: a failed fetch leaves the last good data in place and
+  // the site keeps working. A red job every night only teaches people to stop
+  // reading the notifications.
   console.warn(
     `A lekeres hibaba utkozott, a tartalom valtozatlan: ${
       error instanceof Error ? error.message : String(error)

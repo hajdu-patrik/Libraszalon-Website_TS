@@ -1,13 +1,14 @@
 /**
- * Shared review storage, used by both review sources.
+ * Review storage: the rules about what may be written to
+ * src/content/reviews.json.
  *
- * There are two ways reviews reach src/content/reviews.json — the supported
- * Business Profile API (scripts/fetch-reviews.ts) and the best-effort scraper
- * (scripts/scrape-reviews.ts) — and exactly one set of rules about what may be
- * written. Those rules live here rather than in either script, because the two
- * had already drifted apart once: whichever ran last decided the shape of the
- * file, and the safety guarantees the scraper documented so carefully were not
- * guarantees at all if the other path did something different.
+ * Separate from the fetch itself so the two cannot drift. There were briefly
+ * two sources — the Business Profile API and a Maps scraper — and each wrote
+ * the file its own way, so whichever ran last decided its shape and the safety
+ * guarantees one of them documented were not guarantees at all. The scraper is
+ * gone, but the split is worth keeping: the "what may be written" rules are
+ * the part that protects live content, and they should not be buried inside
+ * whatever happens to fetch it.
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -50,9 +51,8 @@ export type ReviewsFile = {
  * Stable identity across runs and across sources.
  *
  * Keyed on whatever id the upstream gives for the review itself, never on its
- * text: the scraper reads bodies that arrive truncated until expanded, so a
- * text-derived id changed depending on how far the page had loaded, and an
- * author fixing a typo became a second review.
+ * text: a body can be edited after the fact, and an author fixing a typo
+ * would otherwise arrive as a second review.
  */
 export function reviewId(upstreamId: string): string {
   return createHash('sha1').update(upstreamId).digest('hex').slice(0, 16);

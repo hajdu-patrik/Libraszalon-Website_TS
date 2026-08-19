@@ -57,12 +57,6 @@ export const site = {
     googleMaps: 'https://maps.app.goo.gl/z6Qgy2wq58V3UsrK7',
   },
 
-  /**
-   * Google Maps feature ID for the salon, extracted from the short link above.
-   * scripts/scrape-reviews.ts uses it to pull reviews without an API key.
-   */
-  googleFeatureId: '0x54c95a706a34e7b:0xa9d26f3229d7434e',
-
   copyright: 'Minden jog fenntartva',
 } as const;
 
