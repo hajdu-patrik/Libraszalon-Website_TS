@@ -40,7 +40,7 @@ export function SectionHeading({
       {lead && (
         <p
           className={`mt-6 max-w-2xl ${dark ? 'text-cream-muted' : 'text-muted'} ${
-            centered ? 'mx-auto text-balance' : ''
+            centered ? 'mx-auto sm:text-balance' : ''
           }`}
         >
           {lead}

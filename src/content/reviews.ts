@@ -1,9 +1,9 @@
 /**
  * Review data access.
  *
- * The JSON file is maintained by scripts/scrape-reviews.ts (daily GitHub
- * Action). This module is the only thing the UI imports, so the filtering
- * rules live in one place:
+ * The JSON file is written by scripts/fetch-reviews.ts, which reads the Google
+ * Business Profile API. This module is the only thing the UI imports, so the
+ * filtering rules live in one place:
  *   - only 4 stars and above are ever shown
  *   - at most REVIEWS_DISPLAY_LIMIT appear in the carousel
  */
@@ -28,10 +28,11 @@ export const MIN_RATING = 4;
  * How many reviews the carousel holds at once.
  *
  * A ceiling, not a target. The strip loops, so length costs nothing to read —
- * the only reason to cap it at all is that every card is rendered twice to
- * make the wrap seamless, and a very long list would start to weigh on a
- * phone. Twenty is far above the salon's current count and well below where
- * that matters, so in practice every eligible review is published.
+ * the only reason to cap it at all is that the list is laid down three times
+ * over to make the wrap seamless in both directions, and a very long one would
+ * start to weigh on a phone. Twenty is far above the salon's current count and
+ * well below where that matters, so in practice every eligible review is
+ * published.
  */
 export const REVIEWS_DISPLAY_LIMIT = 20;
 

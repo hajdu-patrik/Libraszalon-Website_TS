@@ -72,7 +72,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
                 overflow: 'hidden',
               }
         }
-        className="mt-4 text-[0.9375rem] leading-relaxed whitespace-pre-line text-muted"
+        className="mt-4 text-[length:var(--text-ui)] leading-relaxed whitespace-pre-line text-muted"
       >
         {review.text}
       </p>
@@ -82,7 +82,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           type="button"
           onClick={() => setExpanded((value) => !value)}
           aria-expanded={expanded}
-          className="mt-2 inline-flex min-h-11 min-w-11 items-center self-start text-sm font-semibold text-gold-ink transition-colors hover:text-ink"
+          className="mt-2 inline-flex min-h-11 min-w-11 items-center self-start text-[length:var(--text-meta)] font-semibold text-gold-ink transition-colors hover:text-ink"
         >
           {expanded ? 'Kevesebb' : 'Tovább'}
         </button>
@@ -92,10 +92,10 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <Picture
           slug={review.avatar === 'male' ? 'avatar-male' : 'avatar-female'}
           alt=""
-          sizes="36px"
-          className="size-9 shrink-0 opacity-70"
+          sizes="40px"
+          className="size-10 shrink-0 opacity-70"
         />
-        <p className="min-w-0 truncate font-heading text-lg text-ink">
+        <p className="min-w-0 truncate font-heading text-xl text-ink">
           {review.author}
         </p>
       </footer>

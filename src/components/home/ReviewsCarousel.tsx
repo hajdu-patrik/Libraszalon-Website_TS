@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReviewCard } from '@/components/home/ReviewCard';
 import type { Review } from '@/content/reviews';
+import { usePrefersReducedMotion } from '@/lib/hooks/useReducedMotion';
 
 type ReviewsCarouselProps = {
   reviews: Review[];
@@ -11,6 +12,37 @@ type ReviewsCarouselProps = {
 
 /** How long each card rests before the strip advances to the next one. */
 const AUTO_ADVANCE_MS = 4000;
+
+/**
+ * How many times the list is laid down end to end.
+ *
+ * Two is enough to cover the seam, and two is what this was — but two only
+ * covers it on the side you are travelling towards. With the strip parked on
+ * the first review there is nothing at all to its left, and the track's inline
+ * padding (half the leftover width, which is what lets an end card reach the
+ * centre) turns that into a hole: measured at 1550px, 464px of empty band on
+ * the left while the cards ran off the right edge. It reads as a strip that
+ * failed to load rather than one you can scroll both ways.
+ *
+ * On a phone the same layout is fine, which is why this went unnoticed: a card
+ * is 86vw there, so the leftover is a sliver either side.
+ *
+ * Three copies with the strip held in the middle one gives every position a
+ * full list on both sides, at every width. It also makes the seam ordinary —
+ * a single step from any position in the middle copy lands on a real
+ * neighbouring card, so nothing has to be spliced mid-move.
+ */
+const COPIES = 3;
+
+/**
+ * Quiet time after the last scroll event before the strip counts as still.
+ *
+ * The timer restarts on every event, so this is "nothing has moved for a
+ * quarter of a second" rather than a fixed delay - long enough to sit out a
+ * smooth scroll and the momentum tail of a flick, short enough that the seam
+ * is tidied away before anyone can act on it.
+ */
+const SETTLE_MS = 250;
 
 /**
  * The arrows flank the strip from md up and sit in a row beneath it below that.
@@ -54,9 +86,14 @@ const ARROW_CLASS =
  * could never reach the centre at all — the strip would stop with them jammed
  * against the ends and the marked card would be the wrong one.
  *
- * The loop is seamless because the list is rendered twice: when the strip
- * reaches the start of the second copy it snaps back to the first instantly,
- * which is invisible since the two are identical. WCAG 2.2.2 needs moving
+ * The loop is seamless because the list is laid down COPIES times over, so
+ * every position has a twin one copy away showing the identical card. Once
+ * everything has stopped the strip slides onto the twin in the middle copy -
+ * invisibly, since the card on screen does not change. That is what makes the
+ * wrap free in both directions, and it is what keeps the card being read a
+ * real one: the outer copies are aria-hidden and inert, so parking in one
+ * would leave the visible review unreachable by keyboard and absent from the
+ * accessibility tree. WCAG 2.2.2 needs moving
  * content to be pausable, so it stops on hover, on focus, while a finger is
  * held on it and when the tab is hidden — and never starts at all under
  * prefers-reduced-motion.
@@ -64,22 +101,35 @@ const ARROW_CLASS =
 export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
   const trackRef = useRef<HTMLUListElement>(null);
   const indexRef = useRef(0);
-  const [paused, setPaused] = useState(false);
-  const [active, setActive] = useState(0);
-  // Read after mount, not during render, so the server and first client render
-  // agree even when the visitor asks for reduced motion.
-  const [reduced, setReduced] = useState(false);
+  // Two reasons to hold the strip, tracked separately and combined here.
+  //
+  // They shared one boolean before, and a shared boolean means whichever
+  // handler fires last wins — which is not what either of them means. Clicking
+  // an arrow focuses it, so the strip is held for focus as well as for the
+  // pointer; moving the mouse off then cleared the flag outright and the strip
+  // started advancing under a control the visitor still had focus on. The
+  // reverse case is the one that shows: with the pointer resting on the strip
+  // after a click, mouseleave never comes and nothing ever releases it.
+  //
+  // A reason to pause is not a reason to resume. Only the absence of every
+  // reason is.
+  const [pointerHeld, setPointerHeld] = useState(false);
+  const [focusWithin, setFocusWithin] = useState(false);
+  const paused = pointerHeld || focusWithin;
 
-  useEffect(() => {
-    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(query.matches);
-    update();
-    query.addEventListener('change', update);
-    return () => query.removeEventListener('change', update);
-  }, []);
+  const [active, setActive] = useState(0);
+  const reduced = usePrefersReducedMotion();
+
+  const count = reviews.length;
+  const loopLength = count * COPIES;
+  // The exposed copy: reviews 0..count-1 live at loop indices count..2*count-1.
+  const firstExposed = count;
 
   /**
    * Scrolls so that card `index` sits in the middle of the strip.
+   *
+   * `index` addresses the doubled strip, 0 to 2N-1 - the space
+   * track.children is in, and the space indexRef is kept in.
    *
    * Measured off the element rather than multiplied out from a card width,
    * because the width is a clamp on vw at two breakpoints and the padding that
@@ -102,28 +152,43 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
 
   const advance = useCallback(
     (direction: 1 | -1) => {
-      const count = reviews.length;
-      let next = indexRef.current + direction;
+      const from = indexRef.current;
+      let next = from + direction;
 
-      // Cross the seam instantly before animating, so the move always glides
-      // into identical content instead of rewinding the whole strip.
-      if (next >= count) {
-        goTo(next - count, false);
-        next = next - count + 1;
+      // Stepping off the end of the whole strip: hop to the identical card one
+      // copy over first - the same picture, so nothing moves on screen - and
+      // take the single step from there.
+      //
+      // With the strip normalised into the middle copy this is unreachable by
+      // arrow or auto-advance; only a hand-scroll left parked at the very end
+      // can get here. It stays because that is still a state the component can
+      // be in, and because the arithmetic is the part that used to be wrong:
+      // it rebased the *target* rather than the position being left, then
+      // added a step on top, landing one card past the end of the move. On a
+      // loop that means a review is passed over every time round. Measured on
+      // the built page with the auto-advance held: forward ran 5, 6, 7, 1, 2
+      // and backward ran 2, 1, 0, 6, 5 - both directions, always the same
+      // review, and invisible from outside because the strip does keep
+      // moving.
+      if (next >= loopLength) {
+        goTo(from - count, false);
+        next = from - count + direction;
       } else if (next < 0) {
-        goTo(next + count, false);
-        next = next + count - 1;
+        goTo(from + count, false);
+        next = from + count + direction;
       }
+
       goTo(next, true);
     },
-    [goTo, reviews.length],
+    [count, goTo, loopLength],
   );
 
-  // Start with a card centred rather than flush left. Without this the strip
-  // opens with nothing marked and the first card half off the edge.
+  // Open on the first review *of the middle copy*, so the strip starts with a
+  // card centred, marked, and a full list either side of it. Without this it
+  // opens flush left with nothing marked.
   useEffect(() => {
-    goTo(0, false);
-  }, [goTo]);
+    goTo(firstExposed, false);
+  }, [firstExposed, goTo]);
 
   /**
    * Reads which card is centred, rather than trusting the index the last
@@ -140,6 +205,8 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
     if (!track) return;
 
     let frame = 0;
+    let settle = 0;
+
     const measure = () => {
       const middle = track.scrollLeft + track.clientWidth / 2;
       let nearest = 0;
@@ -153,12 +220,27 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
         }
       }
       setActive(nearest);
-      indexRef.current = nearest % reviews.length;
+      // The strip's index space, not the review's. goTo indexes
+      // track.children, so a number reduced modulo the review count would
+      // address the first copy while the strip was physically in the second,
+      // and turn a one-card step into a jump back down the list.
+      indexRef.current = nearest;
+    };
+
+    // Everything has stopped: if the strip drifted out of the middle copy, put
+    // it on the twin of the card it is already showing. Identical content, so
+    // the screen does not change - see the note on the component.
+    const normalise = () => {
+      const index = indexRef.current;
+      if (index < count) goTo(index + count, false);
+      else if (index >= count * 2) goTo(index - count, false);
     };
 
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
+      window.clearTimeout(settle);
+      settle = window.setTimeout(normalise, SETTLE_MS);
     };
 
     measure();
@@ -166,10 +248,11 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
     window.addEventListener('resize', onScroll);
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(settle);
       track.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, [reviews.length]);
+  }, [count, goTo]);
 
   useEffect(() => {
     if (reduced || paused) return;
@@ -179,10 +262,11 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
     return () => window.clearInterval(id);
   }, [advance, paused, reduced]);
 
-  if (reviews.length === 0) return null;
+  if (count === 0) return null;
 
-  // Duplicated so the wrap has identical content to land on.
-  const loop = [...reviews, ...reviews];
+  // Laid down COPIES times so the wrap has identical content to land on, and
+  // so there is always a full list on both sides of whatever is centred.
+  const loop = Array.from({ length: COPIES }, () => reviews).flat();
 
   return (
     /* Held still while the visitor is reading.
@@ -199,14 +283,14 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
      * frozen until the page was touched again. */
     <div
       className="relative"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onTouchStart={() => setPaused(true)}
-      onTouchEnd={() => setPaused(false)}
-      onTouchCancel={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
+      onMouseEnter={() => setPointerHeld(true)}
+      onMouseLeave={() => setPointerHeld(false)}
+      onTouchStart={() => setPointerHeld(true)}
+      onTouchEnd={() => setPointerHeld(false)}
+      onTouchCancel={() => setPointerHeld(false)}
+      onFocusCapture={() => setFocusWithin(true)}
       onBlurCapture={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(false);
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false);
       }}
     >
       <ul
@@ -223,17 +307,17 @@ export function ReviewsCarousel({ reviews }: ReviewsCarouselProps) {
            leaves about 4rem of the second neighbour showing on each side —
            enough to read as "there is more this way", not enough to compete
            with the card being read. */
-        className="no-scrollbar -mx-[var(--container-pad)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[calc((100%+2*var(--container-pad)-var(--rev-card))/2)] py-2 [--rev-card:min(78vw,19rem)] sm:gap-5 md:[--rev-card:20rem] lg:[--rev-card:21rem]"
+        className="no-scrollbar -mx-[var(--container-pad)] flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[calc((100%+2*var(--container-pad)-var(--rev-card))/2)] py-2 [--rev-card:min(86vw,20rem)] sm:gap-5 md:[--rev-card:20rem] lg:[--rev-card:21rem]"
       >
         {loop.map((review, index) => {
-          const duplicate = index >= reviews.length;
+          const duplicate = index < firstExposed || index >= firstExposed + count;
           const isActive = index === active;
           return (
             <li
               key={`${review.id}-${index}`}
-              // The second copy exists only to make the wrap seamless; hide
-              // it from assistive tech and keyboard focus so nothing reads
-              // twice.
+              // The outer copies exist only to make the wrap seamless; hide
+              // them from assistive tech and keyboard focus so nothing reads
+              // three times.
               aria-hidden={duplicate || undefined}
               inert={duplicate || undefined}
               data-active={isActive || undefined}

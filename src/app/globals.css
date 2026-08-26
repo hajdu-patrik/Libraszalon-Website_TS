@@ -34,14 +34,24 @@
   --font-body: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-script: var(--font-caveat), ui-serif, cursive;
 
-  /* Fluid type scale — the lower bound is tuned for a 320px viewport.
+  /* Fluid type scale.
      Cormorant has a small x-height, so the serif steps run larger than the
-     old sans scale did. */
-  --text-hero: clamp(2.375rem, 1.2rem + 5.9vw, 5rem);
-  --text-h1: clamp(2.25rem, 1.55rem + 3.4vw, 3.75rem);
-  --text-h2: clamp(1.875rem, 1.45rem + 2.1vw, 2.875rem);
-  --text-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
-  --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+     old sans scale did.
+
+     The floors are tuned for 320px and the slopes for the phone band. That
+     second half is the part this scale used to get wrong: the vw terms were
+     small enough that every step was still pinned to its floor at 400px, so a
+     393px phone rendered the 320px design at 393px. Measured on a Galaxy S25,
+     body ran 16.1px and an h3 22.7px — the sizes the smallest screen the site
+     supports is supposed to get, on a screen 23% wider. The slopes below are
+     what make the 320-640px range, where nothing at all used to happen, do
+     real work; the ceilings are unchanged, so the desktop rendering is the
+     same as it was. */
+  --text-hero: clamp(2.625rem, 1.945rem + 3.4vw, 5rem);
+  --text-h1: clamp(2.5rem, 2.16rem + 1.9vw, 3.75rem);
+  --text-h2: clamp(2.125rem, 1.85rem + 1.4vw, 2.875rem);
+  --text-h3: clamp(1.625rem, 1.5rem + 0.62vw, 1.75rem);
+  --text-body: clamp(1.0625rem, 1.03rem + 0.11vw, 1.125rem);
   /* One step above body, for a short centred block that has to carry a whole
      section on its own — the contact page's standing notice. Tops out at
      1.25rem: large enough to read as an introduction, small enough that it
@@ -50,9 +60,29 @@
      1.0625rem) — a lead that started at 1.0625rem would be indistinguishable
      from ordinary copy on exactly the screens where the size is doing the
      most work. */
-  --text-lead: clamp(1.125rem, 1.02rem + 0.5vw, 1.25rem);
-  --text-price: clamp(1.75rem, 1.4rem + 1.7vw, 2.5rem);
-  --text-eyebrow: 0.75rem;
+  --text-lead: clamp(1.1875rem, 1.13rem + 0.28vw, 1.3125rem);
+  --text-price: clamp(1.875rem, 1.6rem + 1.4vw, 2.5rem);
+
+  /* The eyebrow was a flat 0.75rem, which made it the smallest thing on the
+     site at every width — and with 0.22em of tracking on it, the one label a
+     phone reader had to squint at. It is a label, not fine print: it names the
+     section under it, and on the price cards it carries the duration, which is
+     information nobody should have to zoom for. */
+  --text-eyebrow: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+
+  /* Two steps below body, for the things the scale had no name for and which
+     therefore ended up hard-coded.
+
+     ui   controls and card annotations — button labels, price-card notes,
+          inline links. Was text-[0.9375rem] in eight places.
+     meta captions, the copyright line, secondary bylines. Was text-sm, i.e.
+          14px flat, in ten places.
+
+     Both were fixed px, so they were the sizes that stayed smallest exactly
+     where the screen was smallest. Naming them is what lets them scale with
+     everything else. */
+  --text-ui: clamp(1rem, 0.945rem + 0.3vw, 1.0625rem);
+  --text-meta: clamp(0.9375rem, 0.883rem + 0.35vw, 1rem);
 
   /* House rules cards.
 
@@ -63,10 +93,18 @@
      fixed sizes left the body copy 198px — 26 characters a line, where prose
      wants 45 to 75 and rule 8 ran to 33 lines. The floors below are what bring
      it back to 250px, and they are floors, not compromises: the ceilings are
-     the sizes the old markup already used at lg. */
-  --text-rule-num: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
-  --text-rule-title: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
-  --text-rule-body: clamp(0.9375rem, 0.91rem + 0.12vw, 1rem);
+     the sizes the old markup already used at lg.
+
+     The floors have since been raised a step with the rest of the scale, which
+     costs the measure about two characters a line: 250px of body copy at 16px
+     is 31 characters rather than the 33 the 15px floor gave. That is the right
+     side of the trade. 26 was the number that made rule 8 unreadable; 31 is
+     inside the band where the only thing a wider measure buys is fewer lines,
+     and the page is scrolled either way. What it buys back is a rules page
+     that is not visibly set smaller than the page the reader arrived from. */
+  --text-rule-num: clamp(1.625rem, 1.28rem + 1.4vw, 2.25rem);
+  --text-rule-title: clamp(1.1875rem, 1.09rem + 0.42vw, 1.375rem);
+  --text-rule-body: clamp(1rem, 0.97rem + 0.11vw, 1.0625rem);
 
   /* Deliberately outside Tailwind's --spacing-* and --radius-* namespaces:
      these are consumed by var() inside the two utilities below and nowhere
@@ -113,7 +151,11 @@
 :root {
   --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
   --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
-  --header-height: 4.5rem;
+  /* The mobile header, which is the taller of the two: py-4 either side of a
+     52px logo. Desktop is 80px, so anchored jumps there clear by 4px more than
+     they need to, which is invisible; the old 4.5rem was 4px *short* on a
+     phone, which was not. */
+  --header-height: 5.25rem;
 
   /* Four steps, each with one job. Anything that moves picks the step that
      matches what it is, not a number that happened to look right:
@@ -175,7 +217,27 @@
     font-family: var(--font-heading);
     font-weight: 600;
     line-height: 1.12;
-    text-wrap: balance;
+    /* balance equalises the lines of a heading by making all of them shorter
+       than the column. On a desktop headline that is the refinement it looks
+       like. On a phone, where "Aromaterápiás relaxáló, stresszoldó masszázs"
+       is three lines in 357px, it leaves every one of them stopping near the
+       middle of a column the heading never reaches the edge of — which reads
+       as type that is too small for its space, because that is what type that
+       is too small for its space looks like.
+
+       pretty still does the job that actually matters at this width: no
+       one-word last line. It just does not buy that by throwing away the
+       width. Where a heading has room to run, balance comes back. */
+    text-wrap: pretty;
+  }
+
+  @media (width >= 40rem) {
+    h1,
+    h2,
+    h3,
+    h4 {
+      text-wrap: balance;
+    }
   }
 
   p {

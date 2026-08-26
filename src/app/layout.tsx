@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer';
 import { IntroVeil } from '@/components/layout/IntroVeil';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
 import { BackToTop } from '@/components/ui/BackToTop';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { businessJsonLd } from '@/lib/jsonld';
 import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
@@ -114,11 +115,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <BackToTop />
         <WelcomeModal />
 
-        <script
-          type="application/ld+json"
-          // Static, build-time JSON built from our own content files.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd()) }}
-        />
+        <JsonLd data={businessJsonLd()} />
 
         <Analytics />
         <SpeedInsights />

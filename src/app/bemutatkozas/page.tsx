@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Quote } from 'lucide-react';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
@@ -77,7 +78,7 @@ export default function AboutPage() {
           <blockquote className="mt-6 font-heading text-[length:var(--text-h2)] leading-snug text-cream-text italic">
             {about.quote.text}
           </blockquote>
-          <cite className="mt-6 block text-sm tracking-wide not-italic text-cream-muted">
+          <cite className="mt-6 block text-[length:var(--text-meta)] tracking-wide not-italic text-cream-muted">
             {about.quote.attribution}
           </cite>
         </Reveal>
@@ -114,16 +115,10 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd([
-              { name: 'Főoldal', path: '/' },
-              { name: about.title, path: pageSeo.about.path },
-            ]),
-          ),
-        }}
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: about.title, path: pageSeo.about.path },
+        ])}
       />
     </>
   );

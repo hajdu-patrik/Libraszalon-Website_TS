@@ -7,6 +7,7 @@
  * service catalogue with offers, review stars, and an FAQ for the house rules.
  */
 
+import { homeItem } from '@/content/nav';
 import { prices, priceRange } from '@/content/prices';
 import { publishedReviews, reviewStats } from '@/content/reviews';
 import { houseRules } from '@/content/pages/house-rules';
@@ -107,11 +108,21 @@ export function serviceCatalogJsonLd() {
   };
 }
 
+/**
+ * A breadcrumb trail, from the home page down.
+ *
+ * The home crumb is added here rather than asked for. Every caller passed the
+ * same literal as its first element, which is five copies of a name and a path
+ * that both already exist in content/nav.ts — and a trail that started
+ * somewhere else would be wrong, so there was never anything to decide.
+ */
 export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
+  const crumbs = [{ name: homeItem.label, path: homeItem.href }, ...trail];
+
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: trail.map((crumb, index) => ({
+    itemListElement: crumbs.map((crumb, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,

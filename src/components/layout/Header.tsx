@@ -4,11 +4,11 @@ import { Clock, Phone } from 'lucide-react';
 import { FacebookIcon } from '@/components/ui/FacebookIcon';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Picture } from '@/components/ui/Picture';
 import { homeItem, navItems } from '@/content/nav';
 import { site } from '@/content/site';
+import { useScrolledPast } from '@/lib/hooks/useScrolledPast';
 
 /**
  * Utility bar + sticky header.
@@ -19,14 +19,7 @@ import { site } from '@/content/site';
  */
 export function Header() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  const scrolled = useScrolledPast(24);
 
   return (
     <>
@@ -63,7 +56,7 @@ export function Header() {
         data-scrolled={scrolled || undefined}
         className="sticky top-0 z-40 border-b border-transparent bg-surface/85 backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-(--dur-base) ease-smooth data-scrolled:border-line data-scrolled:bg-surface/95 data-scrolled:shadow-[0_1px_20px_rgb(44_40_40_/_0.07)]"
       >
-        <div className="container-page flex items-center justify-between gap-4 py-3">
+        <div className="container-page flex items-center justify-between gap-4 py-4 sm:py-3">
           <Link
             href={homeItem.href}
             aria-label={`${site.legalName} — ${homeItem.label}`}
@@ -84,7 +77,7 @@ export function Header() {
               slug="logo"
               alt=""
               sizes="220px"
-              className="h-11 w-auto transition-[height] duration-(--dur-base) ease-smooth sm:h-14 in-data-scrolled:h-10 sm:in-data-scrolled:h-11"
+              className="h-13 w-auto transition-[height] duration-(--dur-base) ease-smooth sm:h-14 in-data-scrolled:h-11 sm:in-data-scrolled:h-11"
             />
           </Link>
 

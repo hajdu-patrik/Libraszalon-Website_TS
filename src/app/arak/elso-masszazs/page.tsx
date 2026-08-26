@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
@@ -76,7 +77,7 @@ export default function FirstMassagePage() {
         <ol className="mt-12 grid gap-5 sm:grid-cols-2">
           {firstMassage.tips.items.map((tip, index) => (
             <Reveal
-              key={tip.slice(0, 40)}
+              key={tip}
               as="li"
               index={index % 2}
               className="card-interactive flex gap-5 rounded-2xl bg-surface p-6"
@@ -87,23 +88,17 @@ export default function FirstMassagePage() {
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <p className="text-[0.9375rem] leading-relaxed text-muted">{tip}</p>
+              <p className="text-[length:var(--text-ui)] leading-relaxed text-muted">{tip}</p>
             </Reveal>
           ))}
         </ol>
       </Section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd([
-              { name: 'Főoldal', path: '/' },
-              { name: 'Árak', path: pageSeo.prices.path },
-              { name: firstMassage.title, path: pageSeo.firstMassage.path },
-            ]),
-          ),
-        }}
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Árak', path: pageSeo.prices.path },
+          { name: firstMassage.title, path: pageSeo.firstMassage.path },
+        ])}
       />
     </>
   );

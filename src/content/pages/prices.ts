@@ -1,5 +1,39 @@
 /** /arak/ — headings verbatim from the legacy page. */
 
+import type { ImageSlug } from '@/lib/images';
+
+export type PassImage = {
+  slug: ImageSlug;
+  /** Alternative text, written to stand on its own for a screen reader. */
+  alt: string;
+  /** Printed under the frame, where the heading already supplies the context. */
+  label: string;
+};
+
+/**
+ * One entry per photograph, rather than the two parallel objects keyed by
+ * front/back/card this used to be. The page had to pair those back up against
+ * a list of slugs it held inline, so the image, its alternative text and its
+ * caption were spread across two files and could be mismatched in either.
+ */
+const passImages: PassImage[] = [
+  {
+    slug: 'pass-front',
+    alt: 'A Libra Masszázs Szalon 10 alkalmas bérlete, előlap',
+    label: 'Bérlet, előlap',
+  },
+  {
+    slug: 'pass-back',
+    alt: 'A Libra Masszázs Szalon 10 alkalmas bérlete, hátlap',
+    label: 'Bérlet, hátlap',
+  },
+  {
+    slug: 'business-card',
+    alt: 'A Libra Masszázs Szalon névjegykártyája',
+    label: 'Névjegy',
+  },
+];
+
 export const pricesPage = {
   eyebrow: 'Válaszd ki a neked megfelelőt!',
   title: 'Árak',
@@ -15,25 +49,12 @@ export const pricesPage = {
    * price list is where a visitor is actually looking for it; the rules that
    * govern it — validity, what happens to an unused one — stay on /hazirend/.
    *
-   * Two layers of text per image: the caption is the alternative text, written
-   * to stand on its own for a screen reader, and the short label is what is
-   * printed under the frame, where the surrounding heading already supplies
-   * the context.
    */
   pass: {
     // Broadened from '10 alkalmas bérlet' when the névjegy joined the row: a
     // business card is not a pass, and a heading that says it is would be the
     // one piece of copy on the page that is simply untrue.
     heading: 'Bérlet és névjegy',
-    captions: {
-      front: 'A Libra Masszázs Szalon 10 alkalmas bérlete, előlap',
-      back: 'A Libra Masszázs Szalon 10 alkalmas bérlete, hátlap',
-      card: 'A Libra Masszázs Szalon névjegykártyája',
-    },
-    labels: {
-      front: 'Bérlet, előlap',
-      back: 'Bérlet, hátlap',
-      card: 'Névjegy',
-    },
+    images: passImages,
   },
 } as const;

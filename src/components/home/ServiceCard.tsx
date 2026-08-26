@@ -46,7 +46,16 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
             slug={service.image}
             alt={service.alt}
             sizes="(max-width: 1024px) 100vw, 480px"
-            className="aspect-[4/3] w-full object-cover"
+            // 3:2 on a phone, 4:3 where the row splits into two columns.
+            //
+            // Full-bleed at 4:3 the photograph was 268px of a 357px-wide
+            // column, and it was arriving above a 22px title and 16px body:
+            // the picture was not just larger than the words, it was larger
+            // than all of them together. Losing 30px of height is enough to
+            // put the title back in the frame on the same screenful, and 3:2
+            // is a crop these photographs already survive — the subject is
+            // centred in every one of them.
+            className="aspect-[3/2] w-full object-cover lg:aspect-[4/3]"
           />
         </div>
       </Reveal>

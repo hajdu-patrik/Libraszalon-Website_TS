@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ElementType, type ReactNode } from 'react';
+import { prefersReducedMotion } from '@/lib/hooks/useReducedMotion';
 
 type RevealProps = {
   children: ReactNode;
@@ -36,7 +37,12 @@ export function Reveal({
     if (!el) return;
 
     // Respect the OS setting: show everything immediately, observe nothing.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    //
+    // The one-shot read rather than the subscribing hook, deliberately. This
+    // component is on the page fifty times over; fifty media-query listeners
+    // to catch a setting nobody changes mid-visit would cost more than the
+    // reveal itself, and an element already revealed has nothing to undo.
+    if (prefersReducedMotion()) {
       el.setAttribute('data-revealed', '');
       return;
     }

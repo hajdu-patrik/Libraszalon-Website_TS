@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ContactDetails } from '@/components/contact/ContactDetails';
 import { MapEmbed } from '@/components/contact/MapEmbed';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { GoldSignature } from '@/components/ui/GoldSignature';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
@@ -30,29 +32,35 @@ export default function ContactPage() {
         is what it was. Held in a single panel they read as one thing: what to
         know, then where it is and how to reach me.
 
-        56.25rem = 900px at the default root size, but written in rem on
-        purpose. At 200% text zoom a px cap would hold the card at 900px while
-        the copy inside it doubled; in rem the frame grows with its contents and
-        the measure stays where it was designed.
+        The panel takes the container's full width, like the content block on
+        every other page. It used to stop at 900px, which was a judgement about
+        this page's own content and ignored the fact that a visitor arrives here
+        from somewhere else: against the house rules or the first-massage page,
+        both of which run the full 1200px, the contact page read as a narrower
+        site rather than as a considered panel. Consistency across the set beats
+        the local optimum — and it costs nothing here, because the measure that
+        actually governs readability is the cap on the copy inside, not the
+        frame around it.
 
         The padding is the other half of the effect. It is deliberately larger
-        than the site's usual card inset and scales with the viewport — with
-        this little content, the space around it is what reads as considered
-        rather than sparse.
+        than the site's usual card inset and scales with the viewport.
       */}
       <Section tone="cream" spacing="normal">
-        <Reveal className="mx-auto w-full max-w-[56.25rem]">
+        <Reveal className="w-full">
           <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-lift)] sm:p-10 lg:p-14">
-            {/* Gold signature line across the top of the card. */}
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 block h-1 bg-gradient-to-r from-gold via-gold/60 to-transparent"
-            />
+            <GoldSignature className="absolute inset-x-0 top-0" />
 
-            {/* What to know before booking. Capped tighter than the card so a
+            {/* What to know before booking. Capped well inside the panel so a
                 centred line never runs past the length the eye can sweep back
-                from, however wide the panel gets. */}
-            <div className="mx-auto max-w-[42rem] text-center">
+                from, however wide the frame gets — at the body size that is
+                about 68 characters, which is where prose wants to be.
+
+                max-w-3xl rather than the bespoke 42rem this carried: it is the
+                same cap the first-massage note and the portrait quote already
+                use for a centred block, so the three read as one measure. In
+                rem either way, so it grows with the copy at 200% text zoom
+                instead of holding the old width. */}
+            <div className="mx-auto max-w-3xl text-center">
               <p className="text-[length:var(--text-lead)] leading-relaxed text-ink">
                 {contact.booking.lead}
                 <Link
@@ -95,16 +103,10 @@ export default function ContactPage() {
         </Reveal>
       </Section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd([
-              { name: 'Főoldal', path: '/' },
-              { name: 'Kapcsolat', path: pageSeo.contact.path },
-            ]),
-          ),
-        }}
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Kapcsolat', path: pageSeo.contact.path },
+        ])}
       />
     </>
   );

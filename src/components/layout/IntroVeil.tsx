@@ -1,4 +1,4 @@
-import { fallbackSrc, getImage, srcSet } from '@/lib/images';
+import { Picture } from '@/components/ui/Picture';
 
 /**
  * The curtain that opens the first page of a visit: the salon's mark settles
@@ -17,18 +17,13 @@ import { fallbackSrc, getImage, srcSet } from '@/lib/images';
  * `pointer-events: none` on purpose: even in the unlikely event that both the
  * animation and the cleanup timer fail, the page underneath stays fully usable.
  */
-
-const MARK = 'mark';
-
 export function IntroVeil() {
-  const { width, height } = getImage(MARK);
-
   return (
     <div aria-hidden="true" className="intro-veil">
       <div className="intro-veil-inner">
         {/*
-          Hand-written rather than <Picture> because this one image needs
-          loading semantics no other image on the site wants.
+          The one image on the site whose loading needs fall on neither side of
+          Picture's `priority` switch, so it names all three explicitly.
 
           eager: the curtain is on screen within the first frames, so the fetch
           cannot be deferred — and a lazy image inside a display:none subtree is
@@ -38,21 +33,21 @@ export function IntroVeil() {
           fetchPriority low: 16KB that only matters on the first load of a visit
           has no business competing with the hero photograph for the LCP. Being
           the first image in the document, it is discovered immediately anyway.
+
+          This used to be a hand-written <picture> holding its own copy of the
+          srcset ladder, purely because those three attributes could not be
+          expressed. Overriding them is cheaper than a second implementation of
+          the thing Picture is for.
         */}
-        <picture>
-          <source type="image/avif" srcSet={srcSet(MARK, 'avif')} sizes="176px" />
-          <source type="image/webp" srcSet={srcSet(MARK, 'webp')} sizes="176px" />
-          <img
-            src={fallbackSrc(MARK)}
-            alt=""
-            width={width}
-            height={height}
-            loading="eager"
-            fetchPriority="low"
-            decoding="async"
-            className="w-36 sm:w-44"
-          />
-        </picture>
+        <Picture
+          slug="mark"
+          alt=""
+          sizes="176px"
+          loading="eager"
+          fetchPriority="low"
+          decoding="async"
+          className="w-36 sm:w-44"
+        />
 
         <span className="intro-veil-rule" />
       </div>

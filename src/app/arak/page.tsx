@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { PriceCard } from '@/components/prices/PriceCard';
+import { FeaturedPriceCard, PriceCard } from '@/components/prices/PriceCard';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
@@ -33,17 +34,17 @@ export default function PricesPage() {
         <SectionHeading title={pricesPage.heading} lead={pricesPage.lead} />
 
         <div className="mt-14">
-          <PriceCard item={firstSession} index={0} featured />
+          <FeaturedPriceCard item={firstSession} />
 
           <Reveal className="mt-5 text-center sm:text-right">
             <Link
               href={pageSeo.firstMassage.path}
-              className="group inline-flex min-h-11 items-center gap-2 text-[0.9375rem] font-semibold text-gold-ink transition-colors hover:text-ink"
+              className="group inline-flex min-h-11 items-center gap-2 text-[length:var(--text-ui)] font-semibold text-gold-ink transition-colors hover:text-ink"
             >
               {pricesPage.firstMassageLinkLabel}
               <ArrowRight
                 aria-hidden="true"
-                className="size-4 transition-transform duration-(--dur-quick) ease-smooth group-hover:translate-x-1"
+                className="size-[1.125rem] transition-transform duration-(--dur-quick) ease-smooth group-hover:translate-x-1"
                 strokeWidth={1.8}
               />
             </Link>
@@ -88,36 +89,18 @@ export default function PricesPage() {
           <GoldRule centered className="mt-5" />
 
           <div className="mt-10 grid justify-items-center gap-5 md:grid-cols-3 md:gap-6">
-            {(
-              [
-                {
-                  slug: 'pass-front',
-                  caption: pricesPage.pass.captions.front,
-                  label: pricesPage.pass.labels.front,
-                },
-                {
-                  slug: 'pass-back',
-                  caption: pricesPage.pass.captions.back,
-                  label: pricesPage.pass.labels.back,
-                },
-                {
-                  slug: 'business-card',
-                  caption: pricesPage.pass.captions.card,
-                  label: pricesPage.pass.labels.card,
-                },
-              ] as const
-            ).map((item) => (
-              <figure key={item.slug} className="w-full max-w-sm md:max-w-none">
+            {pricesPage.pass.images.map((image) => (
+              <figure key={image.slug} className="w-full max-w-sm md:max-w-none">
                 <div className="card-interactive overflow-hidden rounded-2xl">
                   <Picture
-                    slug={item.slug}
-                    alt={item.caption}
+                    slug={image.slug}
+                    alt={image.alt}
                     sizes="(max-width: 767px) min(100vw, 24rem), min(30vw, 24rem)"
                     className="w-full object-cover"
                   />
                 </div>
-                <figcaption className="mt-3 text-center text-sm text-muted">
-                  {item.label}
+                <figcaption className="mt-3 text-center text-[length:var(--text-meta)] text-muted">
+                  {image.label}
                 </figcaption>
               </figure>
             ))}
@@ -125,20 +108,11 @@ export default function PricesPage() {
         </Reveal>
       </Section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceCatalogJsonLd()) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd([
-              { name: 'Főoldal', path: '/' },
-              { name: pricesPage.title, path: pageSeo.prices.path },
-            ]),
-          ),
-        }}
+      <JsonLd data={serviceCatalogJsonLd()} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: pricesPage.title, path: pageSeo.prices.path },
+        ])}
       />
     </>
   );

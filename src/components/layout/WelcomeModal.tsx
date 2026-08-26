@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CalendarClock, X } from 'lucide-react';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { GoldSignature } from '@/components/ui/GoldSignature';
 import { notice, noticeStorageKey } from '@/content/notice';
 import { INTRO_ATTRIBUTE, INTRO_TOTAL_MS } from '@/lib/intro';
 
@@ -67,6 +68,22 @@ export function WelcomeModal() {
     return () => window.clearTimeout(id);
   }, []);
 
+  // The card and the back-to-top button claim the same bottom-right corner at
+  // every width — inset-x-4/bottom-4 on a phone, right-6/bottom-6 from sm —
+  // and the card sits a layer above it. So for as long as the notice is up,
+  // that button is a control nobody can see or tap. Flagging it on <html>
+  // lets BackToTop stand down until the notice is gone; see the
+  // in-data-notice: variant there.
+  const showing = ready && !dismissed;
+  useEffect(() => {
+    if (!showing) return;
+    const root = document.documentElement;
+    root.dataset.notice = '';
+    return () => {
+      delete root.dataset.notice;
+    };
+  }, [showing]);
+
   const dismiss = useCallback(() => {
     try {
       window.localStorage.setItem(noticeStorageKey, 'dismissed');
@@ -78,7 +95,7 @@ export function WelcomeModal() {
 
   return (
     <AnimatePresence>
-      {ready && !dismissed && (
+      {showing && (
         <motion.section
           aria-label={notice.title}
           initial={reduced ? { opacity: 0 } : { opacity: 0, y: 28 }}
@@ -90,8 +107,7 @@ export function WelcomeModal() {
           }}
           className="fixed inset-x-4 bottom-4 z-40 overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-lift)] sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-[24.5rem]"
         >
-          {/* Gold signature line across the top of the card. */}
-          <span aria-hidden="true" className="block h-1 w-full bg-gradient-to-r from-gold via-gold/60 to-transparent" />
+          <GoldSignature className="w-full" />
 
           <div className="p-5 sm:p-6">
             <div className="flex items-start gap-4">
@@ -108,8 +124,8 @@ export function WelcomeModal() {
                 </p>
                 <p
                   id="welcome-notice-body"
-                  className={`mt-2 text-sm leading-relaxed text-muted ${
-                    expanded ? '' : 'line-clamp-3 sm:line-clamp-none'
+                  className={`mt-2 text-[length:var(--text-meta)] leading-relaxed text-muted ${
+                    expanded ? '' : 'line-clamp-4 sm:line-clamp-none'
                   }`}
                 >
                   {notice.body}
@@ -122,7 +138,7 @@ export function WelcomeModal() {
                   onClick={() => setExpanded((value) => !value)}
                   aria-expanded={expanded}
                   aria-controls="welcome-notice-body"
-                  className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-gold-ink transition-colors hover:text-ink sm:hidden"
+                  className="mt-1 inline-flex min-h-11 items-center text-[length:var(--text-meta)] font-semibold text-gold-ink transition-colors hover:text-ink sm:hidden"
                 >
                   {expanded ? notice.collapseLabel : notice.expandLabel}
                 </button>
@@ -132,16 +148,25 @@ export function WelcomeModal() {
                 type="button"
                 onClick={dismiss}
                 aria-label={notice.dismissLabel}
-                className="-mt-2 -mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-gold/10 hover:text-ink"
+                // size-12, not the size-11 the rest of the site's bare icon
+                // buttons use. At 44px this one sat exactly on the gate's
+                // threshold, and while the card is still translated into place
+                // Chrome quantises the transformed box to 43.999969px — under
+                // it. The responsive audit caught that on a different page
+                // every run, depending on which one it happened to sample
+                // mid-tween. 48px is four pixels of headroom instead of zero,
+                // and this is the control someone jabs at to get the card off
+                // their screen, so it is the last one that should be tight.
+                className="-mt-2 -mr-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-gold/10 hover:text-ink"
               >
-                <X aria-hidden="true" className="size-4" strokeWidth={1.8} />
+                <X aria-hidden="true" className="size-[1.125rem]" strokeWidth={1.8} />
               </button>
             </div>
 
             <button
               type="button"
               onClick={dismiss}
-              className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink"
+              className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-ink px-6 text-[length:var(--text-ui)] font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink"
             >
               {notice.confirmLabel}
             </button>

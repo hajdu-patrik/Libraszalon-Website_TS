@@ -46,7 +46,12 @@ export default function HomePage() {
 
       {/* Closing call to action */}
       <Section tone="cream" background="bg-prices-alt" spacing="normal">
-        <Reveal className="mx-auto max-w-2xl text-center">
+        {/* max-w-3xl, the same cap the portrait quote and the first-massage
+            note use. The site now has exactly two content widths: the
+            container for anything full-bleed, and this one for a centred
+            block of prose. This closing block was the last thing carrying a
+            third value for no reason anyone could name. */}
+        <Reveal className="mx-auto max-w-3xl text-center">
           <p className="font-script text-[length:var(--text-h2)] leading-snug text-ink">
             {site.tagline}
           </p>

@@ -73,7 +73,13 @@ export const developer = {
   },
 } as const;
 
+/**
+ * The map embed, pointed at the address above rather than at a second copy of
+ * it. The address was written out again here, in the one file whose stated job
+ * is to be the only place it appears — so a move would have left the map on
+ * the old street with nothing to say it had.
+ */
 export const mapsEmbedSrc =
   'https://maps.google.com/maps?q=' +
-  encodeURIComponent('Budapest, Hidegkúti út 174, 1028') +
+  encodeURIComponent(site.address.formatted) +
   '&t=m&z=15&output=embed&iwloc=near';

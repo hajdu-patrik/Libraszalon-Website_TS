@@ -27,7 +27,7 @@ export function Button({
   className = '',
 }: ButtonProps) {
   const base =
-    'group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-7 py-3 font-body text-[0.9375rem] font-semibold tracking-wide transition-[background-color,color,border-color,transform,box-shadow] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 active:translate-y-0';
+    'group/btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-7 py-3 font-body text-[length:var(--text-ui)] font-semibold tracking-wide transition-[background-color,color,border-color,transform,box-shadow] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 active:translate-y-0';
 
   const styles = {
     // Ink on gold clears 5.7:1; the hover deepens to the text-safe gold step.

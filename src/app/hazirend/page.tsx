@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
@@ -139,20 +140,11 @@ export default function HouseRulesPage() {
         </ol>
       </Section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(houseRulesFaqJsonLd()) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbJsonLd([
-              { name: 'Főoldal', path: '/' },
-              { name: houseRules.title, path: pageSeo.houseRules.path },
-            ]),
-          ),
-        }}
+      <JsonLd data={houseRulesFaqJsonLd()} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: houseRules.title, path: pageSeo.houseRules.path },
+        ])}
       />
     </>
   );

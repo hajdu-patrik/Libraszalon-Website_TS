@@ -1,4 +1,5 @@
-import { Phone, Star } from 'lucide-react';
+import { Phone } from 'lucide-react';
+import { StarRating } from '@/components/home/StarRating';
 import { Button } from '@/components/ui/Button';
 import { Picture } from '@/components/ui/Picture';
 import { home } from '@/content/pages/home';
@@ -59,7 +60,7 @@ export function Hero() {
             ))}
           </h1>
 
-          <p className="mt-6 text-lg text-cream-muted">
+          <p className="mt-6 text-[length:var(--text-lead)] text-cream-muted">
             {site.owner} · {site.ownerTitle}
           </p>
 
@@ -77,28 +78,16 @@ export function Hero() {
 
           {reviewStats.count > 0 && (
             <div className="mt-10 flex items-center gap-3">
-              <span
-                role="img"
-                aria-label={`${reviewStats.average} csillag az 5-ből`}
-                className="flex items-center gap-1"
-              >
-                {Array.from({ length: 5 }, (_, index) => (
-                  <Star
-                    key={index}
-                    aria-hidden="true"
-                    className={`size-4 ${
-                      index < Math.round(reviewStats.average)
-                        ? 'fill-gold text-gold'
-                        : 'fill-cream-text/20 text-cream-text/20'
-                    }`}
-                  />
-                ))}
-              </span>
+              {/* Not animated: the hero's copy is deliberately at rest so it
+                  is readable in the frame the intro curtain clears, and a row
+                  of stars fading in under it would be the one thing on the
+                  block still arriving. */}
+              <StarRating rating={reviewStats.average} tone="dark" animate={false} />
               {/* The average carries the proof; the raw count is deliberately
                   not shown — a small honest number reads as a weakness next to
                   a five-star average. reviewStats.count still gates the block,
                   so nothing is claimed when there are no reviews. */}
-              <p className="text-sm text-cream-muted">
+              <p className="text-[length:var(--text-meta)] text-cream-muted">
                 <span className="font-semibold text-cream-text">
                   {reviewStats.average.toLocaleString('hu-HU')} / 5
                 </span>{' '}
