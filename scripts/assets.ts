@@ -59,13 +59,6 @@ export const RAW_ASSETS: RawAsset[] = [
   { src: '2024/02/Szilikon-kopoly-scaled.webp', slug: 'cupping-silicone', maxWidth: 960 },
   { src: '2024/02/quotes-01.png', slug: 'quote-mark', fixedWidth: 160 },
 
-  // House rules
-  { src: '2024/02/Berlet-10-alkalom-1.webp', slug: 'pass-front', maxWidth: 960 },
-  { src: '2024/02/Berlet-10-alkalom-2.webp', slug: 'pass-back', maxWidth: 960 },
-
-  // Contact
-  { src: '2024/02/Nevjegy.webp', slug: 'business-card', maxWidth: 960 },
-
   // Decorative page backgrounds — drawn at ~8% opacity behind content
   { src: '2024/02/Devenyi-Krisztina-masszazs-54-scaled.webp', slug: 'bg-home', decorative: true },
   { src: '2024/02/Devenyi-Krisztina-masszazs-69-scaled.webp', slug: 'bg-about', decorative: true },

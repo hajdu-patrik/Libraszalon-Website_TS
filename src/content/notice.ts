@@ -8,9 +8,19 @@
  */
 
 export const notice = {
-  version: 1,
+  version: 2,
   title: 'Kedves Látogató!',
-  body: 'Felhívom rá szíves figyelmét, hogy új vendéget csak korlátozott számban tudok fogadni, illetve számolni kell a megnövekedett várakozási idővel. Időpontot előre láthatólag 3-4 hétre tudok adni. Az ajándékutalványok beváltására ugyanez a várakozási idő érvényes, kérem vásárlás előtt ezt vegye figyelembe. Köszönöm szíves megértését!',
+  /**
+   * One entry per paragraph. The notice is dictated to us as written text with
+   * its own breaks, and a single run-on string loses them — so the card renders
+   * this list rather than a paragraph it has to guess the shape of.
+   */
+  body: [
+    'Szeretném tájékoztatni, hogy jelenleg sajnos nincs kapacitásom új vendéget fogadni, valamint az ajándékutalványok értékesítését is határozatlan időre megszüntettem.',
+    'Ennek oka, hogy igyekszem kiszolgálni a meglévő vendégeim igényeit, s pillanatnyilag a kapacitásom határán vagyok.',
+    'Elnézést kérek mindenkitől, aki szeretett volna, de mégsem jutott be hozzám.',
+    'Kérem és előre is köszönöm mindenki szíves megértését!',
+  ],
   dismissLabel: 'Közlemény bezárása',
   confirmLabel: 'Megértettem',
   expandLabel: 'Részletek',

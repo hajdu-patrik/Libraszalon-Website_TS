@@ -129,33 +129,6 @@
       160
     ]
   },
-  "pass-front": {
-    "width": 960,
-    "height": 529,
-    "widths": [
-      320,
-      640,
-      960
-    ]
-  },
-  "pass-back": {
-    "width": 960,
-    "height": 528,
-    "widths": [
-      320,
-      640,
-      960
-    ]
-  },
-  "business-card": {
-    "width": 960,
-    "height": 532,
-    "widths": [
-      320,
-      640,
-      960
-    ]
-  },
   "bg-home": {
     "width": 1920,
     "height": 1280,

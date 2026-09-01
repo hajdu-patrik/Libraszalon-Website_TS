@@ -122,17 +122,42 @@ export function WelcomeModal() {
                 <p className="font-heading text-xl leading-tight text-ink">
                   {notice.title}
                 </p>
-                <p
+                <div
                   id="welcome-notice-body"
-                  className={`mt-2 text-[length:var(--text-meta)] leading-relaxed text-muted ${
-                    expanded ? '' : 'line-clamp-4 sm:line-clamp-none'
-                  }`}
+                  // The card is anchored to the bottom of the viewport and
+                  // grows upward, so an unbounded body walks off the top of a
+                  // short screen and takes the heading and the gold rule with
+                  // it — measured at 712px of card in a 640px viewport with
+                  // the notice expanded. Capping the prose instead of the card
+                  // keeps the title, the close button and Megértettem where
+                  // they are and gives the overflow to the only part that can
+                  // absorb it.
+                  className="mt-2 max-h-[55dvh] overflow-y-auto overscroll-contain text-[length:var(--text-meta)] leading-relaxed text-muted"
                 >
-                  {notice.body}
-                </p>
-                {/* Phones get the message clamped so the card never swallows
-                    the screen; the full text is one tap away and always in the
-                    DOM for screen readers. */}
+                  {notice.body.map((paragraph, index) => (
+                    <p
+                      key={paragraph}
+                      // Collapsed on a phone, only the opening paragraph is on
+                      // screen. Not line-clamp: that needs a -webkit-box whose
+                      // children are the lines themselves, and over a stack of
+                      // <p> it sets the height without clipping anything, so
+                      // the rest of the notice spills out of the card. Hiding
+                      // whole paragraphs cuts at a place the writer chose, and
+                      // sr-only rather than hidden keeps every word in the
+                      // accessibility tree the way the full text always was.
+                      className={
+                        index === 0
+                          ? ''
+                          : `mt-2 ${expanded ? '' : 'max-sm:sr-only'}`
+                      }
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+                {/* Phones get the opening paragraph so the card never swallows
+                    the screen; the rest is one tap away and always in the DOM
+                    for screen readers. */}
                 <button
                   type="button"
                   onClick={() => setExpanded((value) => !value)}

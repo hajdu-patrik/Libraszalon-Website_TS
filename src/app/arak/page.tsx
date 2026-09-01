@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { FeaturedPriceCard, PriceCard } from '@/components/prices/PriceCard';
-import { GoldRule } from '@/components/ui/GoldRule';
 import { JsonLd } from '@/components/ui/JsonLd';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -56,56 +54,6 @@ export default function PricesPage() {
             ))}
           </div>
         </div>
-
-        {/*
-          The pass and the névjegy, at the foot of the list.
-
-          Fenced off with a hairline and a wide inset rather than its own
-          section: neither is a price, but they are the last thing the price
-          list has to say, and a full section break here would read as a new
-          topic.
-
-          Three equal tracks from md, stacked and centred below it. A grid
-          rather than the flex row this was: three items on one flex line
-          divide the leftover space, not the space itself, so a card with a
-          slightly different aspect ratio would take a slightly wider slot and
-          the three frames would not line up. Equal tracks make them
-          identical, which is what a row of printed cards has to look like.
-
-          The 24rem cap is gone with the third image — it existed so a pair
-          would not stretch across a 1200px row, and three across fill that row
-          honestly. It survives only in the stacked state, where a single frame
-          at the full container width would be a card printed the size of a
-          poster.
-
-          The images themselves need no sizing rules: `img { max-width: 100%;
-          height: auto }` in the base layer already holds them inside their
-          frame at every width, down to 320px.
-        */}
-        <Reveal className="mt-16 border-t border-line pt-14 sm:mt-20 sm:pt-16">
-          <h2 className="text-center text-[length:var(--text-h3)] text-ink">
-            {pricesPage.pass.heading}
-          </h2>
-          <GoldRule centered className="mt-5" />
-
-          <div className="mt-10 grid justify-items-center gap-5 md:grid-cols-3 md:gap-6">
-            {pricesPage.pass.images.map((image) => (
-              <figure key={image.slug} className="w-full max-w-sm md:max-w-none">
-                <div className="card-interactive overflow-hidden rounded-2xl">
-                  <Picture
-                    slug={image.slug}
-                    alt={image.alt}
-                    sizes="(max-width: 767px) min(100vw, 24rem), min(30vw, 24rem)"
-                    className="w-full object-cover"
-                  />
-                </div>
-                <figcaption className="mt-3 text-center text-[length:var(--text-meta)] text-muted">
-                  {image.label}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </Reveal>
       </Section>
 
       <JsonLd data={serviceCatalogJsonLd()} />
