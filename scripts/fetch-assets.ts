@@ -1,12 +1,4 @@
-/**
- * Downloads every original image from the legacy WordPress install into
- * assets/raw/. Run once (or whenever an original changes upstream):
- *
- *   npm run assets:fetch
- *
- * assets/raw/ is gitignored — it is only an input to optimize-images.ts,
- * whose output (public/images/) is what actually ships.
- */
+
 
 import { mkdir, writeFile, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';

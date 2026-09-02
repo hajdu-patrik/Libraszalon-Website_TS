@@ -1,13 +1,9 @@
 type GoldRuleProps = {
   className?: string;
-  /** Centre the rule instead of aligning it left. */
+
   centered?: boolean;
 };
 
-/**
- * The short gold rule under headings — a hairline with a heavier centre
- * segment, which reads as drawn rather than stamped.
- */
 export function GoldRule({ className = '', centered = false }: GoldRuleProps) {
   return (
     <span

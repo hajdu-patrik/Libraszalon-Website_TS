@@ -4,13 +4,6 @@ import { ArrowUp } from 'lucide-react';
 import { prefersReducedMotion } from '@/lib/hooks/useReducedMotion';
 import { useScrolledPast } from '@/lib/hooks/useScrolledPast';
 
-/**
- * Appears once the visitor is well past the fold — but not while the standing
- * notice is on screen. That card takes the same corner and paints over the top
- * of this button, so without the in-data-notice: variant below the two of them
- * ship a control that is visibly there and impossible to press. WelcomeModal
- * owns the flag on <html>.
- */
 export function BackToTop() {
   const visible = useScrolledPast(600);
 

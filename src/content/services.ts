@@ -1,7 +1,4 @@
-/**
- * The four service blurbs from the home page. Copy is verbatim from the
- * legacy site — no rewriting.
- */
+
 
 import type { ImageSlug } from '@/lib/images';
 

@@ -7,41 +7,14 @@ import { CurrentYear } from '@/components/ui/CurrentYear';
 import { homeItem, navItems } from '@/content/nav';
 import { developer, site } from '@/content/site';
 
-/**
- * Dark closing panel. The logo image is drawn for a white ground, so the brand
- * block here is typographic instead: the salon name in the serif display face
- * with the script tagline beneath it.
- *
- * Two columns from the smallest screen up, not from sm.
- *
- * One column was costing the footer twice. "Oldalak" and the developer credit
- * are six and two rows of a single word each; given the whole 357px of a phone
- * they used about 90px of it and stacked, which is how four short blocks turned
- * into a 900px scroll of left-aligned links with nothing to tell them apart.
- * Pairing the two short lists puts that width to work and takes roughly a third
- * off the height.
- *
- * The two long blocks stay full-width — the brand, whose tagline wants a line
- * it can breathe on, and the contact list, where "libraszalon@gmail.com" and
- * "Budapest, Hidegkúti út 174, 1028" in a 170px column is exactly the
- * break-all mess this is meant to be fixing. col-span-2 on both, released at
- * lg where the four-column layout takes over.
- *
- * The credit is declared before the contact block, so on a phone the pairing
- * falls out of the DOM order and the reading order is the visual one. Desktop
- * puts the two back the way round they were with lg:order — contact belongs
- * next to the salon's own blocks, and the developer credit belongs last. The
- * four track widths are therefore unchanged from before this layout existed.
- */
 export function Footer() {
-  // Fallback only; CurrentYear reconciles to the visitor's real year on mount.
+
   const buildYear = new Date().getFullYear();
 
   return (
     <footer className="bg-ink-deep text-cream-text">
       <div className="container-page pt-16 pb-10 sm:pt-20 sm:pb-12">
         <div className="grid grid-cols-2 gap-x-6 gap-y-11 sm:gap-x-10 lg:grid-cols-[1.4fr_0.8fr_1.2fr_0.9fr] lg:gap-12">
-          {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
             <Link
               href={homeItem.href}
@@ -57,14 +30,13 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Navigation */}
           <nav aria-label="Lábléc menü">
             <h2 className="eyebrow-dark mb-4">Oldalak</h2>
             <ul>
               {[homeItem, ...navItems].map((item) => (
                 <li key={item.href}>
-                  {/* Full-width rather than inline: "Árak" is only 34px of
-                      text, so the row itself has to carry the 44px target. */}
+                  {
+}
                   <Link
                     href={item.href}
                     className="flex min-h-11 items-center text-cream-muted transition-colors hover:text-gold"
@@ -76,7 +48,6 @@ export function Footer() {
             </ul>
           </nav>
 
-          {/* Credit */}
           <div className="lg:order-4">
             <h2 className="eyebrow-dark mb-4">{developer.heading}</h2>
             <ul>
@@ -99,7 +70,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div className="col-span-2 lg:order-3 lg:col-span-1">
             <h2 className="eyebrow-dark mb-4">Elérhetőségek</h2>
             <ul className="space-y-1">

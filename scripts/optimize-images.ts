@@ -1,15 +1,4 @@
-/**
- * Turns assets/raw/ into the responsive image set the site actually serves.
- *
- *   npm run assets:optimize
- *
- * For each asset it emits AVIF + WebP at every width that does not upscale the
- * original, plus lib/images.manifest.json recording intrinsic dimensions. The
- * <Picture> component reads those dimensions to set width/height on every
- * <img>, which is what keeps cumulative layout shift at zero.
- *
- * Also derives the favicon set and the Open Graph image from the originals.
- */
+
 
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
@@ -19,16 +8,15 @@ import { MANIFEST_PATH, OUT_DIR, RAW_ASSETS, RAW_DIR, RESPONSIVE_WIDTHS } from '
 const AVIF = { quality: 55, effort: 6 } as const;
 const WEBP = { quality: 78, effort: 5 } as const;
 
-// Backgrounds sit at ~8% opacity, so detail is invisible. Compress hard.
 const AVIF_DECORATIVE = { quality: 32, effort: 6 } as const;
 const WEBP_DECORATIVE = { quality: 55, effort: 5 } as const;
 
 export type ImageEntry = {
-  /** Intrinsic width of the original. */
+
   width: number;
-  /** Intrinsic height of the original. */
+
   height: number;
-  /** Widths actually generated, ascending. */
+
   widths: number[];
 };
 
@@ -51,13 +39,10 @@ async function main() {
 
     const ceiling = Math.min(asset.maxWidth ?? Infinity, meta.width);
 
-    // Icons and avatars ship at one small size; everything else gets the
-    // responsive ladder, clipped so we never upscale past the original.
     const widths = asset.fixedWidth
       ? [Math.min(asset.fixedWidth, meta.width)]
       : RESPONSIVE_WIDTHS.filter((w) => w <= ceiling);
 
-    // Always keep at least one rendition, even for very small originals.
     if (widths.length === 0) widths.push(ceiling);
 
     const [avifOpts, webpOpts] = asset.decorative
@@ -77,9 +62,6 @@ async function main() {
       }
     }
 
-    // Record the dimensions of the *largest rendition*, not the original —
-    // <Picture> uses these for the intrinsic aspect ratio, and an oversized
-    // original would still describe the same ratio but invites confusion.
     const largest = widths[widths.length - 1];
     manifest[asset.slug] = {
       width: largest,
@@ -97,12 +79,9 @@ async function main() {
   console.log(`\n${Object.keys(manifest).length} assets, ${(bytes / 1024 / 1024).toFixed(2)} MB emitted.`);
 }
 
-/** Favicon set derived from the salon's logo mark. */
 async function buildIcons() {
   const mark = join(RAW_DIR, 'mark.png');
 
-  // Flatten onto white — the mark is line art with a transparent background,
-  // which renders as an invisible smudge on dark browser chrome.
   const base = sharp(mark).flatten({ background: '#ffffff' });
 
   await base.clone().resize(180, 180, { fit: 'contain', background: '#ffffff' })
@@ -111,8 +90,6 @@ async function buildIcons() {
   await base.clone().resize(32, 32, { fit: 'contain', background: '#ffffff' })
     .png().toFile('src/app/icon.png');
 
-  // PWA / web-manifest icons. Installable prompts want a 192 and a 512, which
-  // the 32px favicon and 180px apple-icon cannot satisfy.
   await base.clone().resize(192, 192, { fit: 'contain', background: '#ffffff' })
     .png().toFile('public/icon-192.png');
 
@@ -122,7 +99,6 @@ async function buildIcons() {
   console.log('  icons                  src/app/icon.png, src/app/apple-icon.png, public/icon-{192,512}.png');
 }
 
-/** 1200x630 Open Graph card built from the hero photograph. */
 async function buildOgImage() {
   await mkdir('public/og', { recursive: true });
   await sharp(join(RAW_DIR, 'hero.webp'))

@@ -1,19 +1,10 @@
-/**
- * Per-page titles and descriptions.
- *
- * Titles keep the legacy "<Page> - Libraszalon" pattern so search snippets stay
- * recognisable. Descriptions are drawn from each page's own copy, with two
- * deliberate corrections to what WordPress was serving:
- *   - /arak/ quoted a stale 15.000 Ft; the real first-session price is 18.000 Ft
- *   - /arak/elso-masszazs/ reused the house rules description; it now describes
- *     the first session, which is what the page is actually about
- */
+
 
 export type PageSeo = {
   path: string;
   title: string;
   description: string;
-  /** Priority hint for sitemap.xml. */
+
   priority: number;
 };
 

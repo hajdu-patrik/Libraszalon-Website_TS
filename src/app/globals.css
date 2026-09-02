@@ -1,145 +1,52 @@
 @import "tailwindcss";
 
-/* ---------------------------------------------------------------------------
-   Design tokens
-
-   The palette keeps the salon's established identity — the Elementor kit's
-   gold (#cc9955) and warm ink (#2c2828) — but rebuilds everything around it:
-   a warm cream replaces the sterile near-white, a deep espresso carries the
-   dark sections, and a serif display face (Cormorant Garamond) gives the
-   headings the editorial weight the photographs deserve.
-   --------------------------------------------------------------------------- */
-
 @theme {
-  /* Palette */
-  --color-ink: #2c2828; /* body text + brand dark */
-  --color-ink-deep: #211d1c; /* dark sections: hero scrim, reviews, footer */
-  --color-gold: #cc9955; /* brand gold — rules, icons, accents on dark */
-  --color-muted: #585151; /* secondary copy on light */
+
+  --color-ink: #2c2828;
+  --color-ink-deep: #211d1c;
+  --color-gold: #cc9955;
+  --color-muted: #585151;
   --color-surface: #ffffff;
-  --color-cream: #faf7f2; /* warm tinted background */
-  --color-line: #eae3d9; /* warm hairline */
-  --color-cream-text: #f5efe6; /* primary copy on dark */
-  --color-cream-muted: #cbc0b4; /* secondary copy on dark, 8.5:1 on ink-deep */
+  --color-cream: #faf7f2;
+  --color-line: #eae3d9;
+  --color-cream-text: #f5efe6;
+  --color-cream-muted: #cbc0b4;
 
-  /* #cc9955 only reaches 2.54:1 on white — fine for rules, stars and icons,
-     not for text. This darker step clears 4.5:1 for gold-coloured copy on
-     every light background it runs on: 4.99:1 on white and 4.7:1 on
-     --color-cream. On the dark surfaces the raw gold itself clears 5.7:1
-     against --color-ink-deep, so dark sections use --color-gold directly. */
-  --color-gold-ink: #936728;
+--color-gold-ink: #936728;
 
-  /* Typefaces (bound to next/font in src/app/layout.tsx) */
-  --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
+--font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
   --font-body: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-script: var(--font-caveat), ui-serif, cursive;
 
-  /* Fluid type scale.
-     Cormorant has a small x-height, so the serif steps run larger than the
-     old sans scale did.
-
-     The floors are tuned for 320px and the slopes for the phone band. That
-     second half is the part this scale used to get wrong: the vw terms were
-     small enough that every step was still pinned to its floor at 400px, so a
-     393px phone rendered the 320px design at 393px. Measured on a Galaxy S25,
-     body ran 16.1px and an h3 22.7px — the sizes the smallest screen the site
-     supports is supposed to get, on a screen 23% wider. The slopes below are
-     what make the 320-640px range, where nothing at all used to happen, do
-     real work; the ceilings are unchanged, so the desktop rendering is the
-     same as it was. */
-  --text-hero: clamp(2.625rem, 1.945rem + 3.4vw, 5rem);
+--text-hero: clamp(2.625rem, 1.945rem + 3.4vw, 5rem);
   --text-h1: clamp(2.5rem, 2.16rem + 1.9vw, 3.75rem);
   --text-h2: clamp(2.125rem, 1.85rem + 1.4vw, 2.875rem);
   --text-h3: clamp(1.625rem, 1.5rem + 0.62vw, 1.75rem);
   --text-body: clamp(1.0625rem, 1.03rem + 0.11vw, 1.125rem);
-  /* One step above body, for a short centred block that has to carry a whole
-     section on its own — the contact page's standing notice. Tops out at
-     1.25rem: large enough to read as an introduction, small enough that it
-     never competes with an h3. The floor is 1.125rem rather than the next
-     step up from body, because --text-body is itself nearly flat (1rem to
-     1.0625rem) — a lead that started at 1.0625rem would be indistinguishable
-     from ordinary copy on exactly the screens where the size is doing the
-     most work. */
+
   --text-lead: clamp(1.1875rem, 1.13rem + 0.28vw, 1.3125rem);
   --text-price: clamp(1.875rem, 1.6rem + 1.4vw, 2.5rem);
 
-  /* The eyebrow was a flat 0.75rem, which made it the smallest thing on the
-     site at every width — and with 0.22em of tracking on it, the one label a
-     phone reader had to squint at. It is a label, not fine print: it names the
-     section under it, and on the price cards it carries the duration, which is
-     information nobody should have to zoom for. */
-  --text-eyebrow: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+--text-eyebrow: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
 
-  /* Two steps below body, for the things the scale had no name for and which
-     therefore ended up hard-coded.
-
-     ui   controls and card annotations — button labels, price-card notes,
-          inline links. Was text-[0.9375rem] in eight places.
-     meta captions, the copyright line, secondary bylines. Was text-sm, i.e.
-          14px flat, in ten places.
-
-     Both were fixed px, so they were the sizes that stayed smallest exactly
-     where the screen was smallest. Naming them is what lets them scale with
-     everything else. */
-  --text-ui: clamp(1rem, 0.945rem + 0.3vw, 1.0625rem);
+--text-ui: clamp(1rem, 0.945rem + 0.3vw, 1.0625rem);
   --text-meta: clamp(0.9375rem, 0.883rem + 0.35vw, 1rem);
 
-  /* House rules cards.
-
-     Their own steps rather than the shared scale, because the rules grid is
-     the one place on the site where type size is load-bearing for layout: at
-     320px a card has 288px to spend, and every pixel the number or the padding
-     takes is a pixel the measure loses. Measured on the built page, the old
-     fixed sizes left the body copy 198px — 26 characters a line, where prose
-     wants 45 to 75 and rule 8 ran to 33 lines. The floors below are what bring
-     it back to 250px, and they are floors, not compromises: the ceilings are
-     the sizes the old markup already used at lg.
-
-     The floors have since been raised a step with the rest of the scale, which
-     costs the measure about two characters a line: 250px of body copy at 16px
-     is 31 characters rather than the 33 the 15px floor gave. That is the right
-     side of the trade. 26 was the number that made rule 8 unreadable; 31 is
-     inside the band where the only thing a wider measure buys is fewer lines,
-     and the page is scrolled either way. What it buys back is a rules page
-     that is not visibly set smaller than the page the reader arrived from. */
-  --text-rule-num: clamp(1.625rem, 1.28rem + 1.4vw, 2.25rem);
+--text-rule-num: clamp(1.625rem, 1.28rem + 1.4vw, 2.25rem);
   --text-rule-title: clamp(1.1875rem, 1.09rem + 0.42vw, 1.375rem);
   --text-rule-body: clamp(1rem, 0.97rem + 0.11vw, 1.0625rem);
 
-  /* Deliberately outside Tailwind's --spacing-* and --radius-* namespaces:
-     these are consumed by var() inside the two utilities below and nowhere
-     else, and generating a p-rule-card-pad utility for them would invite
-     exactly the kind of piecemeal reuse the utilities exist to prevent. */
-  --rule-card-pad: clamp(1.125rem, 0.85rem + 1.4vw, 1.75rem);
+--rule-card-pad: clamp(1.125rem, 0.85rem + 1.4vw, 1.75rem);
   --rule-card-radius: clamp(0.875rem, 0.7rem + 0.8vw, 1.25rem);
   --rule-grid-gap: clamp(1rem, 0.7rem + 1.5vw, 1.5rem);
   --rule-num-gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
 
-  /* Layout */
-  --container-width: 1200px;
+--container-width: 1200px;
   --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
 
-  /* Motion
+--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 
-     One curve and one duration scale for the whole site, so every moving thing
-     reads as the same gesture rather than a dozen unrelated ones.
-
-     The curve is registered under Tailwind's --ease-* namespace, which is what
-     makes `ease-smooth` a real utility — that is the whole point of naming it
-     here instead of in :root, and it is why the class strings below say
-     `ease-smooth` rather than `ease-[var(...)]`.
-
-     Durations live in :root instead: Tailwind v4 has no --duration-* namespace,
-     so they are consumed as `duration-(--dur-base)`. */
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* The default any bare `transition-*` picks up — and most of the site's
-     transitions are bare `transition-colors` on links. Tailwind ships 150ms on
-     its own curve, so leaving these alone would mean every link on the site
-     hovered to a different rhythm than every button and card. Overriding the
-     two defaults here fixes all of them at once, and the explicit
-     `duration-(--dur-*)` utilities elsewhere still win where they appear. */
-  --default-transition-duration: var(--dur-quick);
+--default-transition-duration: var(--dur-quick);
   --default-transition-timing-function: var(--ease-smooth);
 }
 
@@ -151,43 +58,22 @@
 :root {
   --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
   --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
-  /* The mobile header, which is the taller of the two: py-4 either side of a
-     52px logo. Desktop is 80px, so anchored jumps there clear by 4px more than
-     they need to, which is invisible; the old 4.5rem was 4px *short* on a
-     phone, which was not. */
+
   --header-height: 5.25rem;
 
-  /* Four steps, each with one job. Anything that moves picks the step that
-     matches what it is, not a number that happened to look right:
-
-       quick  a control answering a pointer — underline, burger, icon nudge
-       base   the default: colour, border, shadow, a card lifting
-       slow   the hero's opening zoom — now the only thing on the site that
-              moves a large surface a long way, since the photographs stopped
-              reacting to the cursor at all
-       enter  something arriving on screen for the first time
-
-     Paired with --ease-smooth, which front-loads the travel: at 600ms most of
-     an entrance is over inside 250ms, so it registers as immediate while the
-     long tail is what actually makes it feel soft. */
-  --dur-quick: 200ms;
+--dur-quick: 200ms;
   --dur-base: 400ms;
   --dur-slow: 700ms;
   --dur-enter: 600ms;
 
-  /* Entrance geometry, shared by the scroll reveal and the page opener. */
-  --enter-shift: 28px;
+--enter-shift: 28px;
   --enter-stagger: 70ms;
 }
-
-/* ---------------------------------------------------------------------------
-   Base
-   --------------------------------------------------------------------------- */
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* Anchor jumps must clear the sticky header. */
+
     scroll-padding-top: calc(var(--header-height) + 1rem);
     -webkit-text-size-adjust: 100%;
   }
@@ -198,15 +84,9 @@
     font-family: var(--font-body);
     font-size: var(--text-body);
     line-height: 1.75;
-    /* Hungarian compounds ("ajándékutalvány", "masszázsszolgáltatásaimat" at
-       24 letters) overflow narrow columns without help. Inherited from body so
-       figcaptions, card headings and table cells are covered too, not just the
-       three text tags; <html lang="hu"> supplies the hyphenation rules.
-       Not overflow-wrap: break-word — that breaks anywhere, which in Hungarian
-       is unreadable. auto only breaks where the dictionary allows. */
+
     hyphens: auto;
-    /* The site is a single fixed-width column; nothing should ever be able to
-       push the viewport sideways. This is the backstop for the 320px target. */
+
     overflow-x: hidden;
   }
 
@@ -217,17 +97,7 @@
     font-family: var(--font-heading);
     font-weight: 600;
     line-height: 1.12;
-    /* balance equalises the lines of a heading by making all of them shorter
-       than the column. On a desktop headline that is the refinement it looks
-       like. On a phone, where "Aromaterápiás relaxáló, stresszoldó masszázs"
-       is three lines in 357px, it leaves every one of them stopping near the
-       middle of a column the heading never reaches the edge of — which reads
-       as type that is too small for its space, because that is what type that
-       is too small for its space looks like.
 
-       pretty still does the job that actually matters at this width: no
-       one-word last line. It just does not buy that by throwing away the
-       width. Where a heading has room to run, balance comes back. */
     text-wrap: pretty;
   }
 
@@ -260,10 +130,6 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Utilities
-   --------------------------------------------------------------------------- */
-
 @utility container-page {
   width: 100%;
   max-width: calc(var(--container-width) + var(--container-pad) * 2);
@@ -280,7 +146,6 @@
   color: var(--color-gold-ink);
 }
 
-/* The same label on a dark surface, where the raw gold is the readable step. */
 @utility eyebrow-dark {
   font-family: var(--font-body);
   font-size: var(--text-eyebrow);
@@ -290,41 +155,10 @@
   color: var(--color-gold);
 }
 
-/* Readable measure for long-form pages (house rules, first massage). */
 @utility prose-measure {
   max-width: 68ch;
 }
 
-/* ---------------------------------------------------------------------------
-   The card hover
-
-   One gesture, one definition. The price cards, the house rules, the first-
-   massage tips and the review cards all answer the pointer the same way: the
-   hairline warms to gold and the resting shadow opens into the lifted one.
-   Nothing moves.
-
-   It was written out by hand on each of them before, which is how three
-   copies of "the same" hover ended up with three different transition
-   property lists and three different vertical nudges — none, 2px and 4px.
-   A card is a card; it should not matter which page it is on.
-
-   Layout shift is handled by the border being there all along and only
-   changing colour. That is the same guarantee `border: 2px solid transparent`
-   buys, without giving up the hairline — the resting border is part of the
-   design here, not scaffolding for the hover, so there is nothing to fake.
-   box-shadow and border-color cannot reflow a page in any case; neither is
-   a layout property.
-
-   The transition sits on the resting state, never under `&:hover`, so the
-   way back is the same length as the way there. The hover block only names
-   the end values.
-
-   `(hover: hover)` keeps it off touch screens, where :hover latches after a
-   tap and leaves a card looking picked up until you touch something else.
-
-   color-mix in oklab rather than a second colour token: it is the exact
-   expansion Tailwind's own `border-gold/50` produces, so the utility and any
-   remaining utility-class usage render identically. */
 @utility card-interactive {
   border: 1px solid var(--color-line);
   box-shadow: var(--shadow-card);
@@ -340,56 +174,12 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   The house rules grid
-
-   Fourteen numbered rules, in two columns, ending level.
-
-   The list used to be `columns-2`. Multi-column balances the two columns to
-   equal height on its own, which sounds like exactly what this needs, but it
-   balances by *height*, not by count: it is free to put the split anywhere.
-   With rules 1-7 holding 1,485 characters against 2,319 in rules 8-14 it did
-   land on 1-7 / 8-14, and then ended the left column 271px short of the right.
-   Measured on the built page at 1440. A numbered document that stops two
-   thirds of the way down one side reads as broken, because the reader knows
-   how many rules there are.
-
-   So: seven explicit rows, filled column by column. Rules 1-7 go down the
-   first column, 8-14 down the second, and rule 7 and rule 14 are both in row
-   seven — their bottom edges are the same edge, by construction rather than by
-   tuning. Rows are `auto`, so each takes the height of its taller card, and
-   `align-items: stretch` (the default, named here because the whole thing
-   collapses if someone sets items-start) makes its row-mate match.
-
-   Not `grid-auto-rows: 1fr`, which is the obvious-looking answer and is wrong
-   twice over. It sizes implicit rows, so with the rows declared here it never
-   applies at all; and `1fr` equalises rows against *each other*, not the two
-   cards within a row. Written as `repeat(7, 1fr)` it does hold the symmetry,
-   but every row inflates to the tallest on the page: 3,237px against 1,833px,
-   and 3,332px of whitespace against 586px.
-
-   The row count comes from the content via --rule-rows rather than being
-   spelled 7 here, because a fifteenth rule would otherwise open an implicit
-   eighth row in the first column and put the columns out of true again.
-
-   Two columns start at 64rem, not at md. At 768 the card is 337px wide and the
-   body copy 237px — 31 characters a line, narrower than the single-column
-   phone layout it would be replacing. 1024 is the first width where the
-   measure reaches 45. */
 @utility rules-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--rule-grid-gap);
 
-  /* One column is not a licence to run the full container width. Uncapped, a
-     768px tablet gave the body copy 618px — 85 characters a line, as far past
-     the readable band on that side as the old two-column tablet layout was on
-     the other. 37rem holds the measure at about 68 characters, and it is inert
-     below 592px, where the container is already narrower than the cap.
-
-     Left-aligned rather than centred, so the list stays flush with the heading
-     and the gold rule above it. */
-  max-width: 37rem;
+max-width: 37rem;
 
   @media (width >= 64rem) {
     max-width: none;
@@ -400,21 +190,6 @@
   }
 }
 
-/* The card. Composes with card-interactive, which owns the border, the shadow
-   and the hover.
-
-   minmax(0, 1fr) on the text column, never a bare 1fr: a grid track's default
-   minimum is min-content, and "masszázsszolgáltatásaimat" is 25 letters. The
-   track would refuse to go narrower than the word and push the card wide.
-
-   align-content: start keeps the content at the top of a card that was
-   stretched to match its row-mate, so five of the fourteen carry visible slack
-   at the bottom. That is the honest cost of ending both columns level, and it
-   should look like breathing room rather than like a card that failed to fill.
-
-   Below 30rem the number moves above the title. Beside it, it costs the number
-   column plus its gap out of 288px, and on the smallest screens the measure
-   cannot afford either. */
 @utility rule-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -437,41 +212,11 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Motion
-   Every animation below is transform/opacity only, so it stays on the
-   compositor and never triggers layout.
-   --------------------------------------------------------------------------- */
-
-/* Scroll reveal. Elements start hidden and are released by an
-   IntersectionObserver adding [data-revealed].
-
-   This is the site's one entrance gesture: rise and fade over --dur-enter on
-   --ease-smooth. Every direction below is the same timing with a different
-   starting offset, so a card, a photograph and a paragraph all arrive at the
-   same speed. Reveal.tsx caps --reveal-index at 3, so the last element of a
-   group starts 210ms in, never later. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(var(--enter-shift));
 
-  /* Four properties, not two, and this rule has to be the one that lists
-     them.
-
-     `transition` is a single shorthand, and this block is unlayered — it
-     beats every Tailwind utility, `card-interactive` included. Most reveal
-     targets are wrappers and it never mattered, but the price cards, the
-     house rules and the first-massage tips are the reveal element *and* the
-     card, so this declaration was quietly deciding what their hover could
-     animate. It listed opacity and transform, so border-color and box-shadow
-     were not in the set: those cards snapped to their hover state and snapped
-     back, on every page, since the day the hover was written. Naming all four
-     here is what actually makes the card hover smooth.
-
-     The delay is per-property for the same reason. The stagger belongs to the
-     entrance; inherited by the hover it would mean a card three deep in a
-     grid waited 210ms before acknowledging the pointer. */
-  --reveal-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
+--reveal-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
   transition-property: opacity, transform, border-color, box-shadow;
   transition-duration: var(--dur-enter), var(--dur-enter), var(--dur-base), var(--dur-base);
   transition-timing-function: var(--ease-smooth);
@@ -499,10 +244,6 @@
   transform: none;
 }
 
-/* The same gesture as [data-reveal], as a keyframe, for the things that arrive
-   without waiting to be scrolled to: the page body on navigation and the
-   header block of a subpage. Keeping them on one shape is what stops a
-   navigation from feeling different to a scroll. */
 @keyframes enter-rise {
   from {
     opacity: 0;
@@ -523,7 +264,6 @@
   }
 }
 
-/* The hero photograph settles out of a slow zoom while the scrim holds. */
 @keyframes hero-image {
   from {
     opacity: 0;
@@ -534,18 +274,6 @@
     transform: scale(1);
   }
 }
-
-/* ---------------------------------------------------------------------------
-   Intro curtain
-   Plays on the first load of a visit only. The markup ships in every page but
-   stays display:none until the bootstrap script in src/app/layout.tsx sets
-   [data-intro] on <html> — see src/lib/intro.ts for why that runs in <head>.
-
-   Three staggered animations rather than one multi-stage keyframe: each stage
-   then gets --ease-smooth applied over its own span, instead of the easing
-   being stretched across the whole 1.3s (which would collapse everything after
-   the first 200ms into a single frame).
-   --------------------------------------------------------------------------- */
 
 .intro-veil {
   display: none;
@@ -558,7 +286,7 @@ html[data-intro] .intro-veil {
   display: grid;
   place-items: center;
   background-color: var(--color-cream);
-  /* Decorative from first frame to last: the page beneath is never blocked. */
+
   pointer-events: none;
   animation: intro-lift 0.6s var(--ease-smooth) 0.7s forwards;
 }
@@ -574,7 +302,6 @@ html[data-intro] .intro-veil-inner {
   animation: intro-mark 0.65s var(--ease-smooth) both;
 }
 
-/* Drawn from the centre outwards, which reads as a hairline being ruled. */
 .intro-veil-rule {
   display: block;
   width: 6rem;
@@ -597,7 +324,7 @@ html[data-intro] .intro-veil-rule {
     transform: translateY(0);
   }
   to {
-    /* 101% so no sliver of the panel is left behind on fractional heights. */
+
     transform: translateY(-101%);
   }
 }
@@ -624,21 +351,12 @@ html[data-intro] .intro-veil-rule {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Reduced motion
-   One switch that neutralises every animation on the site. Content must be
-   fully visible and usable with motion disabled.
-   --------------------------------------------------------------------------- */
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  /* Not "instant" — absent. The blanket rule below collapses durations but not
-     delays, so the curtain would still hold the screen for 0.7s for exactly
-     the visitors who asked for no motion. */
-  html[data-intro] .intro-veil {
+html[data-intro] .intro-veil {
     display: none;
   }
 

@@ -10,21 +10,14 @@ import { homeItem, navItems } from '@/content/nav';
 import { site } from '@/content/site';
 import { useScrolledPast } from '@/lib/hooks/useScrolledPast';
 
-/**
- * Utility bar + sticky header.
- *
- * The dark utility bar carries the phone number, hours and Facebook link and
- * scrolls away with the page; the white header beneath it stays pinned and
- * grows a hairline and shadow once the page moves.
- */
 export function Header() {
   const pathname = usePathname();
   const scrolled = useScrolledPast(24);
 
   return (
     <>
-      {/* Utility bar — desktop only; on a phone the same facts are one tap
-          away in the menu drawer. */}
+      {
+}
       <div className="hidden bg-ink-deep text-[0.8125rem] text-cream-muted md:block">
         <div className="container-page flex items-center justify-between gap-6">
           <div className="flex items-center gap-6">
@@ -60,19 +53,8 @@ export function Header() {
           <Link
             href={homeItem.href}
             aria-label={`${site.legalName} — ${homeItem.label}`}
-            // min-h-11 on the link, not the image: the logo shrinks to 40px in
-            // the scrolled state, and the tap target must not shrink with it.
             className="flex min-h-11 shrink-0 items-center"
           >
-            {/* The transition is for the height alone: the logo shrinks when
-                the header does, and that travel wants easing.
-
-                It carried a hover dim once, and that stays gone even now the
-                photographs answer the cursor again. The card gesture is a
-                frame warming around a picture; the logo is a wordmark sitting
-                directly on the header with no frame to warm, and drawing one
-                around it would invent a box that is not there. The link keeps
-                its focus ring. */}
             <Picture
               slug="logo"
               alt=""
@@ -81,11 +63,7 @@ export function Header() {
             />
           </Link>
 
-          {/* Desktop navigation */}
           <nav aria-label="Főmenü" className="hidden lg:block">
-            {/* gap-2 + px-3 on the links, not bare gaps on text: the rhythm is
-                the same, but "Árak" is 32px wide and needs the padding to
-                reach a 44px target. */}
             <ul className="flex items-center gap-2">
               {navItems.map((item) => {
                 const active = pathname === item.href;
@@ -110,7 +88,6 @@ export function Header() {
             </ul>
           </nav>
 
-          {/* Booking CTA — the single action the whole site funnels toward. */}
           <a
             href={`tel:${site.phoneHref}`}
             className="hidden min-h-11 items-center gap-2 rounded-full bg-gold px-5 font-body text-sm font-semibold tracking-wide text-ink-deep shadow-[var(--shadow-card)] transition-all duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:bg-gold-ink hover:text-surface lg:inline-flex"

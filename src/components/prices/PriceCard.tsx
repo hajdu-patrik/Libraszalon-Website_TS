@@ -2,17 +2,6 @@ import { GoldSignature } from '@/components/ui/GoldSignature';
 import { Reveal } from '@/components/ui/Reveal';
 import type { PriceItem } from '@/content/prices';
 
-/**
- * The first session, at the head of the price list: dark ground, gold price,
- * the note beside it rather than under it.
- *
- * A separate component rather than a `featured` flag on the one below. The two
- * share no markup — different surface, different layout, different colour
- * roles — and the flag version had to take an `index` it then ignored, because
- * a card that is alone in its row has no stagger position. A required prop
- * with no meaning is an interface describing something the component does not
- * do.
- */
 export function FeaturedPriceCard({ item }: { item: PriceItem }) {
   return (
     <Reveal
@@ -42,11 +31,10 @@ export function FeaturedPriceCard({ item }: { item: PriceItem }) {
 
 type PriceCardProps = {
   item: PriceItem;
-  /** Position in its row, for the entrance stagger. */
+
   index: number;
 };
 
-/** One treatment in the price grid. */
 export function PriceCard({ item, index }: PriceCardProps) {
   return (
     <Reveal
@@ -64,8 +52,8 @@ export function PriceCard({ item, index }: PriceCardProps) {
         </p>
       )}
 
-      {/* Pushed to the bottom so prices line up across a row of cards; the
-          hairline warms to gold along with the card's own border. */}
+      {
+}
       <div className="mt-auto pt-6">
         <span
           aria-hidden="true"

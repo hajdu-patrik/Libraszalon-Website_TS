@@ -1,4 +1,4 @@
-/** /bemutatkozas/ — copy verbatim from the legacy page. */
+
 
 export const about = {
   eyebrow: 'Szeretettel köszöntelek weboldalamon',

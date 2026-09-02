@@ -1,12 +1,4 @@
-/**
- * /kapcsolat/ — copy verbatim from the legacy page.
- *
- * Both intro paragraphs carry inline emphasis on the original site; the
- * segments below reproduce that without embedding markup in the copy. The
- * booking notice is split around one more seam than emphasis alone needs:
- * a sentence that tells a visitor to read the house rules before booking
- * should be able to take them there.
- */
+
 
 export const contact = {
   eyebrow: 'Kérdésed van? Időpontot foglalnál?',
@@ -32,16 +24,7 @@ export const contact = {
   detailsHeading: 'Elérhetőségek',
   socialHeading: 'Social',
 
-  /**
-   * Accessible names for the contact links.
-   *
-   * Each one is composed as "<visible text> — <label>" (or the reverse where
-   * the verb leads), never as the label alone: WCAG 2.5.3 Label in Name asks
-   * that the accessible name contain the visible text, so a speech-input user
-   * can say what they can see. "Hívás" on its own would break that; "Hívás:
-   * +36 30 853 2729" does not.
-   */
-  labels: {
+labels: {
     call: 'Telefonhívás',
     email: 'E-mail írása',
     maps: 'megnyitás a Google Térképen (új lapon nyílik)',

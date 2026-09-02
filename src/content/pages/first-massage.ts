@@ -1,4 +1,4 @@
-/** /arak/elso-masszazs/ — copy verbatim from the legacy page. */
+
 
 export const firstMassage = {
   eyebrow: 'Személyre szabott masszázs',
@@ -17,17 +17,8 @@ export const firstMassage = {
   tips: {
     heading: 'Pár jó, gyakorlati tanács',
     subheading: 'Nem csak az első alkalomra',
-    /**
-     * Seven of the eight are verbatim from the legacy page. The fifth is newly
-     * written to even out the two-column grid: it covers the one piece of
-     * preparation the original list leaves out — what to put on, and take off,
-     * before setting out — so it earns its place rather than padding the list,
-     * and it keeps the same second-person voice as the rest.
-     *
-     * Ordering is chronological on purpose: everything you do at home, then
-     * everything immediately before the treatment, then aftercare last.
-     */
-    items: [
+
+items: [
       'Időpontfoglalás előtt kérlek mindenképpen olvasd el a házirendet. Az ebben foglaltak a kölcsönös tiszteletre alapulva szolgálják közös érdekeinket, biztonságunkat, egészségünket. Ha ezekkel nem értesz egyet, nem tudsz velük azonosulni, akkor kérlek inkább ne foglalj hozzám időpontot.',
       'Ne a legújabb, legféltettebb fehérneműdben érkezz masszázsra. Bár az általam használt anyagok kimoshatóak, nem hagynak maradandó foltot a ruhán, azért nem árt az óvatosság.',
       'Urak esetén a „fecske” típusú alsónemű ajánlott.',

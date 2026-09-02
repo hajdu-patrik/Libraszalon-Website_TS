@@ -1,9 +1,4 @@
-/**
- * /hazirend/ — copy verbatim from the legacy page.
- *
- * The numbered rules double as the FAQPage JSON-LD source, so each one needs
- * a short `question` label alongside its full text.
- */
+
 
 export const houseRules = {
   eyebrow: 'Házirend, amely a kölcsönös tiszteleten alapul',

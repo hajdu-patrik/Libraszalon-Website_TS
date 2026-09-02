@@ -21,7 +21,6 @@ export default function HomePage() {
     <>
       <Hero />
 
-      {/* Services as editorial rows */}
       <Section tone="cream" background="bg-home" spacing="normal">
         <SectionHeading title={home.services.title} />
         <div className="mt-14 space-y-16 sm:mt-20 sm:space-y-24">
@@ -31,7 +30,6 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Reviews on the dark band */}
       <Section tone="dark" spacing="normal">
         <SectionHeading
           tone="dark"
@@ -44,13 +42,10 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Closing call to action */}
       <Section tone="cream" background="bg-prices-alt" spacing="normal">
-        {/* max-w-3xl, the same cap the portrait quote and the first-massage
-            note use. The site now has exactly two content widths: the
-            container for anything full-bleed, and this one for a centred
-            block of prose. This closing block was the last thing carrying a
-            third value for no reason anyone could name. */}
+        {
+
+}
         <Reveal className="mx-auto max-w-3xl text-center">
           <p className="font-script text-[length:var(--text-h2)] leading-snug text-ink">
             {site.tagline}

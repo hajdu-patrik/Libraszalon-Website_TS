@@ -1,13 +1,4 @@
-/**
- * Price list, verbatim from /arak/.
- *
- * `amounts` mirrors `price` numerically so the Service/Offer JSON-LD can quote
- * real figures. Keep the two in sync when a price changes.
- *
- * Note: the legacy page's meta description still claimed "15.000 FT" for the
- * first session while the page itself said 18.000 Ft. The page body is
- * authoritative and is what is reproduced here.
- */
+
 
 export type PriceItem = {
   duration: string;
@@ -66,7 +57,6 @@ export const prices: PriceItem[] = [
   },
 ];
 
-/** Lowest and highest figures across the list, for LocalBusiness priceRange. */
 export const priceRange = (() => {
   const all = prices.flatMap((p) => p.amounts);
   return { min: Math.min(...all), max: Math.max(...all) };

@@ -11,14 +11,6 @@ type ReviewCardProps = {
 
 const CLAMP_LINES = 8;
 
-/**
- * A single Google review — a light card designed for the dark reviews band.
- *
- * Bodies range from three lines to a full screen, so they are clamped and get
- * an expand control. The button only appears when the text is actually
- * overflowing, measured after layout rather than guessed from character count
- * (which is wrong as soon as the card width changes).
- */
 export function ReviewCard({ review }: ReviewCardProps) {
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const [expanded, setExpanded] = useState(false);
@@ -28,15 +20,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
     const el = bodyRef.current;
     if (!el) return;
 
-    // Measured on mount and on viewport resize only.
-    //
-    // A ResizeObserver on this paragraph feeds back on itself: cards in the
-    // carousel stretch to a shared height, so revealing the expand button
-    // shrinks the space left for the text, which flips the measurement, which
-    // hides the button again. That oscillation pegs the main thread.
-    // Card width can only change when the window does, so listening to the
-    // window is both sufficient and stable.
-    const measure = () => {
+const measure = () => {
       if (expanded) return;
       setOverflowing(el.scrollHeight > el.clientHeight + 1);
     };

@@ -6,11 +6,11 @@ type SectionProps = {
   children: ReactNode;
   id?: string;
   className?: string;
-  /** Faint photograph behind the content. */
+
   background?: ImageSlug;
-  /** Surface: white / warm cream / deep espresso. */
+
   tone?: 'surface' | 'cream' | 'dark';
-  /** Vertical rhythm. */
+
   spacing?: 'normal' | 'tight' | 'loose';
 };
 
@@ -26,12 +26,6 @@ const TONE = {
   dark: 'bg-ink-deep text-cream-text',
 } as const;
 
-/**
- * Page section with the shared container width and optional decorative photo.
- * The photograph is drawn at low opacity so it reads as texture without
- * competing with the copy; the gradient fades it into the section's own tone
- * at both edges.
- */
 export function Section({
   children,
   id,

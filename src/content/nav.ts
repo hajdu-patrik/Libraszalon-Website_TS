@@ -1,7 +1,4 @@
-/**
- * Primary navigation. The hrefs mirror the WordPress permalinks exactly —
- * changing one here silently breaks an indexed URL.
- */
+
 
 export type NavItem = {
   href: string;

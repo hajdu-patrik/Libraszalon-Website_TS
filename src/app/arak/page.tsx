@@ -16,9 +16,8 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata: Metadata = buildMetadata(pageSeo.prices);
 
 export default function PricesPage() {
-  // The first session opens the list and the visitor journey, so it leads the
-  // page as a featured card; everything else sits in the grid below it.
-  const [firstSession, ...rest] = prices;
+
+const [firstSession, ...rest] = prices;
 
   return (
     <>

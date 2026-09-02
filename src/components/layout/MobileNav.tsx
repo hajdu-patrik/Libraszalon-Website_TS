@@ -13,48 +13,13 @@ type MobileNavProps = {
   pathname: string;
 };
 
-/**
- * Slide-in menu drawer.
- *
- * Framer Motion mounts the drawer only while it is open, which also solves an
- * old layout problem for free: a permanently rendered off-canvas panel counts
- * toward the document's scroll width and shows up as horizontal overflow.
- *
- * The drawer carries its own close button. The toggle in the header has
- * `relative z-50` on it, which is what that was for: fold the bars into an X
- * and let the same control close what it opened. It has not been able to do
- * that since the overlay was portalled. The header is a stacking context of
- * its own (position: sticky plus backdrop-filter), so the toggle's z-50 is
- * spent inside the header's z-40 — and the portalled overlay, also z-40 but
- * later in the document, paints over the whole thing. Measured at 393px the
- * panel runs from x=47 to the right edge and the toggle sits at 337: fully
- * covered, so the X was drawn every time and seen none of them, and the one
- * gesture every drawer on the web answers to did nothing.
- *
- * Raising the header instead would put a translucent white bar across the top
- * of a dark panel, so the close control moves inside the panel where it is
- * unambiguously part of it. The toggle keeps its fold animation: it is correct
- * for the state it describes, and it is what shows if the stacking ever changes.
- *
- * The overlay is portalled to <body> rather than rendered where it is declared,
- * and that is load-bearing, not tidiness. The sticky header carries
- * `backdrop-blur-md`, and backdrop-filter makes an element a containing block
- * for its fixed-position descendants — exactly like transform does. Left in
- * place, the drawer's `fixed inset-0` resolved against the header's own box
- * instead of the viewport, so the full-height panel collapsed into a 320x68
- * stub pinned over the header. Portalling moves it out of that subtree, which
- * is the only fix that does not cost the header its blur.
- */
 export function MobileNav({ pathname }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const reduced = useReducedMotion();
 
-  // Close whenever the route changes, otherwise the drawer stays open over the
-  // page the visitor just navigated to. Adjusted during render rather than in
-  // an effect so the stale open drawer is never committed.
-  const [routeWhenOpened, setRouteWhenOpened] = useState(pathname);
+const [routeWhenOpened, setRouteWhenOpened] = useState(pathname);
   if (routeWhenOpened !== pathname) {
     setRouteWhenOpened(pathname);
     setOpen(false);
@@ -75,8 +40,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
 
       if (event.key !== 'Tab') return;
 
-      // Keep focus inside the drawer while it is open.
-      const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
+const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled])',
       );
       if (!focusable?.length) return;
@@ -102,15 +66,12 @@ export function MobileNav({ pathname }: MobileNavProps) {
     };
   }, [open]);
 
-  // The portal target only exists in the browser, so the first client render
-  // has to match the server's (no overlay) before it can be used.
-  const mounted = useHasMounted();
+const mounted = useHasMounted();
 
   const overlay = (
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-40 overflow-hidden lg:hidden">
-          {/* Backdrop */}
           <motion.div
             onClick={() => setOpen(false)}
             aria-hidden="true"
@@ -121,7 +82,6 @@ export function MobileNav({ pathname }: MobileNavProps) {
             className="absolute inset-0 bg-ink-deep/40 backdrop-blur-[2px]"
           />
 
-          {/* Drawer */}
           <motion.div
             ref={panelRef}
             id="mobile-menu"
@@ -219,20 +179,6 @@ export function MobileNav({ pathname }: MobileNavProps) {
         className="relative z-50 -mr-2.5 inline-flex size-12 items-center justify-center rounded text-ink lg:hidden"
       >
         <span className="sr-only">{open ? 'Menü bezárása' : 'Menü megnyitása'}</span>
-        {/* Three bars that fold into an X.
-
-            18x28 of 2px bars, not 16x24 of hairlines. A 1px rule on a phone at
-            2.75x device pixel ratio is drawn under three device pixels, and
-            next to a 52px logo it read as a smudge rather than the only
-            control on the header — the one thing on a phone the whole
-            navigation is behind.
-
-            Every bar is positioned from its own centre (top + -translate-y-1/2)
-            rather than from its top edge. With hairlines the difference was
-            half a pixel and nobody noticed; at 2px the two rotated bars would
-            cross 1px above the middle bar's line and the X would sit visibly
-            askew. The closed positions are given in the same terms so `top`
-            has a value to animate between at both ends. */}
         <span aria-hidden="true" className="relative block h-[1.125rem] w-7">
           <span
             className={`absolute left-0 block h-0.5 w-full rounded-full bg-current transition-all duration-(--dur-quick) ease-smooth ${

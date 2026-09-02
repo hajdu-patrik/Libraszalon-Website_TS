@@ -33,12 +33,9 @@ export default function FirstMassagePage() {
             </p>
           </Reveal>
 
-          {/* This is the longest passage on the site, so the photograph is
-              given real presence rather than being sized down to keep pace:
-              26rem wide, cropped to the source's own 2:3 on desktop so nothing
-              is thrown away, and the arch radius set to exactly half the column
-              width so the crown resolves as a true half-round. Sticking holds
-              it beside the text for the whole read. */}
+          {
+
+}
           <Reveal
             variant="right"
             index={1}
@@ -54,7 +51,6 @@ export default function FirstMassagePage() {
         </div>
       </Section>
 
-      {/* Sensitive skin note on the dark band */}
       <Section tone="dark" spacing="tight">
         <Reveal className="mx-auto max-w-3xl text-center">
           <h2 className="text-[length:var(--text-h2)] text-cream-text">

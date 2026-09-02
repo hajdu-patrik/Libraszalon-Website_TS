@@ -9,15 +9,8 @@ const OG_IMAGE = {
   alt: 'Libra Masszázs Szalon',
 };
 
-/**
- * Builds the metadata for one page from its entry in content/seo.ts, so title,
- * canonical URL and social card can never drift apart.
- */
 export function buildMetadata(page: PageSeo): Metadata {
   const url = `${site.url}${page.path}`;
-  // Absolute rather than relying on the root layout's title template: the home
-  // page shares a route segment with that layout, so the template does not
-  // apply there and its title would come out as a bare "Főoldal".
   const title = `${page.title} - ${site.name}`;
 
   return {

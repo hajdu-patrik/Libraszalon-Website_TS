@@ -1,4 +1,4 @@
-/** /arak/ — headings verbatim from the legacy page. */
+
 
 export const pricesPage = {
   eyebrow: 'Válaszd ki a neked megfelelőt!',

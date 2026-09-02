@@ -1,7 +1,4 @@
-/**
- * Business facts. Every phone number, address and URL on the site resolves
- * from here, so there is exactly one place to change when something moves.
- */
+
 
 export const site = {
   name: 'Libraszalon',
@@ -16,7 +13,7 @@ export const site = {
 
   email: 'libraszalon@gmail.com',
   phone: '+36 30 853 2729',
-  /** E.164 form for tel: links. */
+
   phoneHref: '+36308532729',
 
   address: {
@@ -24,7 +21,7 @@ export const site = {
     city: 'Budapest',
     postalCode: '1028',
     country: 'HU',
-    /** As displayed on the legacy site. */
+
     formatted: 'Budapest, Hidegkúti út 174, 1028',
   },
 
@@ -33,11 +30,9 @@ export const site = {
     longitude: 18.9604828,
   },
 
-  /** Human-readable form of openingHours for the UI. */
-  openingHoursDisplay: 'Hétfő – Vasárnap: 09:00 – 17:00',
+openingHoursDisplay: 'Hétfő – Vasárnap: 09:00 – 17:00',
 
-  /** Mo–Su 09:00–17:00, matching the legacy structured data. */
-  openingHours: {
+openingHours: {
     days: [
       'Monday',
       'Tuesday',
@@ -60,7 +55,6 @@ export const site = {
   copyright: 'Minden jog fenntartva',
 } as const;
 
-/** Credit block for the footer: who built the site and where to find them. */
 export const developer = {
   heading: 'Oldalkészítő',
   github: {
@@ -73,12 +67,6 @@ export const developer = {
   },
 } as const;
 
-/**
- * The map embed, pointed at the address above rather than at a second copy of
- * it. The address was written out again here, in the one file whose stated job
- * is to be the only place it appears — so a move would have left the map on
- * the old street with nothing to say it had.
- */
 export const mapsEmbedSrc =
   'https://maps.google.com/maps?q=' +
   encodeURIComponent(site.address.formatted) +

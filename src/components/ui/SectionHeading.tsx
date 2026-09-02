@@ -8,12 +8,11 @@ type SectionHeadingProps = {
   lead?: string;
   as?: ElementType;
   align?: 'left' | 'center';
-  /** Colour scheme of the surface the heading sits on. */
+
   tone?: 'light' | 'dark';
   className?: string;
 };
 
-/** Eyebrow, serif heading and gold rule — the heading pattern used site-wide. */
 export function SectionHeading({
   eyebrow,
   title,

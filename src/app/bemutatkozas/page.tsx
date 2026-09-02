@@ -23,32 +23,18 @@ export default function AboutPage() {
         background="bg-about"
       />
 
-      {/* Portrait and professional background */}
       <Section spacing="normal">
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,28rem)_1fr] lg:gap-16">
-          {/* Dropped by 3.5rem on desktop so the crown of the arch starts level
-              with the opening paragraph rather than with the name above it —
-              the portrait then reads as set into the text block instead of
-              floating alongside the heading. */}
+          {
+
+}
           <Reveal
             variant="left"
             className="mx-auto w-full max-w-md lg:mx-0 lg:mt-14 lg:max-w-none"
           >
-            {/* The arch crown is the page's signature shape — a quiet nod to
-                doorways and spa architecture. Its radius tracks the column so
-                the crown stays a true half-round at every size.
+            {
 
-                card-interactive sits on the image itself rather than a
-                wrapper: the arch lives in the border-radius, so the hairline
-                has to be on the element that carries it or it would trace a
-                rectangle around a doorway.
-
-                It also means giving up the resting --shadow-lift this
-                photograph used to have. A hover needs somewhere to travel
-                from, and a picture already resting at the lifted shadow has
-                nowhere to go. It now rests where every card on the site rests
-                and lifts on approach, which is the trade that buys the
-                gesture. */}
+}
             <Picture
               slug="about-portrait"
               alt={`${about.name}, ${site.ownerTitle}, a ${site.legalName} alapítója`}
@@ -68,7 +54,6 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Hippocrates quote on the dark band */}
       <Section tone="dark" spacing="normal">
         <Reveal className="mx-auto max-w-3xl text-center">
           <Quote
@@ -84,14 +69,7 @@ export default function AboutPage() {
         </Reveal>
       </Section>
 
-      {/* The balance the salon is named after */}
       <Section tone="cream" background="bg-about" spacing="normal">
-        {/* items-start, not items-center: the copy in this column runs a good
-            deal taller than a landscape photograph, so centring left the frame
-            hanging in the middle with an unequal margin above and below and
-            nothing to line up with. Top-aligned it shares an edge with the first
-            line of text, and sticking on desktop keeps it in view for the whole
-            passage instead of scrolling away halfway through. */}
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-16">
           <Reveal variant="left">
             <p className="prose-measure text-muted">{about.balance}</p>
