@@ -14,10 +14,6 @@ import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
 import './globals.css';
 
-/**
- * latin-ext is required, not optional: without it "ő" and "ű" fall back to a
- * different face mid-word, which is visible in almost every Hungarian heading.
- */
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   subsets: ['latin', 'latin-ext'],
@@ -43,7 +39,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: `${site.legalName} - ${site.name}`,
-    // Keeps the legacy "Page - Libraszalon" pattern in search results.
     template: `%s - ${site.name}`,
   },
   description: site.tagline,
@@ -71,28 +66,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       className={`${cormorant.variable} ${sourceSans.variable} ${caveat.variable} h-full antialiased`}
     >
       <head>
-        {/*
-          [data-reveal] hides content from the stylesheet, but the attribute
-          that releases it is set by an observer after hydration — so without
-          JavaScript most of the page would stay invisible for good.
-
-          A <noscript> override rather than a js class on <html>: the export is
-          fully rendered HTML, so nothing has to run at all, and there is no
-          window in which elements could flash visible and then disappear.
-          dangerouslySetInnerHTML because React cannot hydrate parsed children
-          inside <noscript> — the browser hands it back as text.
-        */}
         <noscript
           dangerouslySetInnerHTML={{
             __html: '<style>[data-reveal]{opacity:1;transform:none}</style>',
           }}
         />
 
-        {/*
-          Decides whether the intro curtain plays, and must do so before the
-          first paint — hence a blocking inline script rather than an effect.
-          Static, built from our own constants; see src/lib/intro.ts.
-        */}
         <script dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP }} />
       </head>
       <body className="flex min-h-full flex-col">
@@ -107,7 +86,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 
         <Header />
 
-        <main id="tartalom" className="flex-1">
+        <main id="tartalom" tabIndex={-1} className="flex-1">
           {children}
         </main>
 

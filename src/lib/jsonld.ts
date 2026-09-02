@@ -1,15 +1,7 @@
-/**
- * schema.org builders.
- *
- * The legacy site emitted a generic LocalBusiness with nothing but a logo and
- * opening hours. These graphs add the things that actually earn richer search
- * results: the MassageTherapy subtype, real coordinates, a price range, the
- * service catalogue with offers, review stars, and an FAQ for the house rules.
- */
+
 
 import { homeItem } from '@/content/nav';
 import { prices, priceRange } from '@/content/prices';
-import { publishedReviews, reviewStats } from '@/content/reviews';
 import { houseRules } from '@/content/pages/house-rules';
 import { site } from '@/content/site';
 
@@ -19,7 +11,6 @@ function formatHuf(amount: number) {
   return amount.toLocaleString('hu-HU');
 }
 
-/** The salon itself. Emitted once, in the root layout. */
 export function businessJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -61,30 +52,9 @@ export function businessJsonLd() {
       jobTitle: site.ownerTitle,
     },
     sameAs: [site.social.facebook, site.social.googleMaps],
-    ...(reviewStats.count > 0 && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: reviewStats.average,
-        reviewCount: reviewStats.count,
-        bestRating: 5,
-        worstRating: 1,
-      },
-      review: publishedReviews.map((r) => ({
-        '@type': 'Review',
-        author: { '@type': 'Person', name: r.author },
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: r.rating,
-          bestRating: 5,
-          worstRating: 1,
-        },
-        reviewBody: r.text,
-      })),
-    }),
   };
 }
 
-/** One Offer per treatment, for the prices page. */
 export function serviceCatalogJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -108,14 +78,6 @@ export function serviceCatalogJsonLd() {
   };
 }
 
-/**
- * A breadcrumb trail, from the home page down.
- *
- * The home crumb is added here rather than asked for. Every caller passed the
- * same literal as its first element, which is five copies of a name and a path
- * that both already exist in content/nav.ts — and a trail that started
- * somewhere else would be wrong, so there was never anything to decide.
- */
 export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
   const crumbs = [{ name: homeItem.label, path: homeItem.href }, ...trail];
 
@@ -131,7 +93,6 @@ export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
   };
 }
 
-/** The house rules read as questions and answers, so mark them up as such. */
 export function houseRulesFaqJsonLd() {
   return {
     '@context': 'https://schema.org',
