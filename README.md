@@ -39,7 +39,7 @@ The project replaces a legacy WordPress + Elementor installation. The content an
 * **Typography:** [next/font](https://nextjs.org/docs/app/api-reference/components/font) (Source Sans 3, Roboto, Caveat — self-hosted)
 * **Imaging:** [Sharp](https://sharp.pixelplumbing.com/) (Build-time AVIF/WebP pipeline)
 * **Quality Gate:** [Playwright](https://playwright.dev/) (Responsive & accessibility auditing)
-* **CI/CD:** [Vercel](https://vercel.com/) + [GitHub Actions](https://github.com/features/actions) (Automated builds & deployments)
+* **CI/CD:** [Vercel](https://vercel.com/) (Automated builds & deployments)
 
 ---
 

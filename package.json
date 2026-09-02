@@ -11,10 +11,7 @@
     "verify": "tsx scripts/verify.mts",
     "assets:fetch": "tsx scripts/fetch-assets.ts",
     "assets:optimize": "tsx scripts/optimize-images.ts",
-    "assets": "npm run assets:fetch && npm run assets:optimize",
-    "reviews": "npm run reviews:fetch",
-    "reviews:fetch": "tsx --env-file-if-exists=.env.local scripts/fetch-reviews.ts",
-    "reviews:auth": "tsx --env-file-if-exists=.env.local scripts/reviews-auth.ts"
+    "assets": "npm run assets:fetch && npm run assets:optimize"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
