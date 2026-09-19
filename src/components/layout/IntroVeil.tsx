@@ -11,7 +11,7 @@ export function IntroVeil() {
           slug="mark"
           alt=""
           sizes="176px"
-          loading="eager"
+          loading="lazy"
           fetchPriority="low"
           decoding="async"
           className="w-36 sm:w-44"

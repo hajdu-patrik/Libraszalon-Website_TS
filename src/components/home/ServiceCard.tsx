@@ -25,7 +25,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
           <Picture
             slug={service.image}
             alt={service.alt}
-            sizes="(max-width: 1024px) 100vw, 480px"
+            sizes="(max-width: 1024px) 100vw, 663px"
 
 className="aspect-[3/2] w-full object-cover lg:aspect-[4/3]"
           />

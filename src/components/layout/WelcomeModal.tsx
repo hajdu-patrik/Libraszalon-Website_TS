@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CalendarClock, X } from 'lucide-react';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { GoldSignature } from '@/components/ui/GoldSignature';
+import { IconButton } from '@/components/ui/IconButton';
 import { notice, noticeStorageKey } from '@/content/notice';
 import { INTRO_ATTRIBUTE, INTRO_TOTAL_MS } from '@/lib/intro';
 
@@ -125,14 +126,13 @@ const showing = ready && !dismissed;
                 </button>
               </div>
 
-              <button
-                type="button"
+              <IconButton
                 onClick={dismiss}
                 aria-label={notice.dismissLabel}
-                className="-mt-2 -mr-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-gold/10 hover:text-ink"
+                className="-mt-2 -mr-2 shrink-0 text-muted transition-colors hover:bg-gold/10 hover:text-ink"
               >
                 <X aria-hidden="true" className="size-4.5" strokeWidth={1.8} />
-              </button>
+              </IconButton>
             </div>
 
             <button

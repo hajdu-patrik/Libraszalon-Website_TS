@@ -5,6 +5,7 @@ import { Clock, Mail, Phone, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { IconButton } from '@/components/ui/IconButton';
 import { navItems } from '@/content/nav';
 import { site } from '@/content/site';
 import { useHasMounted } from '@/lib/hooks/useHasMounted';
@@ -94,17 +95,16 @@ const mounted = useHasMounted();
             transition={{ duration: reduced ? 0.01 : 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-y-0 right-0 flex w-[min(23rem,88vw)] flex-col overflow-y-auto bg-ink-deep px-7 pt-28 pb-10 text-cream-text shadow-[var(--shadow-lift)]"
           >
-            <button
-              type="button"
+            <IconButton
               onClick={() => {
                 setOpen(false);
                 toggleRef.current?.focus();
               }}
               aria-label="Menü bezárása"
-              className="absolute top-4 right-5 inline-flex size-12 items-center justify-center rounded-full text-cream-muted transition-colors hover:text-gold"
+              className="absolute top-4 right-5 text-cream-muted transition-colors hover:text-gold"
             >
               <X aria-hidden="true" className="size-6" strokeWidth={1.6} />
-            </button>
+            </IconButton>
 
             <nav aria-label="Mobil főmenü">
               <ul className="flex flex-col">
@@ -181,17 +181,17 @@ const mounted = useHasMounted();
         <span className="sr-only">{open ? 'Menü bezárása' : 'Menü megnyitása'}</span>
         <span aria-hidden="true" className="relative block h-[1.125rem] w-7">
           <span
-            className={`absolute left-0 block h-0.5 w-full rounded-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
+            className={`absolute left-0 block h-0.5 w-full rounded-full bg-current transition-[top,rotate] duration-(--dur-quick) ease-smooth ${
               open ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-px -translate-y-1/2'
             }`}
           />
           <span
-            className={`absolute top-1/2 left-0 block h-0.5 w-full -translate-y-1/2 rounded-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
+            className={`absolute top-1/2 left-0 block h-0.5 w-full -translate-y-1/2 rounded-full bg-current transition-opacity duration-(--dur-quick) ease-smooth ${
               open ? 'opacity-0' : 'opacity-100'
             }`}
           />
           <span
-            className={`absolute left-0 block h-0.5 w-full rounded-full bg-current transition-all duration-(--dur-quick) ease-smooth ${
+            className={`absolute left-0 block h-0.5 w-full rounded-full bg-current transition-[top,rotate] duration-(--dur-quick) ease-smooth ${
               open ? 'top-1/2 -translate-y-1/2 -rotate-45' : 'top-[calc(100%-1px)] -translate-y-1/2'
             }`}
           />

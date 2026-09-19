@@ -58,7 +58,7 @@ export function Header() {
             <Picture
               slug="logo"
               alt=""
-              sizes="220px"
+              sizes="77px"
               className="h-13 w-auto transition-[height] duration-(--dur-base) ease-smooth sm:h-14 in-data-scrolled:h-11 sm:in-data-scrolled:h-11"
             />
           </Link>
@@ -90,7 +90,7 @@ export function Header() {
 
           <a
             href={`tel:${site.phoneHref}`}
-            className="hidden min-h-11 items-center gap-2 rounded-full bg-gold px-5 font-body text-sm font-semibold tracking-wide text-ink-deep shadow-[var(--shadow-card)] transition-all duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:bg-gold-ink hover:text-surface lg:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full bg-gold px-5 font-body text-sm font-semibold tracking-wide text-ink-deep shadow-[var(--shadow-card)] transition-[background-color,color,translate] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 hover:bg-gold-ink hover:text-surface lg:inline-flex"
           >
             <Phone aria-hidden="true" className="size-4" strokeWidth={1.8} />
             Időpontfoglalás

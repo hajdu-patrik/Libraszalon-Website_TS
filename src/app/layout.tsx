@@ -14,24 +14,29 @@ import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
 import './globals.css';
 
+/** Weight lists are pruned to exactly what the site renders (verified by grepping every
+ *  font-weight utility in src/): headings and their few font-semibold/font-medium overrides
+ *  use 500/600, body text and its font-semibold overrides use 400/600, and the handwritten
+ *  script accent (font-script) is always rendered at its inherited default (400) — nothing
+ *  ever requests 700 or a 600 script weight. Keep in sync if a new weight is used. */
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   subsets: ['latin', 'latin-ext'],
-  weight: ['500', '600', '700'],
+  weight: ['500', '600'],
   display: 'swap',
 });
 
 const sourceSans = Source_Sans_3({
   variable: '--font-source-sans',
   subsets: ['latin', 'latin-ext'],
-  weight: ['400', '600', '700'],
+  weight: ['400', '600'],
   display: 'swap',
 });
 
 const caveat = Caveat({
   variable: '--font-caveat',
   subsets: ['latin', 'latin-ext'],
-  weight: ['400', '600'],
+  weight: ['400'],
   display: 'swap',
 });
 
