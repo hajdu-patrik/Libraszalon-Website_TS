@@ -33,11 +33,17 @@ const sourceSans = Source_Sans_3({
   display: 'swap',
 });
 
+/** Not preloaded: the script accent only ever appears below the fold (the footer
+ *  tagline on every page, the home call-to-action, the bemutatkozás closing line
+ *  and the 404 page), so preloading both of its subsets on every navigation buys
+ *  nothing and the browser reports them as unused. display: swap still paints the
+ *  line in the size-adjusted fallback and swaps it in when the fetch lands. */
 const caveat = Caveat({
   variable: '--font-caveat',
   subsets: ['latin', 'latin-ext'],
   weight: ['400'],
   display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -66,8 +72,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
+    /* INTRO_BOOTSTRAP stamps data-intro on this element before React hydrates, so
+       the client tree legitimately carries an attribute the server HTML cannot.
+       suppressHydrationWarning covers this element's own attributes only. */
     <html
       lang={site.lang}
+      suppressHydrationWarning
       className={`${cormorant.variable} ${sourceSans.variable} ${caveat.variable} h-full antialiased`}
     >
       <head>
