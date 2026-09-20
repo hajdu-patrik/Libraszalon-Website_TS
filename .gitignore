@@ -64,3 +64,6 @@ Desktop.ini
 # original images downloaded from the legacy WordPress site
 # (inputs to scripts/optimize-images.ts; the shipped output lives in public/images)
 /assets/raw
+
+# editor scaffolding (same reasoning as agentRules: false in next.config.ts)
+/.claude

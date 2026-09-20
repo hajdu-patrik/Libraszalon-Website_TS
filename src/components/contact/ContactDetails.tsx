@@ -1,11 +1,16 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 import { FacebookIcon } from '@/components/ui/FacebookIcon';
+import { GoldSignature } from '@/components/ui/GoldSignature';
 import { contact } from '@/content/pages/contact';
 import { site } from '@/content/site';
 
 export function ContactDetails() {
   return (
-    <div>
+    /* Bordered, gold-capped card — the same shell the featured price card and
+       the welcome notice use, so the panel reads as part of the set. */
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-cream p-6 shadow-[var(--shadow-card)] sm:p-7">
+      <GoldSignature className="absolute inset-x-0 top-0" />
+
       <h2 className="font-heading text-[length:var(--text-h3)] text-ink">
         {contact.detailsHeading}
       </h2>
