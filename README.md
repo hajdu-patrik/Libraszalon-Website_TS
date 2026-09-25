@@ -27,7 +27,7 @@ The project replaces a legacy WordPress + Elementor installation. The content an
 * **Content–Presentation Separation:** Every piece of copy, price and opening hour lives in the typed `src/content/` layer rather than inside components, so editorial changes never touch markup.
 * **Automated Accessibility Gate:** A custom Playwright-driven audit (`npm run verify`) walks all six pages in eight configurations, enforcing WCAG 1.4.10 reflow, 1.4.4 text resize, 44 px target sizes, single-`<h1>` structure and full no-JavaScript rendering.
 * **Performance-First Assets:** Images are pre-processed at build time into responsive AVIF + WebP sets with intrinsic dimensions baked into a manifest, holding Cumulative Layout Shift at zero.
-* **Privacy-Conscious Delivery:** Self-hosted typefaces via `next/font` and cookieless Vercel Analytics mean the site issues no third-party requests and needs no consent banner.
+* **Privacy-Conscious Delivery:** Self-hosted typefaces via `next/font` and cookieless Vercel Analytics mean the site loads no third-party scripts, fonts or trackers and needs no consent banner; the only external content is the lazily loaded Google Maps embed on the contact page.
 
 ---
 
@@ -36,7 +36,7 @@ The project replaces a legacy WordPress + Elementor installation. The content an
 * **Framework:** [Next.js 16](https://nextjs.org/) (App Router, static export)
 * **Language:** [TypeScript](https://www.typescriptlang.org/) (Strictly typed for enterprise-grade reliability)
 * **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (CSS-first design tokens)
-* **Typography:** [next/font](https://nextjs.org/docs/app/api-reference/components/font) (Source Sans 3, Roboto, Caveat — self-hosted)
+* **Typography:** [next/font](https://nextjs.org/docs/app/api-reference/components/font) (Cormorant Garamond, Source Sans 3, Caveat — self-hosted)
 * **Imaging:** [Sharp](https://sharp.pixelplumbing.com/) (Build-time AVIF/WebP pipeline)
 * **Quality Gate:** [Playwright](https://playwright.dev/) (Responsive & accessibility auditing)
 * **CI/CD:** [Vercel](https://vercel.com/) (Automated builds & deployments)
