@@ -1,7 +1,7 @@
 # Proprietary License & Commissioned Work Notice
 
 Copyright (c) Hajdú Patrik Zsolt
-All Rights Reserved
+All rights reserved.
 
 ## 1. Project Status
 

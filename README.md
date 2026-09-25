@@ -1,12 +1,12 @@
 # Custom Website for Libra Masszázs Szalon
 
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-flat&logo=typescript&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-flat&logo=next.js&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-flat&logo=tailwind-css&logoColor=white)
-![Static Export](https://img.shields.io/badge/Static_Export-Zero_Runtime-6E4B1F?style=for-the-flat&logo=htmx&logoColor=white)
-![Vercel](https://img.shields.io/badge/Deployment-Vercel-000000?style=for-the-flat&logo=vercel&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-flat)
-![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-flat)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-black?style=flat&logo=next.js&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
+![Static Export](https://img.shields.io/badge/Static_Export-Zero_Runtime-6E4B1F?style=flat&logo=htmx&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployment-Vercel-000000?style=flat&logo=vercel&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=flat)
+![License](https://img.shields.io/badge/License-Proprietary-red?style=flat)
 
 This repository contains the source code for the official website of **Libra Masszázs Szalon**, a massage studio in Budapest's 2nd district run by a certified medical masseuse.
 
@@ -61,3 +61,11 @@ Any push to the `main` branch automatically triggers a new build and deployment.
 | Environment | Status |
 | :--- | :--- |
 | **Production** | [![Vercel App](https://img.shields.io/badge/Visit-Live_App-success?style=for-the-badge&logo=vercel)](https://libraszalon.hu) |
+
+---
+
+## 📄 License
+
+Copyright (c) Hajdú Patrik Zsolt. All rights reserved.
+
+Proprietary, commissioned work published for demonstration and portfolio purposes only. No rights to use, copy, modify or distribute it are granted. See [LICENSE.md](LICENSE.md) for the full terms.
