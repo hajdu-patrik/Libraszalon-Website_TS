@@ -9,7 +9,7 @@ import { IntroVeil } from '@/components/layout/IntroVeil';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
 import { BackToTop } from '@/components/ui/BackToTop';
 import { JsonLd } from '@/components/ui/JsonLd';
-import { businessJsonLd } from '@/lib/jsonld';
+import { businessJsonLd, websiteJsonLd } from '@/lib/jsonld';
 import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
 import './globals.css';
@@ -110,6 +110,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <WelcomeModal />
 
         <JsonLd data={businessJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
 
         <Analytics />
         <SpeedInsights />

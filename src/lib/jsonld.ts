@@ -104,3 +104,16 @@ export function houseRulesFaqJsonLd() {
     })),
   };
 }
+
+export function websiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    url: site.url,
+    name: site.name,
+    description: site.tagline,
+    inLanguage: site.lang,
+    publisher: { '@id': BUSINESS_ID },
+  };
+}
