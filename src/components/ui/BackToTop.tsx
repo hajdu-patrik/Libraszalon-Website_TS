@@ -4,6 +4,7 @@ import { ArrowUp } from 'lucide-react';
 import { IconButton } from '@/components/ui/IconButton';
 import { prefersReducedMotion } from '@/lib/hooks/useReducedMotion';
 import { useScrolledPast } from '@/lib/hooks/useScrolledPast';
+import { ui } from '@/content/ui';
 
 export function BackToTop() {
   const visible = useScrolledPast(600);
@@ -16,9 +17,9 @@ export function BackToTop() {
           behavior: prefersReducedMotion() ? 'auto' : 'smooth',
         })
       }
-      aria-label="Vissza az oldal tetejére"
+      aria-label={ui.backToTop}
       {...(!visible && { tabIndex: -1, 'aria-hidden': true })}
-      className={`fixed right-4 bottom-4 z-30 bg-ink-deep/90 text-cream-text shadow-[var(--shadow-lift)] backdrop-blur transition-[background-color,color,translate,opacity] duration-(--dur-base) ease-smooth in-data-notice:hidden hover:bg-gold hover:text-ink-deep sm:right-6 sm:bottom-6 ${
+      className={`fixed right-4 bottom-4 z-30 bg-ink-deep/90 text-cream-text shadow-lift backdrop-blur transition-[background-color,color,translate,opacity] duration-(--dur-base) ease-smooth hover:bg-gold hover:text-ink-deep sm:right-6 sm:bottom-6 ${
         visible
           ? 'translate-y-0 opacity-100'
           : 'pointer-events-none translate-y-3 opacity-0'

@@ -1,165 +1,230 @@
 'use client';
 
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ReviewCard } from '@/components/home/ReviewCard';
+import { IconButton } from '@/components/ui/IconButton';
 import type { Review } from '@/content/reviews';
 import { usePrefersReducedMotion } from '@/lib/hooks/useReducedMotion';
+import { ui } from '@/content/ui';
 
 type ReviewsCarouselProps = {
   reviews: Review[];
 };
 
+type Announcement = { id: number; text: string };
+
 const AUTO_ADVANCE_MS = 4000;
 
+/** Three copies of the list: the middle one is real, the outer two let the track scroll
+ *  past either end and are swapped back for the middle one once scrolling settles. */
 const COPIES = 3;
 
-const SETTLE_MS = 250;
+/** Scroll-end fallback for browsers without the `scrollend` event. */
+const SETTLE_MS = 200;
+const MAX_SETTLE_WAITS = 5;
 
-const ARROW_CLASS =
-  'inline-flex size-11 items-center justify-center rounded-full border border-cream-text/25 bg-ink-deep text-cream-text shadow-(--shadow-lift) transition-[background-color,border-color,color] duration-(--dur-base) ease-smooth hover:border-gold hover:bg-ink hover:text-gold sm:size-12 md:absolute md:top-1/2 md:z-20 md:-translate-y-1/2';
+/** Below `lg` one card sits centred with its neighbours peeking in; from `lg` the track
+ *  is exactly the container wide and holds three whole cards, so nothing is cut off. */
+const TRACK_CLASS =
+  'no-scrollbar -mx-(--container-pad) flex snap-x snap-mandatory gap-(--rev-gap) overflow-x-auto overscroll-x-contain px-[calc((100%+2*var(--container-pad)-var(--rev-card))/2)] py-2 [--rev-card:min(86vw,20rem)] [--rev-gap:1rem] sm:[--rev-gap:1.25rem] md:[--rev-card:20rem] lg:mx-0 lg:px-0';
+
+const SLIDE_CLASS =
+  'flex w-(--rev-card) shrink-0 snap-center data-active:*:border-gold data-active:*:shadow-lift lg:w-[calc((100%-2*var(--rev-gap))/3)]';
+
+const CONTROL_CLASS =
+  'border border-cream-text/25 bg-ink-deep text-cream-text transition-colors hover:border-gold hover:text-gold';
+
+/** Focus that arrived by keyboard, as opposed to a mouse click that merely focused a button. */
+function isKeyboardFocus(element: Element): boolean {
+  try {
+    return element.matches(':focus-visible');
+  } catch {
+    return true;
+  }
+}
+
+/** Distance between the left edges of two neighbouring cards. */
+function cardStep(track: HTMLElement): number {
+  const [first, second] = track.children;
+  if (!first || !second) return 0;
+  return second.getBoundingClientRect().left - first.getBoundingClientRect().left;
+}
 
 export function ReviewsCarousel({ reviews }: Readonly<ReviewsCarouselProps>) {
+  const count = reviews.length;
+
   const trackRef = useRef<HTMLUListElement>(null);
   const indexRef = useRef(0);
-
-const [pointerHeld, setPointerHeld] = useState(false);
-  const [focusWithin, setFocusWithin] = useState(false);
-  const paused = pointerHeld || focusWithin;
-
-  const [active, setActive] = useState(0);
+  const glidingRef = useRef(false);
+  const targetRef = useRef(0);
   const reduced = usePrefersReducedMotion();
 
-  const count = reviews.length;
-  const loopLength = count * COPIES;
+  const [active, setActive] = useState(count);
+  const [userPaused, setUserPaused] = useState(false);
+  const [pointerOver, setPointerOver] = useState(false);
+  const [touching, setTouching] = useState(false);
+  const [focusInside, setFocusInside] = useState(false);
+  const [restarts, setRestarts] = useState(0);
+  const [announcement, setAnnouncement] = useState<Announcement | null>(null);
 
-  const firstExposed = count;
+  const autoAdvance = !reduced && !userPaused && !pointerOver && !touching && !focusInside;
 
-const goTo = useCallback(
-    (index: number, smooth: boolean) => {
-      const track = trackRef.current;
-      const card = track?.children[index] as HTMLElement | undefined;
-      if (!track || !card) return;
-      indexRef.current = index;
-      track.scrollTo({
-        left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
-        behavior: smooth && !reduced ? 'smooth' : 'auto',
-      });
-    },
-    [reduced],
-  );
+  const goTo = useCallback((index: number, behavior: ScrollBehavior) => {
+    const track = trackRef.current;
+    const card = track?.children[index];
+    if (!track || !card) return;
+
+    const trackBox = track.getBoundingClientRect();
+    const cardBox = card.getBoundingClientRect();
+    const shift = cardBox.left + cardBox.width / 2 - (trackBox.left + trackBox.width / 2);
+    const left = Math.min(track.scrollWidth - track.clientWidth, Math.max(0, track.scrollLeft + shift));
+
+    indexRef.current = index;
+    glidingRef.current = behavior === 'smooth';
+    targetRef.current = left;
+    track.scrollTo({ left, behavior });
+  }, []);
 
   const advance = useCallback(
     (direction: 1 | -1) => {
-      const from = indexRef.current;
-      let next = from + direction;
+      const track = trackRef.current;
+      if (!track) return;
 
-if (next >= loopLength) {
-        goTo(from - count, false);
-        next = from - count + direction;
-      } else if (next < 0) {
-        goTo(from + count, false);
-        next = from + count + direction;
+      let from = indexRef.current;
+      if (from < count || from >= count * 2) {
+        // Quick presses can outrun the settle that swaps the copies back, and the first and
+        // last cards cannot be centred. Swap now, by whole copies, so a glide in progress
+        // keeps its place.
+        const copies = from < count ? 1 : -1;
+        track.scrollTo({ left: track.scrollLeft + copies * count * cardStep(track), behavior: 'instant' });
+        from += copies * count;
       }
-
-      goTo(next, true);
+      goTo(from + direction, reduced ? 'instant' : 'smooth');
     },
-    [count, goTo, loopLength],
+    [count, goTo, reduced],
   );
 
-useEffect(() => {
-    goTo(firstExposed, false);
-  }, [firstExposed, goTo]);
+  useLayoutEffect(() => {
+    goTo(count, 'instant');
+  }, [count, goTo]);
 
-useEffect(() => {
+  useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
 
     let frame = 0;
-    let settle = 0;
+    let settleTimer = 0;
 
+    // Cards are equally wide and equally spaced, so the first one and the step fix every position.
     const measure = () => {
-      const middle = track.scrollLeft + track.clientWidth / 2;
-      let nearest = 0;
-      let best = Infinity;
-      for (let i = 0; i < track.children.length; i++) {
-        const card = track.children[i] as HTMLElement;
-        const distance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - middle);
-        if (distance < best) {
-          best = distance;
-          nearest = i;
-        }
-      }
+      const step = cardStep(track);
+      if (step <= 0) return;
+
+      const trackBox = track.getBoundingClientRect();
+      const first = track.children[0].getBoundingClientRect();
+      const offset = trackBox.left + trackBox.width / 2 - (first.left + first.width / 2);
+      const nearest = Math.min(track.children.length - 1, Math.max(0, Math.round(offset / step)));
+
       setActive(nearest);
-
-indexRef.current = nearest;
+      if (!glidingRef.current) indexRef.current = nearest;
     };
 
-const normalise = () => {
+    const settle = () => {
+      glidingRef.current = false;
+      measure();
       const index = indexRef.current;
-      if (index < count) goTo(index + count, false);
-      else if (index >= count * 2) goTo(index - count, false);
+      if (index < count) goTo(index + count, 'instant');
+      else if (index >= count * 2) goTo(index - count, 'instant');
     };
 
+    // Without `scrollend`, "no scroll event for a moment" stands in for it. A smooth scroll
+    // can stall that long when a new one interrupts it, so keep waiting until it has arrived.
+    let waits = 0;
+    const settleOnceArrived = () => {
+      const underway = glidingRef.current && Math.abs(track.scrollLeft - targetRef.current) > 2;
+      if (underway && waits < MAX_SETTLE_WAITS) {
+        waits += 1;
+        settleTimer = window.setTimeout(settleOnceArrived, SETTLE_MS);
+        return;
+      }
+      waits = 0;
+      settle();
+    };
+
+    const canScrollEnd = 'onscrollend' in track;
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(measure);
-      window.clearTimeout(settle);
-      settle = window.setTimeout(normalise, SETTLE_MS);
+      if (!canScrollEnd) {
+        window.clearTimeout(settleTimer);
+        settleTimer = window.setTimeout(settleOnceArrived, SETTLE_MS);
+      }
     };
 
-    measure();
+    const resizeObserver = new ResizeObserver(() => goTo(indexRef.current, 'instant'));
+
     track.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    if (canScrollEnd) track.addEventListener('scrollend', settle);
+    resizeObserver.observe(track);
+
     return () => {
       cancelAnimationFrame(frame);
-      window.clearTimeout(settle);
+      window.clearTimeout(settleTimer);
       track.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      track.removeEventListener('scrollend', settle);
+      resizeObserver.disconnect();
     };
   }, [count, goTo]);
 
   useEffect(() => {
-    if (reduced || paused) return;
+    if (!autoAdvance) return;
+
     const id = window.setInterval(() => {
-      if (!document.hidden) advance(1);
+      if (document.hidden) return;
+      advance(1);
+      setAnnouncement(null);
     }, AUTO_ADVANCE_MS);
     return () => window.clearInterval(id);
-  }, [advance, paused, reduced]);
+  }, [advance, autoAdvance, restarts]);
 
   if (count === 0) return null;
 
-const loop = Array.from({ length: COPIES }, () => reviews).flat();
+  const goBy = (direction: 1 | -1) => {
+    advance(direction);
+    setRestarts((value) => value + 1);
+
+    const position = ((indexRef.current % count) + count) % count;
+    const text = `${position + 1} / ${count}: ${reviews[position].author}`;
+    setAnnouncement((previous) => ({ id: (previous?.id ?? 0) + 1, text }));
+  };
+
+  const loop = Array.from({ length: COPIES }, () => reviews).flat();
 
   return (
-
-<div className="relative">
-      <ul
-        ref={trackRef}
-        aria-label="Vélemények"
-        onMouseEnter={() => setPointerHeld(true)}
-        onMouseLeave={() => setPointerHeld(false)}
-        onTouchStart={() => setPointerHeld(true)}
-        onTouchEnd={() => setPointerHeld(false)}
-        onTouchCancel={() => setPointerHeld(false)}
-        onFocusCapture={() => setFocusWithin(true)}
-        onBlurCapture={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false);
-        }}
-
-  className="no-scrollbar -mx-(--container-pad) flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[calc((100%+2*var(--container-pad)-var(--rev-card))/2)] py-2 [--rev-card:min(86vw,20rem)] sm:gap-5 md:[--rev-card:20rem] lg:[--rev-card:21rem]"
-      >
+    <div
+      role="region"
+      aria-label={ui.reviews.region}
+      onPointerEnter={(event) => event.pointerType !== 'touch' && setPointerOver(true)}
+      onPointerLeave={(event) => event.pointerType !== 'touch' && setPointerOver(false)}
+      onTouchStart={() => setTouching(true)}
+      onTouchEnd={() => setTouching(false)}
+      onTouchCancel={() => setTouching(false)}
+      onFocus={(event) => setFocusInside(isKeyboardFocus(event.target))}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocusInside(false);
+      }}
+    >
+      <ul ref={trackRef} role="list" tabIndex={-1} className={TRACK_CLASS}>
         {loop.map((review, index) => {
-          const duplicate = index < firstExposed || index >= firstExposed + count;
-          const isActive = index === active;
+          const duplicate = index < count || index >= count * 2;
           return (
             <li
               key={`${review.id}-${index}`}
               aria-hidden={duplicate || undefined}
               inert={duplicate || undefined}
-              data-active={isActive || undefined}
-
-              className="flex w-(--rev-card) shrink-0 snap-center opacity-90 transition-opacity duration-(--dur-base) ease-smooth data-active:opacity-100 *:transition-[box-shadow,border-color] *:duration-(--dur-base) *:ease-smooth data-active:*:border-gold data-active:*:shadow-(--shadow-lift)"
+              data-active={index === active || undefined}
+              className={SLIDE_CLASS}
             >
               <ReviewCard review={review} />
             </li>
@@ -167,27 +232,35 @@ const loop = Array.from({ length: COPIES }, () => reviews).flat();
         })}
       </ul>
 
-      <div className="mt-7 flex justify-center gap-3 md:contents">
-        <button
-          type="button"
-          onClick={() => advance(-1)}
-          onMouseDown={(event) => event.preventDefault()}
-          aria-label="Előző vélemény"
-          className={`${ARROW_CLASS} md:left-0 md:-translate-x-1/2`}
-        >
+      <div className="mt-7 flex items-center justify-center gap-3">
+        <IconButton onClick={() => goBy(-1)} aria-label={ui.reviews.previous} className={CONTROL_CLASS}>
           <ArrowLeft aria-hidden="true" className="size-5" strokeWidth={1.8} />
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          onClick={() => advance(1)}
-          onMouseDown={(event) => event.preventDefault()}
-          aria-label="Következő vélemény"
-          className={`${ARROW_CLASS} md:right-0 md:translate-x-1/2`}
+        <IconButton
+          onClick={() => setUserPaused((value) => !value)}
+          aria-label={
+            userPaused ? ui.reviews.play : ui.reviews.pause
+          }
+          className={`${CONTROL_CLASS} motion-reduce:hidden`}
         >
+          {/* Never the pointer target: when the icon under a still pointer is swapped, Safari
+              keeps tracking the removed node and the region's pointerleave never fires. */}
+          {userPaused ? (
+            <Play aria-hidden="true" className="pointer-events-none size-5" strokeWidth={1.8} />
+          ) : (
+            <Pause aria-hidden="true" className="pointer-events-none size-5" strokeWidth={1.8} />
+          )}
+        </IconButton>
+
+        <IconButton onClick={() => goBy(1)} aria-label={ui.reviews.next} className={CONTROL_CLASS}>
           <ArrowRight aria-hidden="true" className="size-5" strokeWidth={1.8} />
-        </button>
+        </IconButton>
       </div>
+
+      <p role="status" aria-live="polite" className="sr-only">
+        {announcement && <span key={announcement.id}>{announcement.text}</span>}
+      </p>
     </div>
   );
 }

@@ -96,7 +96,7 @@ export function Header() {
             Időpontfoglalás
           </a>
 
-          <MobileNav pathname={pathname} />
+          <MobileNav />
         </div>
       </header>
     </>
