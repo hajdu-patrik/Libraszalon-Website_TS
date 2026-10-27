@@ -104,31 +104,6 @@
       1280
     ]
   },
-  "cupping-plastic": {
-    "width": 960,
-    "height": 640,
-    "widths": [
-      320,
-      640,
-      960
-    ]
-  },
-  "cupping-silicone": {
-    "width": 960,
-    "height": 540,
-    "widths": [
-      320,
-      640,
-      960
-    ]
-  },
-  "quote-mark": {
-    "width": 160,
-    "height": 160,
-    "widths": [
-      160
-    ]
-  },
   "bg-home": {
     "width": 1920,
     "height": 1280,

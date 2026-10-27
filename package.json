@@ -9,9 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "verify": "tsx scripts/verify.mts",
-    "assets:fetch": "tsx scripts/fetch-assets.ts",
-    "assets:optimize": "tsx scripts/optimize-images.ts",
-    "assets": "npm run assets:fetch && npm run assets:optimize"
+    "assets": "tsx scripts/optimize-images.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
