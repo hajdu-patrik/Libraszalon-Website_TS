@@ -25,8 +25,9 @@ The project replaces a legacy WordPress + Elementor installation. The content an
 
 * **Zero-Runtime Static Architecture:** The entire site is pre-rendered to plain HTML (`output: 'export'`), so there is no server, no database and no runtime dependency — the same `out/` directory runs on any static host.
 * **Content–Presentation Separation:** Every piece of copy, price and opening hour lives in the typed `src/content/` layer rather than inside components, so editorial changes never touch markup.
-* **Automated Accessibility Gate:** A custom Playwright-driven audit (`npm run verify`) walks all six pages in eight configurations, enforcing WCAG 1.4.10 reflow, 1.4.4 text resize, 44 px target sizes, single-`<h1>` structure and full no-JavaScript rendering.
-* **Performance-First Assets:** Images are pre-processed at build time into responsive AVIF + WebP sets with intrinsic dimensions baked into a manifest, holding Cumulative Layout Shift at zero.
+* **Tone-Aware Design System:** One Tailwind CSS `@theme` holds the colours, fluid type scale, spacing, shadows and motion. Each surface declares a light or dark tone and accents, secondary text and focus rings follow it, so the shared primitives (`Section`, `SectionHeading`, `InfoCard`, `Button`, `ContactList`, …) work on any background without per-component colour props.
+* **Automated Quality Gate:** A custom Playwright audit (`npm run verify`) serves the export with the production `vercel.json` headers and walks all six pages plus the 404 in nine viewport configurations. It enforces zero horizontal overflow, WCAG 1.4.10 reflow and 1.4.4 text resize, 44 px targets, a single `<h1>` with no skipped heading levels, a console free of errors and Content Security Policy violations, axe-core (WCAG 2.2 AA) and full no-JavaScript rendering, and drives the mobile menu, the notice dialog and the reviews carousel by keyboard.
+* **Performance-First Assets:** Images are pre-processed at build time into responsive AVIF + WebP sets with intrinsic dimensions baked into a manifest, holding Cumulative Layout Shift at zero; they are served with a one-year immutable cache alongside the hashed `_next/static` bundles. Motion is CSS-only (no animation library) and honours `prefers-reduced-motion`.
 * **Privacy-Conscious Delivery:** Self-hosted typefaces via `next/font` and cookieless Vercel Analytics mean the site loads no third-party scripts, fonts or trackers and needs no consent banner; the only external content is the lazily loaded Google Maps embed on the contact page.
 
 ---
@@ -38,7 +39,7 @@ The project replaces a legacy WordPress + Elementor installation. The content an
 * **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (CSS-first design tokens)
 * **Typography:** [next/font](https://nextjs.org/docs/app/api-reference/components/font) (Cormorant Garamond, Source Sans 3, Caveat — self-hosted)
 * **Imaging:** [Sharp](https://sharp.pixelplumbing.com/) (Build-time AVIF/WebP pipeline)
-* **Quality Gate:** [Playwright](https://playwright.dev/) (Responsive & accessibility auditing)
+* **Quality Gate:** [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) (Responsive, accessibility & CSP auditing)
 * **CI/CD:** [Vercel](https://vercel.com/) (Automated builds & deployments)
 
 ---
