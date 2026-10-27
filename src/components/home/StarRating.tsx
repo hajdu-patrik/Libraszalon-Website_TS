@@ -19,7 +19,7 @@ export function StarRating({ rating }: StarRatingProps) {
           key={index}
           aria-hidden="true"
           className={`size-[1.125rem] ${
-            index < filled ? 'fill-gold text-gold' : 'fill-current/15 text-current/15'
+            index < filled ? 'fill-accent text-accent' : 'fill-current/15 text-current/15'
           }`}
         />
       ))}
