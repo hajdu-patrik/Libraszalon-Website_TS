@@ -1,4 +1,3 @@
-import type { Metadata, Viewport } from 'next';
 import { Caveat, Cormorant_Garamond, Source_Sans_3 } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -12,6 +11,7 @@ import { JsonLd } from '@/components/ui/JsonLd';
 import { businessJsonLd, websiteJsonLd } from '@/lib/jsonld';
 import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
+import { rootMetadata, rootViewport } from '@/lib/seo';
 import './globals.css';
 
 /** Weight lists are pruned to exactly what the site renders (verified by grepping every
@@ -46,29 +46,8 @@ const caveat = Caveat({
   preload: false,
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: `${site.legalName} - ${site.name}`,
-    template: `%s - ${site.name}`,
-  },
-  description: site.tagline,
-  applicationName: site.name,
-  authors: [{ name: site.owner }],
-  creator: site.owner,
-  publisher: site.legalName,
-  formatDetection: { telephone: true, address: true, email: true },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: '#211d1c',
-  colorScheme: 'light',
-};
+export const metadata = rootMetadata;
+export const viewport = rootViewport;
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (

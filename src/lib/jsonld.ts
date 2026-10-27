@@ -1,30 +1,41 @@
-
-
-import { homeItem } from '@/content/nav';
-import { prices, priceRange } from '@/content/prices';
+import { prices, priceRange, type PriceItem } from '@/content/prices';
 import { houseRules } from '@/content/pages/house-rules';
+import { pageSeo, type PageKey } from '@/content/seo';
 import { site } from '@/content/site';
+import { OG_IMAGE, absoluteUrl } from '@/lib/seo';
 
+export type JsonLdObject = {
+  '@context'?: 'https://schema.org';
+  '@type': string | string[];
+  '@id'?: string;
+  [property: string]: unknown;
+};
+
+const SCHEMA_CONTEXT = 'https://schema.org';
 const BUSINESS_ID = `${site.url}/#business`;
+const WEBSITE_ID = `${site.url}/#website`;
+const CATALOG_ID = `${absoluteUrl(pageSeo.prices.path)}#arlista`;
+const CURRENCY = 'HUF';
 
 function formatHuf(amount: number) {
   return amount.toLocaleString('hu-HU');
 }
 
-export function businessJsonLd() {
+export function businessJsonLd(): JsonLdObject {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'MassageTherapy',
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'HealthAndBeautyBusiness',
     '@id': BUSINESS_ID,
     name: site.legalName,
     alternateName: site.name,
-    url: site.url,
+    description: pageSeo.home.description,
+    url: absoluteUrl('/'),
     telephone: site.phone,
     email: site.email,
-    image: `${site.url}/og/default.jpg`,
+    image: OG_IMAGE.url,
     logo: `${site.url}/images/logo-320.webp`,
     priceRange: `${formatHuf(priceRange.min)} Ft - ${formatHuf(priceRange.max)} Ft`,
-    currenciesAccepted: 'HUF',
+    currenciesAccepted: CURRENCY,
     paymentAccepted: 'Készpénz, OTP SZÉP Kártya, átutalás',
     address: {
       '@type': 'PostalAddress',
@@ -38,6 +49,8 @@ export function businessJsonLd() {
       latitude: site.geo.latitude,
       longitude: site.geo.longitude,
     },
+    hasMap: site.social.googleMaps,
+    areaServed: { '@type': 'City', name: site.address.city },
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -51,69 +64,88 @@ export function businessJsonLd() {
       name: site.owner,
       jobTitle: site.ownerTitle,
     },
-    sameAs: [site.social.facebook, site.social.googleMaps],
+    hasOfferCatalog: { '@id': CATALOG_ID },
+    sameAs: [site.social.facebook],
   };
 }
 
-export function serviceCatalogJsonLd() {
+export function websiteJsonLd(): JsonLdObject {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    url: absoluteUrl('/'),
+    name: site.name,
+    alternateName: site.legalName,
+    description: pageSeo.home.description,
+    inLanguage: 'hu-HU',
+    publisher: { '@id': BUSINESS_ID },
+  };
+}
+
+function offerFor(item: PriceItem) {
+  const low = Math.min(...item.amounts);
+  const high = Math.max(...item.amounts);
+
+  const itemOffered = {
+    '@type': 'Service',
+    name: item.title,
+    ...(item.note && { description: item.note.replace(/\n/g, ' ') }),
+    serviceType: 'Masszázs',
+    provider: { '@id': BUSINESS_ID },
+    areaServed: { '@type': 'City', name: site.address.city },
+  };
+
+  if (low === high) {
+    return { '@type': 'Offer', itemOffered, price: low, priceCurrency: CURRENCY };
+  }
+
+  return {
+    '@type': 'AggregateOffer',
+    itemOffered,
+    lowPrice: low,
+    highPrice: high,
+    priceCurrency: CURRENCY,
+    offerCount: item.amounts.length,
+  };
+}
+
+export function serviceCatalogJsonLd(): JsonLdObject {
+  return {
+    '@context': SCHEMA_CONTEXT,
     '@type': 'OfferCatalog',
+    '@id': CATALOG_ID,
     name: 'Masszázsszolgáltatások',
-    itemListElement: prices.map((item, index) => ({
-      '@type': 'Offer',
-      position: index + 1,
-      itemOffered: {
-        '@type': 'Service',
-        name: item.title,
-        ...(item.note && { description: item.note.replace(/\n/g, ' ') }),
-        serviceType: 'Masszázs',
-        provider: { '@id': BUSINESS_ID },
-        areaServed: { '@type': 'City', name: site.address.city },
-      },
-      price: Math.min(...item.amounts),
-      priceCurrency: 'HUF',
-      availability: 'https://schema.org/InStock',
-    })),
+    url: absoluteUrl(pageSeo.prices.path),
+    provider: { '@id': BUSINESS_ID },
+    itemListElement: prices.map(offerFor),
   };
 }
 
-export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
-  const crumbs = [{ name: homeItem.label, path: homeItem.href }, ...trail];
+/** The trail below Főoldal, as page keys: `breadcrumbJsonLd('prices', 'firstMassage')`. */
+export function breadcrumbJsonLd(...keys: PageKey[]): JsonLdObject {
+  const crumbs = [pageSeo.home, ...keys.map((key) => pageSeo[key])];
 
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'BreadcrumbList',
     itemListElement: crumbs.map((crumb, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: crumb.name,
-      item: `${site.url}${crumb.path}`,
+      name: crumb.title,
+      item: absoluteUrl(crumb.path),
     })),
   };
 }
 
-export function houseRulesFaqJsonLd() {
+export function houseRulesFaqJsonLd(): JsonLdObject {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'FAQPage',
     mainEntity: houseRules.rules.map((rule) => ({
       '@type': 'Question',
       name: rule.question,
       acceptedAnswer: { '@type': 'Answer', text: rule.text },
     })),
-  };
-}
-
-export function websiteJsonLd() {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${site.url}/#website`,
-    url: site.url,
-    name: site.name,
-    description: site.tagline,
-    inLanguage: site.lang,
-    publisher: { '@id': BUSINESS_ID },
   };
 }

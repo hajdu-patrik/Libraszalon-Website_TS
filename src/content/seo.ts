@@ -1,10 +1,10 @@
-
-
 export type PageSeo = {
   path: string;
+  /** Short page name; also the breadcrumb label. */
   title: string;
+  /** Replaces the default "<title> - <site name>" document title when set. */
+  documentTitle?: string;
   description: string;
-
   priority: number;
 };
 
@@ -12,6 +12,7 @@ export const pageSeo = {
   home: {
     path: '/',
     title: 'Főoldal',
+    documentTitle: 'Libra Masszázs Szalon Budapest II. kerületében',
     description:
       'Libra Masszázs Szalon Budapest II. kerületében. Aromaterápiás masszázs, klasszikus svédmasszázs, köpölyös fascia mobilizáció és nyirokmasszázs okleveles gyógymasszőrtől.',
     priority: 1,
@@ -52,5 +53,7 @@ export const pageSeo = {
     priority: 0.9,
   },
 } as const satisfies Record<string, PageSeo>;
+
+export type PageKey = keyof typeof pageSeo;
 
 export const allPageSeo: PageSeo[] = Object.values(pageSeo);

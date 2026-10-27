@@ -1,6 +1,7 @@
-type JsonLdProps = {
+import type { JsonLdObject } from '@/lib/jsonld';
 
-  data: object;
+type JsonLdProps = {
+  data: JsonLdObject;
 };
 
 export function JsonLd({ data }: Readonly<JsonLdProps>) {

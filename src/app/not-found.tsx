@@ -1,13 +1,10 @@
-import type { Metadata } from 'next';
 import { Button } from '@/components/ui/Button';
 import { GoldRule } from '@/components/ui/GoldRule';
 import { pageSeo } from '@/content/seo';
 import { site } from '@/content/site';
+import { notFoundMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'A keresett oldal nem található',
-  robots: { index: false, follow: true },
-};
+export const metadata = notFoundMetadata;
 
 export default function NotFound() {
   return (

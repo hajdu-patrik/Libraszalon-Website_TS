@@ -1,15 +1,12 @@
 import type { MetadataRoute } from 'next';
 import { allPageSeo } from '@/content/seo';
-import { site } from '@/content/site';
+import { absoluteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
   return allPageSeo.map((page) => ({
-    url: `${site.url}${page.path}`,
-    lastModified,
-    changeFrequency: 'monthly',
+    url: absoluteUrl(page.path),
     priority: page.priority,
   }));
 }

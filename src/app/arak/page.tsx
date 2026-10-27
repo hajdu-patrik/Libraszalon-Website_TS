@@ -57,9 +57,7 @@ const [firstSession, ...rest] = prices;
 
       <JsonLd data={serviceCatalogJsonLd()} />
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: pricesPage.title, path: pageSeo.prices.path },
-        ])}
+        data={breadcrumbJsonLd('prices')}
       />
     </>
   );

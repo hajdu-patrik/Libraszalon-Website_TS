@@ -91,10 +91,7 @@ export default function FirstMassagePage() {
       </Section>
 
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Árak', path: pageSeo.prices.path },
-          { name: firstMassage.title, path: pageSeo.firstMassage.path },
-        ])}
+        data={breadcrumbJsonLd('prices', 'firstMassage')}
       />
     </>
   );

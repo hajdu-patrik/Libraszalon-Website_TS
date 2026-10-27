@@ -98,9 +98,7 @@ export default function HouseRulesPage() {
 
       <JsonLd data={houseRulesFaqJsonLd()} />
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: houseRules.title, path: pageSeo.houseRules.path },
-        ])}
+        data={breadcrumbJsonLd('houseRules')}
       />
     </>
   );

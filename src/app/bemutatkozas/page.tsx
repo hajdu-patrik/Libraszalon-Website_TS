@@ -94,9 +94,7 @@ export default function AboutPage() {
       </Section>
 
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: about.title, path: pageSeo.about.path },
-        ])}
+        data={breadcrumbJsonLd('about')}
       />
     </>
   );

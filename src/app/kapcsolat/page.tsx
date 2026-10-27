@@ -134,9 +134,7 @@ export default function ContactPage() {
       </Section>
 
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: 'Kapcsolat', path: pageSeo.contact.path },
-        ])}
+        data={breadcrumbJsonLd('contact')}
       />
     </>
   );
