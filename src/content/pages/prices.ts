@@ -1,5 +1,3 @@
-
-
 export const pricesPage = {
   eyebrow: 'Válaszd ki a neked megfelelőt!',
   title: 'Árak',

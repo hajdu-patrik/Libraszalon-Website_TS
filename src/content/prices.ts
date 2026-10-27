@@ -1,5 +1,3 @@
-
-
 export type PriceItem = {
   duration: string;
   title: string;

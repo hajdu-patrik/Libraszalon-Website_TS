@@ -2,11 +2,12 @@
 
 import { useSyncExternalStore } from 'react';
 
-const noop = () => () => {};
+const subscribe = () => () => {};
 
+/** The static build can outlive a New Year's Eve, so the visitor's clock has the final say. */
 export function CurrentYear({ fallback }: { fallback: number }) {
   const year = useSyncExternalStore(
-    noop,
+    subscribe,
     () => new Date().getFullYear(),
     () => fallback,
   );

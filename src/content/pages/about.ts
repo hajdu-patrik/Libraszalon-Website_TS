@@ -1,9 +1,9 @@
-
-
 export const about = {
   eyebrow: 'Szeretettel köszöntelek weboldalamon',
   title: 'Bemutatkozás',
   name: 'Dévényi Krisztina',
+  portraitAlt: 'Dévényi Krisztina, okleveles gyógymasszőr, a Libra Masszázs Szalon alapítója',
+  roomAlt: 'A Libra Masszázs Szalon kezelőhelyisége',
 
   intro:
     'Dévényi Krisztina vagyok, okleveles gyógymasszőr, a Libra Masszázs Szalon megálmodója. Felsőoktatási tanulmányaimat kommunikáció szakon végeztem el, majd második gyermekem születéséig alapvetően irodai munkát végeztem. Egy szerencsés és egyben sorsdöntő véletlen folytán kerültem kapcsolatba a masszázzsal. Ez a világ oly mértékben lenyűgözött, hogy benne „ragadtam” s eldöntöttem, hogy a jövőben ezzel szeretnék foglalkozni. Beiratkoztam a Nemzetközi Masszázs Akadémiára, ahol elkezdődött csodálatos utazásom a masszázs világába. Svédmasszőri képesítésemet követően gyógymasszőri és nyirokmasszőri (I-es stádium) diplomát szereztem. Mindezzel a képzés számomra nem ért véget, inkább úgy fogalmaznék, hogy új távlatok nyíltak meg előttem, s a szakma mellet teljes mértékben elköteleztem magam. További tanfolyamok következtek: köpöly, kinesio-tape, triggerpont terápia és fascialazító technikák, illetve talpreflexológia kurzusok elvégzésével bővítettem ismereteim. Szakmai továbbfejlődésem érdekében számomra a folyamatos tanulás most sem ért véget, hiszen minél többet tudok, annál inkább érzem ennek fontosságát. Célom, hogy mindig naprakészen, egyénre szabottan a leghatékonyabb segítséget tudjam nyújtani azoknak, akik panaszaikkal hozzám fordulnak, mindezt természetesen, gyógyszermentesen.',

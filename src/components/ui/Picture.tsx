@@ -3,17 +3,16 @@ import { fallbackSrc, getImage, srcSet, type ImageSlug } from '@/lib/images';
 type PictureProps = {
   slug: ImageSlug;
   alt: string;
-
   sizes?: string;
   className?: string;
-
+  /** The page's LCP image: eager, high fetch priority, decoded synchronously. */
   priority?: boolean;
-
-loading?: 'eager' | 'lazy';
+  loading?: 'eager' | 'lazy';
   fetchPriority?: 'high' | 'low' | 'auto';
-  decoding?: 'sync' | 'async' | 'auto';
 };
 
+/** AVIF with a WebP fallback from the pre-generated widths; intrinsic width/height come
+ *  from the manifest so the browser reserves the box before the file arrives. */
 export function Picture({
   slug,
   alt,
@@ -22,7 +21,6 @@ export function Picture({
   priority = false,
   loading,
   fetchPriority,
-  decoding,
 }: PictureProps) {
   const { width, height } = getImage(slug);
 
@@ -38,7 +36,7 @@ export function Picture({
         className={className}
         loading={loading ?? (priority ? 'eager' : 'lazy')}
         fetchPriority={fetchPriority ?? (priority ? 'high' : 'auto')}
-        decoding={decoding ?? (priority ? 'sync' : 'async')}
+        decoding={priority ? 'sync' : 'async'}
       />
     </picture>
   );

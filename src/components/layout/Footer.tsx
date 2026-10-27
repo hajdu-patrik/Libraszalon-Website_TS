@@ -1,46 +1,45 @@
-import { Clock, Mail, MapPin, Phone } from 'lucide-react';
-import { FacebookIcon } from '@/components/ui/FacebookIcon';
-import { GitHubIcon } from '@/components/ui/GitHubIcon';
-import { LinkedInIcon } from '@/components/ui/LinkedInIcon';
 import Link from 'next/link';
+import { GitHubIcon, LinkedInIcon } from '@/components/ui/BrandIcons';
+import { ContactList } from '@/components/ui/ContactList';
 import { CurrentYear } from '@/components/ui/CurrentYear';
+import { SmartLink } from '@/components/ui/SmartLink';
 import { homeItem, navItems } from '@/content/nav';
 import { developer, site } from '@/content/site';
+import { ui } from '@/content/ui';
+
+const LINK = 'min-h-11 items-center text-subtle transition-colors hover:text-accent';
+
+const DEVELOPER_LINKS = [
+  { ...developer.github, Icon: GitHubIcon },
+  { ...developer.linkedin, Icon: LinkedInIcon },
+];
 
 export function Footer() {
-
-  const buildYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-ink-deep text-cream-text">
+    <footer className="tone-dark">
       <div className="container-page pt-16 pb-10 sm:pt-20 sm:pb-12">
         <div className="grid grid-cols-2 gap-x-6 gap-y-11 sm:gap-x-10 lg:grid-cols-[1.4fr_0.8fr_1.2fr_0.9fr] lg:gap-12">
           <div className="col-span-2 lg:col-span-1">
             <Link
               href={homeItem.href}
-              className="inline-flex min-h-11 items-center font-heading text-3xl text-cream-text transition-colors hover:text-gold"
+              className="inline-flex min-h-11 items-center font-heading text-3xl transition-colors hover:text-accent"
             >
               {site.legalName}
             </Link>
-            <p className="mt-4 max-w-sm font-script text-[1.55rem] leading-snug text-gold">
+            <p className="mt-4 max-w-sm font-script text-script leading-snug text-accent">
               {site.tagline}
             </p>
-            <p className="mt-5 text-[length:var(--text-meta)] text-cream-muted">
+            <p className="mt-5 text-meta text-subtle">
               {site.owner} · {site.ownerTitle}
             </p>
           </div>
 
-          <nav aria-label="Lábléc menü">
-            <h2 className="eyebrow-dark mb-4">Oldalak</h2>
+          <nav aria-label={ui.footerNav}>
+            <h2 className="eyebrow mb-4">{ui.footerPages}</h2>
             <ul>
               {[homeItem, ...navItems].map((item) => (
                 <li key={item.href}>
-                  {
-}
-                  <Link
-                    href={item.href}
-                    className="flex min-h-11 items-center text-cream-muted transition-colors hover:text-gold"
-                  >
+                  <Link href={item.href} className={`flex ${LINK}`}>
                     {item.label}
                   </Link>
                 </li>
@@ -49,83 +48,33 @@ export function Footer() {
           </nav>
 
           <div className="lg:order-4">
-            <h2 className="eyebrow-dark mb-4">{developer.heading}</h2>
+            <h2 className="eyebrow mb-4">{developer.heading}</h2>
             <ul>
-              {[
-                { ...developer.github, Icon: GitHubIcon },
-                { ...developer.linkedin, Icon: LinkedInIcon },
-              ].map(({ href, label, Icon }) => (
+              {DEVELOPER_LINKS.map(({ href, label, Icon }) => (
                 <li key={href}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center gap-3.5 text-cream-muted transition-colors hover:text-gold"
-                  >
+                  <SmartLink href={href} className={`inline-flex gap-3.5 ${LINK}`}>
                     <Icon className="size-5 shrink-0 text-gold" />
                     {label}
-                  </a>
+                  </SmartLink>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="col-span-2 lg:order-3 lg:col-span-1">
-            <h2 className="eyebrow-dark mb-4">Elérhetőségek</h2>
-            <ul className="space-y-1">
-              <li>
-                <a
-                  href={`tel:${site.phoneHref}`}
-                  className="inline-flex min-h-11 items-center gap-3.5 text-cream-muted transition-colors hover:text-gold"
-                >
-                  <Phone aria-hidden="true" className="size-5 shrink-0 text-gold" strokeWidth={1.8} />
-                  <span dir="ltr">{site.phone}</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${site.email}`}
-                  className="inline-flex min-h-11 items-center gap-3.5 break-all text-cream-muted transition-colors hover:text-gold"
-                >
-                  <Mail aria-hidden="true" className="size-5 shrink-0 text-gold" strokeWidth={1.8} />
-                  {site.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={site.social.googleMaps}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-start gap-3.5 py-2.5 text-cream-muted transition-colors hover:text-gold"
-                >
-                  <MapPin aria-hidden="true" className="mt-1 size-5 shrink-0 text-gold" strokeWidth={1.8} />
-                  {site.address.formatted}
-                </a>
-              </li>
-              <li>
-                <span className="inline-flex min-h-11 items-center gap-3.5 text-cream-muted">
-                  <Clock aria-hidden="true" className="size-5 shrink-0 text-gold" strokeWidth={1.8} />
-                  {site.openingHoursDisplay}
-                </span>
-              </li>
-              <li>
-                <a
-                  href={site.social.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-3.5 text-cream-muted transition-colors hover:text-gold"
-                >
-                  <FacebookIcon className="size-5 shrink-0 text-gold" />
-                  {site.social.facebookLabel}
-                </a>
-              </li>
-            </ul>
+            <h2 className="eyebrow mb-4">{ui.contactHeading}</h2>
+            <address className="not-italic">
+              <ContactList
+                items={['phone', 'email', 'address', 'hours', 'facebook']}
+                className="space-y-1 text-subtle"
+              />
+            </address>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-cream-text/10 pt-6 text-center text-[length:var(--text-meta)] text-cream-muted sm:mt-14">
-          <CurrentYear fallback={buildYear} /> © {site.legalName} · {site.copyright}
-        </div>
+        <p className="mt-12 border-t border-cream-text/10 pt-6 text-center text-meta text-subtle sm:mt-14">
+          <CurrentYear fallback={new Date().getFullYear()} /> © {site.legalName} · {site.copyright}
+        </p>
       </div>
     </footer>
   );

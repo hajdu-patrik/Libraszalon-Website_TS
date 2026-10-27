@@ -1,9 +1,12 @@
+import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
-import { GoldRule } from '@/components/ui/GoldRule';
+import { InfoCard } from '@/components/ui/InfoCard';
 import { JsonLd } from '@/components/ui/JsonLd';
+import { Numeral } from '@/components/ui/Numeral';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { houseRules } from '@/content/pages/house-rules';
 import { pageSeo } from '@/content/seo';
 import { breadcrumbJsonLd, houseRulesFaqJsonLd } from '@/lib/jsonld';
@@ -11,95 +14,53 @@ import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.houseRules);
 
+const RULES_HEADING_ID = 'hazirend-szabalyok';
+
 export default function HouseRulesPage() {
   return (
     <>
-      <PageHeader
-        eyebrow={houseRules.eyebrow}
-        title={houseRules.title}
-        background="bg-prices-alt"
-      />
+      <PageHeader eyebrow={houseRules.eyebrow} title={houseRules.title} background="bg-prices-alt" />
 
-      {
-
-}
-      <Section spacing="normal">
+      <Section>
         <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-14">
-          {
-
-}
           <Reveal className="lg:pt-7">
-            <p className="text-muted">{houseRules.intro}</p>
+            <p className="text-subtle">{houseRules.intro}</p>
           </Reveal>
 
-          {
-}
           <Reveal variant="right" index={1}>
-            <div className="rounded-r-2xl border-l-[3px] border-gold bg-cream p-6 sm:p-8">
+            <div className="rounded-r-2xl border-l-[3px] border-gold bg-cream p-card">
               <h2 className="eyebrow">{houseRules.scope.heading}</h2>
-              <p className="mt-4 text-muted">{houseRules.scope.body}</p>
+              <p className="mt-4 text-subtle">{houseRules.scope.body}</p>
             </div>
           </Reveal>
         </div>
       </Section>
 
-      <Section tone="cream" spacing="normal">
+      <Section tone="cream">
         <Reveal>
-          <h2
-            id="hazirend-szabalyok"
-            className="text-[length:var(--text-h2)] text-ink"
-          >
-            {houseRules.rulesHeading}
-          </h2>
-          <GoldRule className="mt-6" />
+          <SectionHeading align="left" id={RULES_HEADING_ID} title={houseRules.rulesHeading} />
         </Reveal>
 
-        {
-
-}
         <ol
           role="list"
-          aria-labelledby="hazirend-szabalyok"
-          className="rules-grid mt-12"
-          style={
-            {
-              '--rule-rows': Math.ceil(houseRules.rules.length / 2),
-            } as React.CSSProperties
-          }
+          aria-labelledby={RULES_HEADING_ID}
+          className="column-flow mt-12 sm:mt-16"
+          style={{ '--rows': Math.ceil(houseRules.rules.length / 2) } as CSSProperties}
         >
           {houseRules.rules.map((rule, index) => (
-            <Reveal
+            <InfoCard
               key={rule.question}
-              as="li"
               index={index % 2}
-              className="rule-card card-interactive"
-            >
-              {
-
-}
-              <span
-                aria-hidden="true"
-                className="font-heading text-[length:var(--text-rule-num)] leading-none font-medium text-gold-ink tabular-nums max-[30rem]:mb-1"
-              >
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <div className="min-w-0">
-                <h3 className="font-heading text-[length:var(--text-rule-title)] leading-tight text-ink">
-                  {rule.question}
-                </h3>
-                <p className="mt-3 text-[length:var(--text-rule-body)] leading-relaxed text-muted">
-                  {rule.text}
-                </p>
-              </div>
-            </Reveal>
+              marker={<Numeral value={index + 1} />}
+              title={rule.question}
+              body={rule.text}
+            />
           ))}
         </ol>
       </Section>
 
       <JsonLd data={houseRulesFaqJsonLd()} />
-      <JsonLd
-        data={breadcrumbJsonLd('houseRules')}
-      />
+      <JsonLd data={breadcrumbJsonLd('houseRules')} />
     </>
   );
 }

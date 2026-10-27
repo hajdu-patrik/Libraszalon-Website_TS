@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
-import { GoldRule } from '@/components/ui/GoldRule';
+import { InfoCard } from '@/components/ui/InfoCard';
 import { JsonLd } from '@/components/ui/JsonLd';
+import { Numeral } from '@/components/ui/Numeral';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Picture } from '@/components/ui/Picture';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { firstMassage } from '@/content/pages/first-massage';
 import { pageSeo } from '@/content/seo';
 import { breadcrumbJsonLd } from '@/lib/jsonld';
@@ -21,21 +23,13 @@ export default function FirstMassagePage() {
         background="bg-first-massage"
       />
 
-      <Section spacing="normal">
+      <Section>
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16">
           <Reveal>
-            <h2 className="text-[length:var(--text-h2)] text-ink">
-              {firstMassage.assessment.heading}
-            </h2>
-            <GoldRule className="mt-5" />
-            <p className="prose-measure mt-7 text-muted">
-              {firstMassage.assessment.body}
-            </p>
+            <SectionHeading align="left" title={firstMassage.assessment.heading} />
+            <p className="prose-measure mt-6 text-subtle">{firstMassage.assessment.body}</p>
           </Reveal>
 
-          {
-
-}
           <Reveal
             variant="right"
             index={1}
@@ -43,56 +37,37 @@ export default function FirstMassagePage() {
           >
             <Picture
               slug="about-detail"
-              alt="Masszázs közben a Libra Masszázs Szalonban"
-              sizes="(max-width: 1024px) min(100vw, 28rem), 26rem"
-              className="card-interactive aspect-[3/4] w-full rounded-b-3xl rounded-t-[10rem] object-cover lg:aspect-[2/3] lg:rounded-t-[13rem]"
+              alt={firstMassage.imageAlt}
+              sizes="(min-width: 1024px) 26rem, min(100vw, 28rem)"
+              className="card-interactive aspect-[3/4] w-full rounded-t-[10rem] rounded-b-3xl object-cover lg:aspect-[2/3] lg:rounded-t-[13rem]"
             />
           </Reveal>
         </div>
       </Section>
 
       <Section tone="dark" spacing="tight">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <h2 className="text-[length:var(--text-h2)] text-cream-text">
-            {firstMassage.sensitiveSkin.heading}
-          </h2>
-          <GoldRule centered className="mt-6" />
-          <p className="mt-7 text-cream-muted">{firstMassage.sensitiveSkin.body}</p>
+        <Reveal>
+          <SectionHeading title={firstMassage.sensitiveSkin.heading} lead={firstMassage.sensitiveSkin.body} />
         </Reveal>
       </Section>
 
-      <Section tone="cream" spacing="normal">
+      <Section tone="cream">
         <Reveal>
-          <p className="eyebrow">{firstMassage.tips.subheading}</p>
-          <h2 className="mt-3 text-[length:var(--text-h2)] text-ink">
-            {firstMassage.tips.heading}
-          </h2>
-          <GoldRule className="mt-6" />
+          <SectionHeading
+            align="left"
+            eyebrow={firstMassage.tips.subheading}
+            title={firstMassage.tips.heading}
+          />
         </Reveal>
 
-        <ol className="mt-12 grid gap-5 sm:grid-cols-2">
+        <ol role="list" className="mt-12 grid gap-grid sm:mt-16 sm:grid-cols-2">
           {firstMassage.tips.items.map((tip, index) => (
-            <Reveal
-              key={tip}
-              as="li"
-              index={index % 2}
-              className="card-interactive flex gap-5 rounded-2xl bg-surface p-6"
-            >
-              <span
-                aria-hidden="true"
-                className="font-heading text-4xl leading-none font-medium text-gold/60"
-              >
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <p className="text-[length:var(--text-ui)] leading-relaxed text-muted">{tip}</p>
-            </Reveal>
+            <InfoCard key={tip} index={index % 2} marker={<Numeral value={index + 1} />} body={tip} />
           ))}
         </ol>
       </Section>
 
-      <JsonLd
-        data={breadcrumbJsonLd('prices', 'firstMassage')}
-      />
+      <JsonLd data={breadcrumbJsonLd('prices', 'firstMassage')} />
     </>
   );
 }

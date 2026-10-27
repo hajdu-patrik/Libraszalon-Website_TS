@@ -7,8 +7,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { prices } from '@/content/prices';
 import { pricesPage } from '@/content/pages/prices';
+import { prices } from '@/content/prices';
 import { pageSeo } from '@/content/seo';
 import { breadcrumbJsonLd, serviceCatalogJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
@@ -16,27 +16,24 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata: Metadata = buildMetadata(pageSeo.prices);
 
 export default function PricesPage() {
-
-const [firstSession, ...rest] = prices;
+  const [firstSession, ...rest] = prices;
 
   return (
     <>
-      <PageHeader
-        eyebrow={pricesPage.eyebrow}
-        title={pricesPage.title}
-        background="bg-prices"
-      />
+      <PageHeader eyebrow={pricesPage.eyebrow} title={pricesPage.title} background="bg-prices" />
 
-      <Section tone="cream" spacing="normal">
-        <SectionHeading title={pricesPage.heading} lead={pricesPage.lead} />
+      <Section tone="cream">
+        <Reveal>
+          <SectionHeading title={pricesPage.heading} lead={pricesPage.lead} />
+        </Reveal>
 
-        <div className="mt-14">
+        <div className="mt-12 sm:mt-16">
           <FeaturedPriceCard item={firstSession} />
 
           <Reveal className="mt-5 text-center sm:text-right">
             <Link
               href={pageSeo.firstMassage.path}
-              className="group inline-flex min-h-11 items-center gap-2 text-[length:var(--text-ui)] font-semibold text-gold-ink transition-colors hover:text-ink"
+              className="group inline-flex min-h-11 items-center gap-2 text-ui font-semibold text-accent transition-colors hover:text-ink"
             >
               {pricesPage.firstMassageLinkLabel}
               <ArrowRight
@@ -47,7 +44,7 @@ const [firstSession, ...rest] = prices;
             </Link>
           </Reveal>
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-grid sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((item, index) => (
               <PriceCard key={item.title} item={item} index={index} />
             ))}
@@ -56,9 +53,7 @@ const [firstSession, ...rest] = prices;
       </Section>
 
       <JsonLd data={serviceCatalogJsonLd()} />
-      <JsonLd
-        data={breadcrumbJsonLd('prices')}
-      />
+      <JsonLd data={breadcrumbJsonLd('prices')} />
     </>
   );
 }

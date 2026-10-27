@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-
   --color-ink: #2c2828;
   --color-ink-deep: #211d1c;
   --color-gold: #cc9955;
+  --color-gold-ink: #936728;
   --color-muted: #585151;
   --color-surface: #ffffff;
   --color-cream: #faf7f2;
@@ -12,70 +12,98 @@
   --color-cream-text: #f5efe6;
   --color-cream-muted: #cbc0b4;
 
---color-gold-ink: #936728;
-
---font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
   --font-body: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-script: var(--font-caveat), ui-serif, cursive;
 
---text-hero: clamp(2.625rem, 1.945rem + 3.4vw, 5rem);
+  /* Fluid type scale, tuned for a 320px phone up to a 1440px desktop. */
+  --text-hero: clamp(2.625rem, 1.945rem + 3.4vw, 5rem);
   --text-h1: clamp(2.5rem, 2.16rem + 1.9vw, 3.75rem);
   --text-h2: clamp(2.125rem, 1.85rem + 1.4vw, 2.875rem);
   --text-h3: clamp(1.625rem, 1.5rem + 0.62vw, 1.75rem);
-  --text-body: clamp(1.0625rem, 1.03rem + 0.11vw, 1.125rem);
-
+  --text-h4: clamp(1.1875rem, 1.09rem + 0.42vw, 1.375rem);
   --text-lead: clamp(1.1875rem, 1.13rem + 0.28vw, 1.3125rem);
-  --text-price: clamp(1.875rem, 1.6rem + 1.4vw, 2.5rem);
-
---text-eyebrow: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-
---text-ui: clamp(1rem, 0.945rem + 0.3vw, 1.0625rem);
+  --text-body: clamp(1.0625rem, 1.03rem + 0.11vw, 1.125rem);
+  --text-ui: clamp(1rem, 0.945rem + 0.3vw, 1.0625rem);
   --text-meta: clamp(0.9375rem, 0.883rem + 0.35vw, 1rem);
+  --text-eyebrow: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --text-price: clamp(1.875rem, 1.6rem + 1.4vw, 2.5rem);
+  --text-numeral: clamp(1.625rem, 1.28rem + 1.4vw, 2.25rem);
+  --text-script: clamp(1.5rem, 1.45rem + 0.25vw, 1.625rem);
 
---text-rule-num: clamp(1.625rem, 1.28rem + 1.4vw, 2.25rem);
-  --text-rule-title: clamp(1.1875rem, 1.09rem + 0.42vw, 1.375rem);
-  --text-rule-body: clamp(1rem, 0.97rem + 0.11vw, 1.0625rem);
+  --spacing-card: clamp(1.25rem, 0.95rem + 1.5vw, 1.75rem);
+  --spacing-grid: clamp(1rem, 0.75rem + 1.25vw, 1.5rem);
 
---rule-card-pad: clamp(1.125rem, 0.85rem + 1.4vw, 1.75rem);
-  --rule-card-radius: clamp(0.875rem, 0.7rem + 0.8vw, 1.25rem);
-  --rule-grid-gap: clamp(1rem, 0.7rem + 1.5vw, 1.5rem);
-  --rule-num-gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
+  --shadow-header: 0 1px 20px rgb(44 40 40 / 0.07);
 
---container-width: 1200px;
-  --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 
---ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-
---default-transition-duration: var(--dur-quick);
+  --default-transition-duration: var(--dur-quick);
   --default-transition-timing-function: var(--ease-smooth);
+
+  --animate-enter: enter-rise var(--dur-enter) var(--ease-smooth) both;
+  --animate-page: enter-rise var(--dur-base) var(--ease-smooth) both;
+  --animate-hero: hero-image var(--dur-slow) var(--ease-smooth) both;
+
+  @keyframes enter-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--enter-shift));
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes hero-image {
+    from {
+      opacity: 0;
+      transform: scale(1.06);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
+/* Context-aware colours: gold-ink only reaches 4.5:1 on the light surfaces and plain
+   gold only on the dark ones, so accents (eyebrows, numerals, focus rings) and secondary
+   text follow the surface they sit on instead of every component taking a tone prop. */
 @theme inline {
-  --color-background: var(--color-surface);
-  --color-foreground: var(--color-ink);
+  --color-accent: var(--accent);
+  --color-subtle: var(--subtle);
 }
 
 :root {
-  --shadow-card: 0 1px 2px rgb(44 40 40 / 0.04), 0 8px 24px rgb(44 40 40 / 0.06);
-  --shadow-lift: 0 2px 4px rgb(44 40 40 / 0.05), 0 20px 48px rgb(44 40 40 / 0.12);
+  --accent: var(--color-gold-ink);
+  --subtle: var(--color-muted);
 
+  --container-width: 1200px;
+  --container-pad: clamp(1rem, 0.5rem + 2.5vw, 2rem);
   --header-height: 5.25rem;
 
---dur-quick: 200ms;
+  --dur-quick: 200ms;
   --dur-base: 400ms;
   --dur-slow: 700ms;
   --dur-enter: 600ms;
 
---enter-shift: 28px;
+  --enter-shift: 28px;
   --enter-stagger: 70ms;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-
     scroll-padding-top: calc(var(--header-height) + 1rem);
     -webkit-text-size-adjust: 100%;
+  }
+
+  html:has(dialog:modal) {
+    overflow: hidden;
   }
 
   body {
@@ -84,10 +112,7 @@
     font-family: var(--font-body);
     font-size: var(--text-body);
     line-height: 1.75;
-
     hyphens: auto;
-
-    overflow-x: hidden;
   }
 
   h1,
@@ -97,7 +122,6 @@
     font-family: var(--font-heading);
     font-weight: 600;
     line-height: 1.12;
-
     text-wrap: pretty;
   }
 
@@ -115,18 +139,18 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold-ink);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
     border-radius: 2px;
   }
 
-  ::selection {
-    background-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+  /* Programmatic focus targets (the skip link's <main>) need no ring around the whole page. */
+  [tabindex="-1"]:focus {
+    outline: none;
   }
 
-  img {
-    max-width: 100%;
-    height: auto;
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
   }
 }
 
@@ -137,26 +161,38 @@
   padding-inline: var(--container-pad);
 }
 
+@utility tone-dark {
+  --accent: var(--color-gold);
+  --subtle: var(--color-cream-muted);
+  background-color: var(--color-ink-deep);
+  color: var(--color-cream-text);
+}
+
+@utility tone-light {
+  --accent: var(--color-gold-ink);
+  --subtle: var(--color-muted);
+}
+
 @utility eyebrow {
   font-family: var(--font-body);
   font-size: var(--text-eyebrow);
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-gold-ink);
-}
-
-@utility eyebrow-dark {
-  font-family: var(--font-body);
-  font-size: var(--text-eyebrow);
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-gold);
+  color: var(--accent);
 }
 
 @utility prose-measure {
   max-width: 68ch;
+}
+
+@utility card {
+  --accent: var(--color-gold-ink);
+  --subtle: var(--color-muted);
+  border-radius: var(--radius-2xl);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  padding: var(--spacing-card);
 }
 
 @utility card-interactive {
@@ -174,105 +210,55 @@
   }
 }
 
-@utility rules-grid {
+/* Two columns read top-to-bottom (01–07 left, 08–14 right) so the numbering follows the
+   reading order; --rows is set inline from the item count. */
+@utility column-flow {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--rule-grid-gap);
-
-max-width: 37rem;
+  gap: var(--spacing-grid);
 
   @media (width >= 64rem) {
-    max-width: none;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(var(--rule-rows, 7), auto);
+    grid-template-rows: repeat(var(--rows, 1), auto);
     grid-auto-flow: column;
-    align-items: stretch;
-  }
-}
-
-@utility rule-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
-  padding: var(--rule-card-pad);
-  border-radius: var(--rule-card-radius);
-  background-color: var(--color-surface);
-
-  @media (width >= 30rem) {
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: var(--rule-num-gap);
   }
 }
 
 @utility no-scrollbar {
   scrollbar-width: none;
-  -ms-overflow-style: none;
+
   &::-webkit-scrollbar {
     display: none;
   }
 }
 
+/* Unlayered on purpose: it must beat card-interactive's transition list, so the hover
+   transitions of revealed cards are restated here alongside the entrance. */
 [data-reveal] {
+  --reveal-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
   opacity: 0;
   transform: translateY(var(--enter-shift));
-
---reveal-delay: calc(var(--reveal-index, 0) * var(--enter-stagger));
   transition-property: opacity, transform, border-color, box-shadow;
   transition-duration: var(--dur-enter), var(--dur-enter), var(--dur-base), var(--dur-base);
   transition-timing-function: var(--ease-smooth);
   transition-delay: var(--reveal-delay), var(--reveal-delay), 0s, 0s;
 }
 
-[data-reveal="fade"] {
-  transform: none;
-}
+/* Sideways entrances only where the 2rem page gutter can absorb the 28px shift;
+   on narrower screens they would push the page wider than the viewport. */
+@media (width >= 64rem) {
+  [data-reveal="left"] {
+    transform: translateX(calc(var(--enter-shift) * -1));
+  }
 
-[data-reveal="left"] {
-  transform: translateX(calc(var(--enter-shift) * -1));
-}
-
-[data-reveal="right"] {
-  transform: translateX(var(--enter-shift));
-}
-
-[data-reveal="zoom"] {
-  transform: scale(0.95);
+  [data-reveal="right"] {
+    transform: translateX(var(--enter-shift));
+  }
 }
 
 [data-revealed] {
   opacity: 1;
   transform: none;
-}
-
-@keyframes enter-rise {
-  from {
-    opacity: 0;
-    transform: translateY(var(--enter-shift));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes hero-image {
-  from {
-    opacity: 0;
-    transform: scale(1.06);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .intro-veil {
@@ -286,7 +272,6 @@ html[data-intro] .intro-veil {
   display: grid;
   place-items: center;
   background-color: var(--color-cream);
-
   pointer-events: none;
   animation: intro-lift 0.6s var(--ease-smooth) 0.7s forwards;
 }
@@ -307,12 +292,7 @@ html[data-intro] .intro-veil-inner {
   width: 6rem;
   height: 2px;
   border-radius: 1px;
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    var(--color-gold),
-    transparent
-  );
+  background-image: linear-gradient(to right, transparent, var(--color-gold), transparent);
 }
 
 html[data-intro] .intro-veil-rule {
@@ -320,11 +300,7 @@ html[data-intro] .intro-veil-rule {
 }
 
 @keyframes intro-lift {
-  from {
-    transform: translateY(0);
-  }
   to {
-
     transform: translateY(-101%);
   }
 }
@@ -342,12 +318,12 @@ html[data-intro] .intro-veil-rule {
 
 @keyframes intro-rule {
   from {
-    transform: scaleX(0);
     opacity: 0;
+    transform: scaleX(0);
   }
   to {
-    transform: scaleX(1);
     opacity: 1;
+    transform: scaleX(1);
   }
 }
 
@@ -356,7 +332,7 @@ html[data-intro] .intro-veil-rule {
     scroll-behavior: auto;
   }
 
-html[data-intro] .intro-veil {
+  html[data-intro] .intro-veil {
     display: none;
   }
 

@@ -1,6 +1,5 @@
 type GoldRuleProps = {
   className?: string;
-
   centered?: boolean;
 };
 

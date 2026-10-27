@@ -1,50 +1,44 @@
-import type { ElementType } from 'react';
 import { GoldRule } from '@/components/ui/GoldRule';
-import { Reveal } from '@/components/ui/Reveal';
 
 type SectionHeadingProps = {
-  eyebrow?: string;
   title: string;
+  eyebrow?: string;
+  /** Eyebrow-styled line under the title (e.g. a role under a name). */
+  subtitle?: string;
   lead?: string;
-  as?: ElementType;
   align?: 'left' | 'center';
-
-  tone?: 'light' | 'dark';
+  id?: string;
   className?: string;
 };
 
+/** Eyebrow, h2 and gold rule — the heading block every section opens with. Colours come
+ *  from the section's tone, so the same block works on light and dark sections. */
 export function SectionHeading({
-  eyebrow,
   title,
+  eyebrow,
+  subtitle,
   lead,
-  as: Tag = 'h2',
   align = 'center',
-  tone = 'light',
+  id,
   className = '',
 }: SectionHeadingProps) {
   const centered = align === 'center';
-  const dark = tone === 'dark';
 
   return (
-    <Reveal className={`${centered ? 'text-center' : ''} ${className}`}>
-      {eyebrow && (
-        <p className={`${dark ? 'eyebrow-dark' : 'eyebrow'} mb-4`}>{eyebrow}</p>
-      )}
-      <Tag
-        className={`text-[length:var(--text-h2)] ${dark ? 'text-cream-text' : 'text-ink'}`}
-      >
-        {title}
-      </Tag>
+    <div className={`${centered ? 'text-center' : ''} ${className}`}>
+      <hgroup>
+        {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
+        <h2 id={id} className="text-h2">
+          {title}
+        </h2>
+        {subtitle && <p className="eyebrow mt-3">{subtitle}</p>}
+      </hgroup>
       <GoldRule centered={centered} className="mt-6" />
       {lead && (
-        <p
-          className={`mt-6 max-w-2xl ${dark ? 'text-cream-muted' : 'text-muted'} ${
-            centered ? 'mx-auto sm:text-balance' : ''
-          }`}
-        >
+        <p className={`mt-6 max-w-2xl text-subtle ${centered ? 'mx-auto sm:text-balance' : ''}`}>
           {lead}
         </p>
       )}
-    </Reveal>
+    </div>
   );
 }

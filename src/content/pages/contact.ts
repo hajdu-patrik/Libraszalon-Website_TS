@@ -1,5 +1,3 @@
-
-
 export const contact = {
   eyebrow: 'Kérdésed van? Időpontot foglalnál?',
   title: 'Lépj velem kapcsolatba',
@@ -9,13 +7,8 @@ export const contact = {
     heading: 'Így tudsz időpontot foglalni',
     lead: 'Az időpont foglalással automatikusan elfogadod a Libra Masszázs Szalon aktuális ',
     rulesLabel: 'házirendjét',
-    rulesHref: '/hazirend/',
     body:
       ', ezért kérlek ezt foglalás előtt mindenképpen olvasd el. Előzzük meg az esetleges kellemetlenségeket és félreértéseket. Köszönöm!',
-    callBody:
-      'Időpontfoglaláshoz telefonszámomon várom hívásod. Kérlek légy türelemmel! Ha dolgozok, nem tudom felvenni a telefont, de vissza foglak hívni.',
-    callLabel: 'Telefonhívás',
-    emailLabel: 'E-mail küldése',
   },
 
   promise: {
@@ -46,13 +39,6 @@ export const contact = {
 
   detailsHeading: 'Elérhetőségek',
   socialHeading: 'Social',
-
-labels: {
-    call: 'Telefonhívás',
-    email: 'E-mail írása',
-    maps: 'megnyitás a Google Térképen (új lapon nyílik)',
-    facebook: 'Facebook-oldal (új lapon nyílik)',
-  },
 
   map: {
     frameTitle: 'A Libra Masszázs Szalon helye a térképen',

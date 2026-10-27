@@ -1,5 +1,3 @@
-
-
 export const site = {
   name: 'Libraszalon',
   legalName: 'Libra Masszázs Szalon',
@@ -30,9 +28,9 @@ export const site = {
     longitude: 18.9604828,
   },
 
-openingHoursDisplay: 'Hétfő – Vasárnap: 09:00 – 17:00',
+  openingHoursDisplay: 'Hétfő – Vasárnap: 09:00 – 17:00',
 
-openingHours: {
+  openingHours: {
     days: [
       'Monday',
       'Tuesday',

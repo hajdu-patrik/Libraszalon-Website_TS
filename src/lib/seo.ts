@@ -9,7 +9,7 @@ export const OG_IMAGE = {
   url: `${site.url}/og/default.jpg`,
   width: 1200,
   height: 630,
-  alt: 'Libra Masszázs Szalon',
+  alt: site.legalName,
   type: 'image/jpeg',
 } as const;
 

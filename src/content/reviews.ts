@@ -1,5 +1,3 @@
-
-
 import data from './reviews.json';
 
 export type Review = {
@@ -9,13 +7,11 @@ export type Review = {
   text: string;
   avatar: 'male' | 'female';
   source: string;
-
   publishedAt?: string;
 };
 
-export const MIN_RATING = 4;
-
-export const REVIEWS_DISPLAY_LIMIT = 20;
+const MIN_RATING = 4;
+const DISPLAY_LIMIT = 20;
 
 const all = data.reviews as Review[];
 
@@ -25,7 +21,7 @@ const validReviews = all.filter(
 
 export const publishedReviews: Review[] = all
   .filter((r) => r.rating >= MIN_RATING && r.text.trim().length > 0)
-  .slice(0, REVIEWS_DISPLAY_LIMIT);
+  .slice(0, DISPLAY_LIMIT);
 
 export const reviewStats = (() => {
   const count = validReviews.length;

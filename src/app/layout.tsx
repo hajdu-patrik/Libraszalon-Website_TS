@@ -2,23 +2,21 @@ import { Caveat, Cormorant_Garamond, Source_Sans_3 } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { Header } from '@/components/layout/Header';
 import { IntroVeil } from '@/components/layout/IntroVeil';
 import { WelcomeModal } from '@/components/layout/WelcomeModal';
 import { BackToTop } from '@/components/ui/BackToTop';
 import { JsonLd } from '@/components/ui/JsonLd';
-import { businessJsonLd, websiteJsonLd } from '@/lib/jsonld';
-import { INTRO_BOOTSTRAP } from '@/lib/intro';
 import { site } from '@/content/site';
+import { ui } from '@/content/ui';
+import { INTRO_BOOTSTRAP } from '@/lib/intro';
+import { businessJsonLd, websiteJsonLd } from '@/lib/jsonld';
 import { rootMetadata, rootViewport } from '@/lib/seo';
 import './globals.css';
 
-/** Weight lists are pruned to exactly what the site renders (verified by grepping every
- *  font-weight utility in src/): headings and their few font-semibold/font-medium overrides
- *  use 500/600, body text and its font-semibold overrides use 400/600, and the handwritten
- *  script accent (font-script) is always rendered at its inherited default (400) — nothing
- *  ever requests 700 or a 600 script weight. Keep in sync if a new weight is used. */
+/* Weights are limited to the ones the stylesheet uses (headings 500/600, body 400/600,
+   script 400) so nothing else can be requested and faux-bolded by accident. */
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   subsets: ['latin', 'latin-ext'],
@@ -33,11 +31,8 @@ const sourceSans = Source_Sans_3({
   display: 'swap',
 });
 
-/** Not preloaded: the script accent only ever appears below the fold (the footer
- *  tagline on every page, the home call-to-action, the bemutatkozás closing line
- *  and the 404 page), so preloading both of its subsets on every navigation buys
- *  nothing and the browser reports them as unused. display: swap still paints the
- *  line in the size-adjusted fallback and swaps it in when the fetch lands. */
+/* Not preloaded: the script face only appears below the fold (footer tagline, home
+   call-to-action, the about page's closing line, the 404 page). */
 const caveat = Caveat({
   variable: '--font-caveat',
   subsets: ['latin', 'latin-ext'],
@@ -51,9 +46,8 @@ export const viewport = rootViewport;
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    /* INTRO_BOOTSTRAP stamps data-intro on this element before React hydrates, so
-       the client tree legitimately carries an attribute the server HTML cannot.
-       suppressHydrationWarning covers this element's own attributes only. */
+    /* INTRO_BOOTSTRAP sets data-intro on <html> before hydration, an attribute the server
+       HTML cannot have; suppressHydrationWarning covers only this element's attributes. */
     <html
       lang={site.lang}
       suppressHydrationWarning
@@ -65,7 +59,6 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             __html: '<style>[data-reveal]{opacity:1;transform:none}</style>',
           }}
         />
-
         <script dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP }} />
       </head>
       <body className="flex min-h-full flex-col">
@@ -73,9 +66,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 
         <a
           href="#tartalom"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded focus:bg-ink focus:px-4 focus:text-surface"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:inline-flex focus:min-h-11 focus:items-center focus:rounded focus:bg-ink focus:px-4 focus:text-surface"
         >
-          Ugrás a tartalomhoz
+          {ui.skipLink}
         </a>
 
         <Header />

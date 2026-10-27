@@ -1,5 +1,3 @@
-
-
 export const houseRules = {
   eyebrow: 'Házirend, amely a kölcsönös tiszteleten alapul',
   title: 'Házirend',

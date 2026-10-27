@@ -1,5 +1,3 @@
-
-
 import type { ImageSlug } from '@/lib/images';
 
 export type Service = {

@@ -1,8 +1,5 @@
-type GoldSignatureProps = {
-  className?: string;
-};
-
-export function GoldSignature({ className = '' }: GoldSignatureProps) {
+/** Gold top edge shared by the capped panels (featured price, contact card, notice). */
+export function GoldSignature({ className = '' }: { className?: string }) {
   return (
     <span
       aria-hidden="true"

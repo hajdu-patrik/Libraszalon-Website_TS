@@ -1,26 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
-let navigated = false;
+/** Module scope survives client-side navigations but not a full load, so only in-app
+ *  page changes get the entrance animation and the first paint never waits on one. */
+let hasNavigated = false;
 
-export default function Template({ children }: { children: React.ReactNode }) {
-
-const animate = navigated;
+export default function Template({ children }: { children: ReactNode }) {
+  const animate = hasNavigated;
 
   useEffect(() => {
-    navigated = true;
+    hasNavigated = true;
   }, []);
 
-  return (
-    <div
-      style={
-        animate
-          ? { animation: 'enter-rise var(--dur-base) var(--ease-smooth) both' }
-          : undefined
-      }
-    >
-      {children}
-    </div>
-  );
+  return <div className={animate ? 'animate-page' : undefined}>{children}</div>;
 }

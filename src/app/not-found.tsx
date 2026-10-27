@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { GoldRule } from '@/components/ui/GoldRule';
+import { notFound } from '@/content/pages/not-found';
 import { pageSeo } from '@/content/seo';
 import { site } from '@/content/site';
 import { notFoundMetadata } from '@/lib/seo';
@@ -9,26 +10,20 @@ export const metadata = notFoundMetadata;
 export default function NotFound() {
   return (
     <div className="container-page flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
-      <p className="eyebrow">404</p>
-      <h1 className="mt-3 text-[length:var(--text-h1)] text-ink">
-        A keresett oldal nem található
-      </h1>
+      <p className="eyebrow">{notFound.eyebrow}</p>
+      <h1 className="mt-3 text-h1">{notFound.title}</h1>
       <GoldRule centered className="mt-6" />
 
-      <p className="mt-6 max-w-md text-muted">
-        Elképzelhető, hogy az oldal megszűnt vagy megváltozott a címe.
-      </p>
+      <p className="mt-6 max-w-md text-subtle">{notFound.body}</p>
 
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button href="/">Főoldal</Button>
+        <Button href={pageSeo.home.path}>{pageSeo.home.title}</Button>
         <Button href={pageSeo.contact.path} variant="outline">
-          Kapcsolat
+          {pageSeo.contact.title}
         </Button>
       </div>
 
-      <p className="mt-10 font-script text-[1.5rem] leading-snug text-ink">
-        {site.tagline}
-      </p>
+      <p className="mt-10 font-script text-script leading-snug">{site.tagline}</p>
     </div>
   );
 }
