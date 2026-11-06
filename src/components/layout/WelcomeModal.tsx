@@ -11,7 +11,7 @@ import { INTRO_ATTRIBUTE, INTRO_TOTAL_MS } from '@/lib/intro';
 const ENTER_DELAY_MS = 1200;
 
 const DIALOG_CLASS = [
-  'fixed inset-x-4 top-auto bottom-4 m-0 h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-none overflow-hidden rounded-2xl border border-line bg-surface text-ink shadow-lift sm:inset-0 sm:m-auto sm:h-fit sm:w-104',
+  'fixed inset-x-4 top-auto bottom-4 m-0 h-auto max-h-[calc(100dvh-2rem)] w-auto max-w-none overflow-hidden rounded-2xl border border-line bg-surface text-ink shadow-lift sm:inset-0 sm:m-auto sm:h-fit sm:w-[36rem]',
   // A `display` class on a <dialog> beats the browser's `display: none` for a closed one,
   // so the flex column only applies while it is open.
   'open:flex open:flex-col',
@@ -101,7 +101,7 @@ function NoticeDialog() {
     >
       <GoldSignature className="w-full shrink-0" />
 
-      <div className="flex min-h-0 flex-1 flex-col p-5 sm:p-6">
+      <div className="relative flex min-h-0 flex-1 flex-col p-5 sm:p-8">
         <div className="flex min-h-0 flex-1 gap-4">
           <span
             aria-hidden="true"
@@ -111,17 +111,17 @@ function NoticeDialog() {
           </span>
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <h2 id={titleId} className="shrink-0 font-heading text-xl leading-tight font-medium text-ink">
+            <h2 id={titleId} className="shrink-0 pr-10 font-heading text-xl leading-tight font-medium text-ink sm:text-2xl">
               {notice.title}
             </h2>
             <div
               id={bodyId}
               ref={bodyRef}
               tabIndex={scrollable ? 0 : undefined}
-              className="mt-2 min-h-0 overflow-y-auto overscroll-contain text-meta leading-relaxed text-muted"
+              className="mt-2 min-h-0 overflow-y-auto overscroll-contain text-meta leading-relaxed text-pretty text-muted hyphens-none sm:mt-3 sm:text-body"
             >
               {notice.body.map((paragraph, index) => (
-                <p key={paragraph} className={index > 0 ? 'mt-2' : undefined}>
+                <p key={paragraph} className={index > 0 ? 'mt-2 sm:mt-3' : undefined}>
                   {paragraph}
                 </p>
               ))}
@@ -132,7 +132,7 @@ function NoticeDialog() {
           <IconButton
             onClick={dismiss}
             aria-label={notice.dismissLabel}
-            className="-mt-2 -mr-2 shrink-0 self-start text-muted transition-colors hover:bg-gold/10 hover:text-ink"
+            className="absolute top-3 right-3 text-muted transition-colors hover:bg-gold/10 hover:text-ink sm:top-6 sm:right-6"
           >
             <X aria-hidden="true" className="size-4.5" strokeWidth={1.8} />
           </IconButton>
@@ -142,7 +142,7 @@ function NoticeDialog() {
           ref={confirmRef}
           type="button"
           onClick={dismiss}
-          className="mt-4 inline-flex min-h-12 w-full shrink-0 items-center justify-center rounded-full bg-ink px-6 text-ui font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink hover:text-surface"
+          className="mt-4 inline-flex min-h-12 w-full sm:mt-6 shrink-0 items-center justify-center rounded-full bg-ink px-6 text-ui font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink hover:text-surface"
         >
           {notice.confirmLabel}
         </button>
