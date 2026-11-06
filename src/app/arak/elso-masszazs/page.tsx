@@ -36,10 +36,10 @@ export default function FirstMassagePage() {
             className="mx-auto w-full max-w-md lg:sticky lg:top-28 lg:mx-0 lg:max-w-none"
           >
             <Picture
-              slug="about-detail"
+              slug="about-room"
               alt={firstMassage.imageAlt}
               sizes="(min-width: 1024px) 26rem, min(100vw, 28rem)"
-              className="card-interactive aspect-[3/4] w-full rounded-t-[10rem] rounded-b-3xl object-cover lg:aspect-[2/3] lg:rounded-t-[13rem]"
+              className="card-interactive aspect-[3/4] w-full rounded-t-[10rem] rounded-b-3xl object-cover object-[72%_50%] lg:aspect-[2/3] lg:rounded-t-[13rem]"
             />
           </Reveal>
         </div>

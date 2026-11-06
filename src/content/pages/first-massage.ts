@@ -1,7 +1,7 @@
 export const firstMassage = {
   eyebrow: 'Személyre szabott masszázs',
   title: 'Az első masszázs alkalom',
-  imageAlt: 'Masszázs közben a Libra Masszázs Szalonban',
+  imageAlt: 'Dévényi Krisztina jegyzetel a Libra Masszázs Szalonban',
 
   assessment: {
     heading: 'Az egyedi állapotfelmérés fontossága',

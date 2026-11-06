@@ -23,10 +23,10 @@ export default function AboutPage() {
         <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,28rem)_1fr] lg:gap-16">
           <Reveal variant="left" className="mx-auto w-full max-w-md lg:mx-0 lg:mt-14 lg:max-w-none">
             <Picture
-              slug="about-portrait"
+              slug="about-detail"
               alt={about.portraitAlt}
               sizes="(min-width: 1024px) 28rem, min(100vw, 28rem)"
-              className="card-interactive aspect-[4/5] w-full rounded-t-[12rem] rounded-b-3xl object-cover lg:rounded-t-[14rem]"
+              className="card-interactive aspect-[4/5] w-full rounded-t-[12rem] rounded-b-3xl object-cover object-[50%_20%] lg:rounded-t-[14rem]"
             />
           </Reveal>
 
