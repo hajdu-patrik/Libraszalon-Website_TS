@@ -26,18 +26,15 @@ let dismissedThisVisit = false;
 
 function subscribe(onChange: () => void) {
   listeners.add(onChange);
-
-  window.addEventListener('storage', onChange);
   return () => {
     listeners.delete(onChange);
-    window.removeEventListener('storage', onChange);
   };
 }
 
 function isDismissed() {
   if (dismissedThisVisit) return true;
   try {
-    return window.localStorage.getItem(noticeStorageKey) === 'dismissed';
+    return window.sessionStorage.getItem(noticeStorageKey) === 'dismissed';
   } catch {
     return false;
   }
@@ -50,7 +47,7 @@ function isDismissedOnServer() {
 function dismiss() {
   dismissedThisVisit = true;
   try {
-    window.localStorage.setItem(noticeStorageKey, 'dismissed');
+    window.sessionStorage.setItem(noticeStorageKey, 'dismissed');
   } catch {
     // Blocked storage: the flag above still closes the notice for this visit.
   }
@@ -128,6 +125,7 @@ function NoticeDialog() {
                   {paragraph}
                 </p>
               ))}
+              <p className="mt-3 font-medium text-ink">{notice.signature}</p>
             </div>
           </div>
 

@@ -170,7 +170,7 @@ async function quietVisit(context: BrowserContext) {
   await context.addInitScript(
     ([noticeKey, introKey]: string[]) => {
       try {
-        window.localStorage.setItem(noticeKey, 'dismissed');
+        window.sessionStorage.setItem(noticeKey, 'dismissed');
         window.sessionStorage.setItem(introKey, '1');
       } catch {}
     },
