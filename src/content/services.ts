@@ -23,15 +23,13 @@ export const services: Service[] = [
   {
     title: 'Nyirokdrenázs',
     body: 'Lágy, ritmikus, pumpáló mozdulatokkal végzett speciális kezelés, amely serkenti a nyirokkeringést, segíti a szövetek közötti folyadék elvezetését, csökkenti a duzzanatot és a nehézláb-érzést. Nyiroködéma esetén I-es stádiumig alkalmazható, vivőanyag nélkül.',
-    // Ideiglenes Unsplash-fotó (Unsplash License), amíg a szalon saját képet nem küld.
-    image: 'service-lymph',
-    alt: 'Lágy kézmozdulatok a vállon és a nyakon nyirokdrenázs közben',
+    image: 'service-lymphatic',
+    alt: 'Lágy kézmozdulatok az arcon és a halántékon nyirokdrenázs közben',
   },
   {
     title: 'Reflexzónák ismeretén alapuló talpmasszázs',
     body: 'A talp reflexzónáinak célzott kezelése, amely a test egészére jótékonyan hat: oldja a feszültséget, javítja a keringést, segíti a szervezet egyensúlyának helyreállítását, és mély ellazulást ad.',
-    // Ideiglenes Unsplash-fotó (Unsplash License), amíg a szalon saját képet nem küld.
-    image: 'service-foot',
-    alt: 'Talpmasszázs a reflexzónák mentén',
+    image: 'service-reflexology',
+    alt: 'Hüvelykujjas nyomás a talp reflexzónáin talpmasszázs közben',
   },
 ];

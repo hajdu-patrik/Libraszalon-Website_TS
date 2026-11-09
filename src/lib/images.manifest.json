@@ -60,7 +60,7 @@
       960
     ]
   },
-  "service-lymph": {
+  "service-lymphatic": {
     "width": 960,
     "height": 640,
     "widths": [
@@ -69,9 +69,9 @@
       960
     ]
   },
-  "service-foot": {
+  "service-reflexology": {
     "width": 960,
-    "height": 640,
+    "height": 720,
     "widths": [
       320,
       640,
