@@ -17,26 +17,26 @@ const DEVELOPER_LINKS = [
 export function Footer() {
   return (
     <footer className="tone-dark">
-      <div className="container-page pt-16 pb-10 sm:pt-20 sm:pb-12">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-11 sm:gap-x-10 lg:grid-cols-[1.4fr_0.8fr_1.2fr_0.9fr] lg:gap-12">
+      <div className="container-page pt-10 pb-6 sm:pt-12 sm:pb-7">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-7 text-meta sm:gap-x-10 lg:grid-cols-[1.2fr_1.3fr_1.3fr_0.8fr] lg:gap-10">
           <div className="col-span-2 lg:col-span-1">
             <Link
               href={homeItem.href}
-              className="inline-flex min-h-11 items-center font-heading text-3xl transition-colors hover:text-accent"
+              className="inline-flex min-h-11 items-center font-heading text-2xl transition-colors hover:text-accent"
             >
               {site.legalName}
             </Link>
-            <p className="mt-4 max-w-sm font-script text-script leading-snug text-accent">
+            <p className="mt-2 max-w-xs font-script text-xl leading-snug text-accent">
               {site.tagline}
             </p>
-            <p className="mt-5 text-meta text-subtle">
+            <p className="mt-3 text-meta text-subtle">
               {site.owner} · {site.ownerTitle}
             </p>
           </div>
 
-          <nav aria-label={ui.footerNav}>
-            <h2 className="eyebrow mb-4">{ui.footerPages}</h2>
-            <ul>
+          <nav aria-label={ui.footerNav} className="col-span-2 lg:col-span-1">
+            <h2 className="eyebrow mb-2">{ui.footerPages}</h2>
+            <ul className="grid grid-cols-2 gap-x-6">
               {[homeItem, ...navItems].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className={`flex ${LINK}`}>
@@ -47,9 +47,9 @@ export function Footer() {
             </ul>
           </nav>
 
-          <div className="lg:order-4">
-            <h2 className="eyebrow mb-4">{developer.heading}</h2>
-            <ul>
+          <div className="order-4 col-span-2 lg:col-span-1">
+            <h2 className="eyebrow mb-2">{developer.heading}</h2>
+            <ul className="flex flex-wrap gap-x-8 lg:block">
               {DEVELOPER_LINKS.map(({ href, label, Icon }) => (
                 <li key={href}>
                   <SmartLink href={href} className={`inline-flex gap-3.5 ${LINK}`}>
@@ -61,18 +61,18 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="col-span-2 lg:order-3 lg:col-span-1">
-            <h2 className="eyebrow mb-4">{ui.contactHeading}</h2>
+          <div className="order-3 col-span-2 lg:col-span-1">
+            <h2 className="eyebrow mb-2">{ui.contactHeading}</h2>
             <address className="not-italic">
               <ContactList
                 items={['phone', 'email', 'address', 'hours', 'facebook']}
-                className="space-y-1 text-subtle"
+                className="text-subtle"
               />
             </address>
           </div>
         </div>
 
-        <p className="mt-12 border-t border-cream-text/10 pt-6 text-center text-meta text-subtle sm:mt-14">
+        <p className="mt-8 border-t border-cream-text/10 pt-5 text-center text-meta text-subtle">
           <CurrentYear fallback={new Date().getFullYear()} /> © {site.legalName} · {site.copyright}
         </p>
       </div>

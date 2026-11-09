@@ -14,7 +14,7 @@ export const pageSeo = {
     title: 'Főoldal',
     documentTitle: 'Libra Masszázs Szalon Budapest II. kerületében',
     description:
-      'Libra Masszázs Szalon Budapest II. kerületében. Aromaterápiás masszázs, klasszikus svédmasszázs, köpölyös fascia mobilizáció és nyirokmasszázs okleveles gyógymasszőrtől.',
+      'Libra Masszázs Szalon Budapest II. kerületében. Klasszikus svédmasszázs, köpölyös fascia mobilizáció, nyirokdrenázs és reflexzóna talpmasszázs okleveles gyógymasszőrtől.',
     priority: 1,
   },
   about: {
@@ -28,7 +28,7 @@ export const pageSeo = {
     path: '/arak/',
     title: 'Árak',
     description:
-      'A Libra Masszázs Szalon árai: az első masszázs alkalom állapotfelméréssel 18.000 Ft, a további 60 és 90 perces kezelések 13.000 Ft-tól 18.000 Ft-ig.',
+      'A Libra Masszázs Szalon árai: az első masszázs alkalom állapotfelméréssel 19.000 Ft, a további 60 perces kezelések 14.000 Ft, a 90 percesek 19.000 Ft.',
     priority: 0.9,
   },
   firstMassage: {

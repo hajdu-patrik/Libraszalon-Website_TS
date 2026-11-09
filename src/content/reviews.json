@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-11-09",
   "reviews": [
     {
       "id": "seed-hajdu-patrik",
@@ -10,10 +10,26 @@
       "source": "google"
     },
     {
+      "id": "google-sandor-viragh",
+      "author": "Sándor Virágh",
+      "rating": 5,
+      "text": "Nyirokkeringési problémával küzdök hosszú idő óta, erre kerestem megoldást és találtam rá a Libra masszázs szalonra. Az évek során több helyen fordultam meg, hiszen problémám folyamatos ellátást igényel, s bátran mondhatom, hogy Krisztinánál jobb nyirokterapautára nem találtam. Véleményem szerint felkészültsége és komplex látásmódja okán az érintett terület drenázsa a reflexzóna masszázs és a jelentős nyirokelvezetési területek élénkítésének alkalmazásával (amit másnál nem tapasztaltam alkalmazni) éves szinten nagyon eredményesen oldja meg a problémámat, megszűnik a feszítő érzés és a fellépő fájdalom. Emellett fontos, de szinte mellék körülmény, hogy kedves, figyelmes, minden részletre oda figyel, sok gondolattal segíti az egészségesebb életmódra jutást. Tiszta, higiénikus körülmények között kényelmes parkolással érkezhet meg az ember. Szóval ez a hét legjobb napja! A masszázst mindenkinek ajánlom, de a nyirokkeringési gonddal bajlódók számára különösen.",
+      "avatar": "male",
+      "source": "google"
+    },
+    {
       "id": "seed-deli-janos",
       "author": "Deli János",
       "rating": 5,
       "text": "Nehéz fizikai munkát végzek. Korábban folymatosan gondot okozott, hogy egy hajtósabb időszak után teljesen beállt a derekam. A fájdalmaim olyan erősek voltak, hogy sokszor napokig kiestem a munkából, valamint egymás után kapkodtam a fájdalomcsillapítókat. Éreztem, hogy ez így nincs rendben. Egyik ismerősöm ajánlotta, hogy keressem fel Krisztit. Neki már sokat segített, mivel neki is hasonló panaszai voltak. Elmentem hozzá, és nem bántam meg! Azóta is rendszeresen járok masszázsra, leginkább a mobilizációs köpölyözés vált be a panaszaimra. A tavalyi volt az első év, amit megúsztam lumbágó nélkül és végig tudtam csinálni az év végi hajtást is. Köszönet érte, hatalmas megkönnyebülés, hogy már nem fáj mindenem a nap végén!",
+      "avatar": "male",
+      "source": "google"
+    },
+    {
+      "id": "google-geza-takach",
+      "author": "Géza Takách",
+      "rating": 5,
+      "text": "Második alkalommal jártam Krisztinánál, először csak masszázson, majd másodszor köpölyözésen. Le vagyok nyűgözve a köpölyözés hatásán, azonnalli könnyű érzést tapasztaltam a hátamban a kezelés után. Mindenkinek melegen ajánlom, aki elszántan akar könnyíteni merev hátizmain.\n\nA masszázs kapcsán nagyon tetszett, hogy az egész testen végighaladva, globálisan próbálta kezelni a problémákat. Számomra azonban hiányzott a megszokott erős férfikéz általi mélyre ható masszázs, nyilván ez ízlés és szokás dolga. Egészen biztos vagyok benne, hogy sokaknak ez a „szelíd” masszázs az ideális.\n\nKiemelném még a honlap hangulatának a valóságban is megfelelő professzionális, megnyugtató környezetet, tisztaságot, kedves fogadtatást.",
       "avatar": "male",
       "source": "google"
     },
@@ -38,14 +54,6 @@
       "author": "Aggie Kiss",
       "rating": 5,
       "text": "Krisztina remek masszás terapista!! Barmikor Magyarországon járok (az USA- ban élek ), mindig elmegyek hozzá egy masszázsra. Rengeteg masszázsban volt eddig szerencsém, Thai , Koreai , svéd , deep tissue. relax stb, Krisztina egy külön ( de remek ) kategória!\n\nA terápia alatt bármilyen anatómiai kérdésem van , mindig türelmesen, kedvesen , rengeteg tudással válaszol rá.\n\nA szalon tiszta , modern es jó hangulatot, kellemes nyugalmat biztosít. A mellékhelységben zuhanyzó is van.\n\nTöbbféle masszázst lehet kérni , az egyik ( elfelejtettem a pontos nevét ) azt poharakkal végzi amivel a letapadt izmokat oldja fel . Ajánlom !!!",
-      "avatar": "female",
-      "source": "google"
-    },
-    {
-      "id": "seed-koman-anilla",
-      "author": "Komán Anilla",
-      "rating": 5,
-      "text": "A Libra Masszázs Szalonban valódi professzionalizmust és gondoskodást tapasztaltam, ahol az ügyfelek kényelme és biztonsága mindig az első helyen áll. Rugalmas foglalási lehetőségeik és könnyen megközelíthető elhelyezkedésük révén nagyszerű választás mindazoknak, akik a testi-lelki harmóniára törekszenek. Számomra a szolgáltatásaik és a szigorú higiéniai előírások garancia voltak arra, hogy magas színvonalú masszázsélményben lesz részem.",
       "avatar": "female",
       "source": "google"
     },

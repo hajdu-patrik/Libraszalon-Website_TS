@@ -9,12 +9,6 @@ export type Service = {
 
 export const services: Service[] = [
   {
-    title: 'Aromaterápiás masszázs minőségi illóolajokkal',
-    body: 'Az aromaterápiás masszázs kiváló lehetőség a test és lélek teljes kikapcsolódására minőségi illóolajok segítségével. Az illóolajok finom aromája harmonizál és relaxál, miközben a masszázs segíti az izmok ellazulását és a stressz oldását.',
-    image: 'service-aromatherapy',
-    alt: 'Illóolaj adagolása masszázs előtt a Libra Masszázs Szalonban',
-  },
-  {
     title: 'Klasszikus svédmasszázs',
     body: 'Mélyen relaxáló és szelíd, de hatékony masszázstechnika, mely a feszültség oldására és az izmok lazítására összpontosít. Különféle simító, dörzsölő és gyúró mozdulatokat alkalmazva segít javítani az általános közérzetet és csökkenteni a stresszt.',
     image: 'service-swedish',
@@ -27,9 +21,17 @@ export const services: Service[] = [
     alt: 'Köpölyözés a háton a fascia mobilizálása közben',
   },
   {
-    title: 'Ajándékutalványok',
-    body: 'Az ajándékutalványok kiváló lehetőséget nyújtanak masszázsélményre szeretteinknek vagy barátainknak. Testi-lelki feltöltődés és harmónia várja azokat, akik ilyen egyedülálló ajándékot kapnak. Ajándékozzunk időt és kényeztetést azoknak, akiknek különleges élményt szeretnénk nyújtani.',
-    image: 'service-voucher',
-    alt: 'A Libra Masszázs Szalon ajándékutalványa piros szalaggal átkötve',
+    title: 'Nyirokdrenázs',
+    body: 'Lágy, ritmikus, pumpáló mozdulatokkal végzett speciális kezelés, amely serkenti a nyirokkeringést, segíti a szövetek közötti folyadék elvezetését, csökkenti a duzzanatot és a nehézláb-érzést. Nyiroködéma esetén I-es stádiumig alkalmazható, vivőanyag nélkül.',
+    // TODO: dedikált nyirokdrenázs fotó, ha a szalon küld egyet.
+    image: 'hero',
+    alt: 'Lágy, simító kézmozdulat a háton nyirokdrenázs közben',
+  },
+  {
+    title: 'Reflexzónák ismeretén alapuló talpmasszázs',
+    body: 'A talp reflexzónáinak célzott kezelése, amely a test egészére jótékonyan hat: oldja a feszültséget, javítja a keringést, segíti a szervezet egyensúlyának helyreállítását, és mély ellazulást ad.',
+    // TODO: dedikált talpmasszázs fotó, ha a szalon küld egyet.
+    image: 'service-aromatherapy',
+    alt: 'Masszázsolaj adagolása talpmasszázs előtt',
   },
 ];

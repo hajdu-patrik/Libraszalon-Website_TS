@@ -28,20 +28,12 @@ export const site = {
     longitude: 18.9604828,
   },
 
-  openingHoursDisplay: 'Hétfő – Vasárnap: 09:00 – 17:00',
+  openingHoursDisplay: 'Hétfő – Péntek: 08:30 – 15:30',
 
   openingHours: {
-    days: [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ],
-    opens: '09:00',
-    closes: '17:00',
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '08:30',
+    closes: '15:30',
   },
 
   social: {
