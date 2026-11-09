@@ -60,6 +60,24 @@
       960
     ]
   },
+  "service-lymph": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
+  "service-foot": {
+    "width": 960,
+    "height": 640,
+    "widths": [
+      320,
+      640,
+      960
+    ]
+  },
   "avatar-male": {
     "width": 128,
     "height": 128,

@@ -29,6 +29,8 @@ const RAW_ASSETS: RawAsset[] = [
   { slug: 'service-swedish', maxWidth: 960 },
   { slug: 'service-cupping', maxWidth: 960 },
   { slug: 'service-voucher', maxWidth: 960 },
+  { slug: 'service-lymph', maxWidth: 960 },
+  { slug: 'service-foot', maxWidth: 960 },
   { slug: 'avatar-male', fixedWidth: 128 },
   { slug: 'avatar-female', fixedWidth: 128 },
   { slug: 'about-portrait', maxWidth: 1280 },
