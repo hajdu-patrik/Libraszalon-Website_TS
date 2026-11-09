@@ -44,7 +44,7 @@ export function Header() {
             <Button
               href={`tel:${site.phoneHref}`}
               size="sm"
-              icon={<Phone className="size-4" strokeWidth={1.8} />}
+              icon={<Phone strokeWidth={1.8} />}
             >
               {ui.bookingCta}
             </Button>

@@ -9,7 +9,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { about } from '@/content/pages/about';
 import { pageSeo } from '@/content/seo';
 import { site } from '@/content/site';
-import { breadcrumbJsonLd } from '@/lib/jsonld';
+import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.about);
@@ -20,7 +20,7 @@ export default function AboutPage() {
       <PageHeader eyebrow={about.eyebrow} title={about.title} background="bg-about" />
 
       <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,28rem)_1fr] lg:gap-16">
+        <div className="split-gap grid items-start lg:grid-cols-[minmax(0,28rem)_1fr]">
           <Reveal variant="left" className="mx-auto w-full max-w-md lg:mx-0 lg:mt-14 lg:max-w-none">
             <Picture
               slug="about-detail"
@@ -54,7 +54,7 @@ export default function AboutPage() {
       </Section>
 
       <Section tone="cream" background="bg-about">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-16">
+        <div className="split-gap grid items-start lg:grid-cols-[1fr_minmax(0,28rem)]">
           <Reveal variant="left">
             <p className="prose-measure text-subtle">{about.balance}</p>
             <p className="mt-8 font-script text-script leading-snug text-accent">{about.closing}</p>
@@ -74,6 +74,8 @@ export default function AboutPage() {
           </Reveal>
         </div>
       </Section>
+
+      <JsonLd data={webPageJsonLd('about', 'AboutPage')} />
 
       <JsonLd data={breadcrumbJsonLd('about')} />
     </>

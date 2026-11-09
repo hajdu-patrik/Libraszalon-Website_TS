@@ -38,6 +38,7 @@ const ENTRIES: Record<ContactKey, ContactEntry> = {
 
 const SIZES = {
   sm: { row: 'gap-2', icon: 'size-3.5' },
+  compact: { row: 'gap-2.5', icon: 'size-4' },
   md: { row: 'gap-3.5', icon: 'size-5' },
 } as const;
 
@@ -56,7 +57,7 @@ export function ContactList({ items, size = 'md', className = '' }: ContactListP
     <ul className={className}>
       {items.map((key) => {
         const { icon: Icon, label, href, hint, wraps } = ENTRIES[key];
-        const rowClass = `inline-flex min-h-11 ${row} ${wraps ? 'items-start py-2.5' : 'items-center'}`;
+        const rowClass = `inline-flex min-h-11 text-balance ${row} ${wraps ? 'items-start py-2.5' : 'items-center'}`;
         const content = (
           <>
             <Icon

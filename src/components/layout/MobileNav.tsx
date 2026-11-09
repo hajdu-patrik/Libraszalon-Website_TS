@@ -13,7 +13,7 @@ import { ui } from '@/content/ui';
 const DESKTOP_QUERY = '(min-width: 64rem)';
 
 const DRAWER_CLASS = [
-  'tone-dark fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-[min(23rem,88vw)] max-w-none overflow-y-auto overscroll-contain border-0 px-7 pt-28 pb-10 shadow-lift',
+  'tone-dark fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-[min(23rem,88vw)] max-w-none overflow-y-auto overscroll-contain border-0 px-6 pt-28 pb-10 sm:px-7 shadow-lift',
   // A `display` class on a <dialog> beats the browser's `display: none` for a closed one,
   // so the flex column only applies while it is open.
   'open:flex open:flex-col',

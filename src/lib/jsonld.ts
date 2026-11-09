@@ -2,7 +2,7 @@ import { prices, priceRange, type PriceItem } from '@/content/prices';
 import { houseRules } from '@/content/pages/house-rules';
 import { pageSeo, type PageKey } from '@/content/seo';
 import { site } from '@/content/site';
-import { OG_IMAGE, absoluteUrl } from '@/lib/seo';
+import { OG_IMAGE, absoluteUrl, documentTitle } from '@/lib/seo';
 
 export type JsonLdObject = {
   '@context'?: 'https://schema.org';
@@ -122,13 +122,38 @@ export function serviceCatalogJsonLd(): JsonLdObject {
   };
 }
 
+type WebPageType = 'WebPage' | 'AboutPage' | 'ContactPage';
+
+/** One node per inner page that ties it to the site and the business, and points at the
+ *  page's breadcrumb, so crawlers get the graph (page -> website, page -> business). */
+export function webPageJsonLd(key: PageKey, type: WebPageType = 'WebPage'): JsonLdObject {
+  const page = pageSeo[key];
+  const url = absoluteUrl(page.path);
+
+  return {
+    '@context': SCHEMA_CONTEXT,
+    '@type': type,
+    '@id': `${url}#webpage`,
+    url,
+    name: documentTitle(page),
+    description: page.description,
+    inLanguage: 'hu-HU',
+    dateModified: page.lastModified,
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': BUSINESS_ID },
+    breadcrumb: { '@id': `${url}#breadcrumb` },
+  };
+}
+
 /** The trail below Főoldal, as page keys: `breadcrumbJsonLd('prices', 'firstMassage')`. */
 export function breadcrumbJsonLd(...keys: PageKey[]): JsonLdObject {
   const crumbs = [pageSeo.home, ...keys.map((key) => pageSeo[key])];
+  const current = crumbs[crumbs.length - 1];
 
   return {
     '@context': SCHEMA_CONTEXT,
     '@type': 'BreadcrumbList',
+    '@id': `${absoluteUrl(current.path)}#breadcrumb`,
     itemListElement: crumbs.map((crumb, index) => ({
       '@type': 'ListItem',
       position: index + 1,

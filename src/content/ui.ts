@@ -6,7 +6,6 @@ export const ui = {
   menuOpen: 'Menü megnyitása',
   menuClose: 'Menü bezárása',
   footerNav: 'Lábléc menü',
-  footerPages: 'Oldalak',
   contactHeading: 'Elérhetőségek',
   bookingCta: 'Időpontfoglalás',
   mapsHint: 'megnyitás a Google Térképen',

@@ -102,16 +102,16 @@ function NoticeDialog() {
       <GoldSignature className="w-full shrink-0" />
 
       <div className="relative flex min-h-0 flex-1 flex-col p-5 sm:p-8">
-        <div className="flex min-h-0 flex-1 gap-4">
+        <div className="flex min-h-0 flex-1 gap-3 sm:gap-4">
           <span
             aria-hidden="true"
-            className="mt-0.5 inline-flex size-10 shrink-0 items-center justify-center self-start rounded-full bg-gold/15 text-gold-ink"
+            className="mt-0.5 hidden size-10 shrink-0 items-center justify-center self-start rounded-full bg-gold/15 text-gold-ink min-[22.5rem]:inline-flex"
           >
             <CalendarClock className="size-5" strokeWidth={1.8} />
           </span>
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <h2 id={titleId} className="shrink-0 pr-10 font-heading text-xl leading-tight font-medium text-ink sm:text-2xl">
+            <h2 id={titleId} className="shrink-0 pr-10 text-h4 leading-tight font-medium text-ink sm:text-2xl">
               {notice.title}
             </h2>
             <div
@@ -142,7 +142,7 @@ function NoticeDialog() {
           ref={confirmRef}
           type="button"
           onClick={dismiss}
-          className="mt-4 inline-flex min-h-12 w-full sm:mt-6 shrink-0 items-center justify-center rounded-full bg-ink px-6 text-ui font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink hover:text-surface"
+          className="mt-4 inline-flex min-h-12 w-full shrink-0 items-center sm:mt-6 justify-center rounded-full bg-ink px-6 text-ui font-semibold tracking-wide text-cream-text transition-colors duration-(--dur-base) ease-smooth hover:bg-gold-ink hover:text-surface"
         >
           {notice.confirmLabel}
         </button>

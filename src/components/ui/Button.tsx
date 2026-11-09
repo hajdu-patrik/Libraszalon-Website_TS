@@ -13,9 +13,10 @@ type ButtonProps = {
 const BASE =
   'group/btn inline-flex items-center justify-center rounded-full font-body font-semibold tracking-wide transition-[background-color,color,border-color,box-shadow,translate] duration-(--dur-base) ease-smooth hover:-translate-y-0.5 active:translate-y-0';
 
+/** `icon` sets the size of the SVG inside, so callers pass a bare icon. */
 const SIZES = {
-  md: 'min-h-12 gap-2.5 px-7 py-3 text-ui',
-  sm: 'min-h-11 gap-2 px-5 text-sm',
+  md: 'min-h-12 gap-2.5 px-7 py-3 text-ui [&_svg]:size-[1.125rem]',
+  sm: 'min-h-11 gap-2 px-5 text-sm [&_svg]:size-4',
 } as const;
 
 /** `outline` takes its colour from the surrounding text, so the same variant works on the

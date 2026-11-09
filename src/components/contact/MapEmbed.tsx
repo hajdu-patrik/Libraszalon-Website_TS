@@ -4,7 +4,7 @@ import { mapsEmbedSrc } from '@/content/site';
 export function MapEmbed() {
   return (
     /* Ratio-sized on its own; stretched to the directions column once they sit side by side. */
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line bg-cream shadow-card sm:aspect-[16/9] lg:aspect-auto lg:h-full lg:min-h-96">
+    <div className="panel relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9] lg:aspect-auto lg:h-full lg:min-h-96">
       <iframe
         src={mapsEmbedSrc}
         title={contact.map.frameTitle}

@@ -9,7 +9,7 @@ import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { houseRules } from '@/content/pages/house-rules';
 import { pageSeo } from '@/content/seo';
-import { breadcrumbJsonLd, houseRulesFaqJsonLd } from '@/lib/jsonld';
+import { breadcrumbJsonLd, houseRulesFaqJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.houseRules);
@@ -22,7 +22,7 @@ export default function HouseRulesPage() {
       <PageHeader eyebrow={houseRules.eyebrow} title={houseRules.title} background="bg-prices-alt" />
 
       <Section>
-        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-14">
+        <div className="split-gap grid items-start lg:grid-cols-2">
           <Reveal className="lg:pt-7">
             <p className="text-subtle">{houseRules.intro}</p>
           </Reveal>
@@ -44,7 +44,7 @@ export default function HouseRulesPage() {
         <ol
           role="list"
           aria-labelledby={RULES_HEADING_ID}
-          className="column-flow mt-12 sm:mt-16"
+          className="column-flow section-body"
           style={{ '--rows': Math.ceil(houseRules.rules.length / 2) } as CSSProperties}
         >
           {houseRules.rules.map((rule, index) => (
@@ -60,6 +60,7 @@ export default function HouseRulesPage() {
       </Section>
 
       <JsonLd data={houseRulesFaqJsonLd()} />
+      <JsonLd data={webPageJsonLd('houseRules')} />
       <JsonLd data={breadcrumbJsonLd('houseRules')} />
     </>
   );

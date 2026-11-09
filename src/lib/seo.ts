@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { notFound } from '@/content/pages/not-found';
-import type { PageSeo } from '@/content/seo';
+import { pageSeo, type PageSeo } from '@/content/seo';
 import { site } from '@/content/site';
 
 export const THEME_COLOR = '#211d1c';
@@ -17,13 +17,19 @@ export function absoluteUrl(path: string): string {
   return `${site.url}${path}`;
 }
 
+/** "Page - Libra Masszázs Szalon": the full business name in every title, so a result
+ *  reads as the salon even where the page name alone ("Árak") says nothing. */
 function pageTitle(title: string): string {
-  return `${title} - ${site.name}`;
+  return `${title} - ${site.legalName}`;
+}
+
+export function documentTitle(page: PageSeo): string {
+  return page.documentTitle ?? pageTitle(page.title);
 }
 
 export function buildMetadata(page: PageSeo): Metadata {
   const url = absoluteUrl(page.path);
-  const title = page.documentTitle ?? pageTitle(page.title);
+  const title = documentTitle(page);
 
   return {
     title: { absolute: title },
@@ -49,8 +55,8 @@ export function buildMetadata(page: PageSeo): Metadata {
 
 export const rootMetadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: pageTitle(site.legalName),
-  description: site.tagline,
+  title: pageSeo.home.documentTitle,
+  description: pageSeo.home.description,
   applicationName: site.name,
   authors: [{ name: site.owner }],
   creator: site.owner,

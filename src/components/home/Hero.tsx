@@ -41,7 +41,7 @@ export function Hero() {
           <div className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
             <Button
               href={`tel:${site.phoneHref}`}
-              icon={<Phone className="size-[18px]" strokeWidth={1.8} />}
+              icon={<Phone strokeWidth={1.8} />}
             >
               {home.hero.primaryCta}
             </Button>

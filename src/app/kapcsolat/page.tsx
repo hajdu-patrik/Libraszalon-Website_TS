@@ -13,7 +13,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { contact } from '@/content/pages/contact';
 import { pageSeo } from '@/content/seo';
 import { booking } from '@/content/ui';
-import { breadcrumbJsonLd } from '@/lib/jsonld';
+import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.contact);
@@ -27,7 +27,7 @@ export default function ContactPage() {
       <PageHeader eyebrow={contact.eyebrow} title={contact.title} background="service-aromatherapy" />
 
       <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16">
+        <div className="split-gap grid items-start lg:grid-cols-[1fr_minmax(0,26rem)]">
           <Reveal>
             <SectionHeading
               align="left"
@@ -39,7 +39,7 @@ export default function ContactPage() {
               {contact.booking.lead}
               <Link
                 href={pageSeo.houseRules.path}
-                className="font-semibold text-accent underline decoration-gold/50 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/50"
+                className="link-inline"
               >
                 {contact.booking.rulesLabel}
               </Link>
@@ -67,7 +67,7 @@ export default function ContactPage() {
           <SectionHeading eyebrow={contact.directions.eyebrow} title={contact.directions.heading} />
         </Reveal>
 
-        <div className="mt-12 grid gap-grid sm:mt-16 lg:grid-cols-2 lg:gap-10">
+        <div className="section-body grid gap-grid lg:grid-cols-2 lg:gap-16">
           <Reveal variant="left" className="h-full">
             <MapEmbed />
           </Reveal>
@@ -94,6 +94,8 @@ export default function ContactPage() {
           </div>
         </div>
       </Section>
+
+      <JsonLd data={webPageJsonLd('contact', 'ContactPage')} />
 
       <JsonLd data={breadcrumbJsonLd('contact')} />
     </>

@@ -63,6 +63,19 @@ Any push to the `main` branch automatically triggers a new build and deployment.
 | :--- | :--- |
 | **Production** | [![Vercel App](https://img.shields.io/badge/Visit-Live_App-success?style=for-the-badge&logo=vercel)](https://libraszalon.hu) |
 
+### Caching
+
+Headers live in `vercel.json` (Next's `headers()` is ignored by a static export). Vercel keeps every
+deployment's static files in its edge cache for the lifetime of that deployment, so the rules only
+decide what the *browser* may reuse:
+
+| Path | `Cache-Control` | Why |
+| :--- | :--- | :--- |
+| `/_next/static/*`, `/images/*`, `/og/*` | `max-age=31536000, immutable` | `_next/static` is content-hashed; `/images` and `/og` are NOT hashed (slug + width), so a changed picture must get a new slug. |
+| `/favicon.ico`, `/icon*.png`, `/apple-icon.png` | `max-age=604800` | Rarely change; the HTML links the hashed `?icon.<hash>` URLs. |
+| `/manifest.webmanifest` | `max-age=86400` | Rarely changes, not hashed. |
+| everything else (HTML, RSC payloads, `sitemap.xml`, `robots.txt`) | `max-age=0, must-revalidate` | Always revalidated (a cheap 304 from the edge), so a deploy is live on the next request. |
+
 ---
 
 ## 📄 License

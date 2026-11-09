@@ -18,13 +18,13 @@ export function ReviewCard({ review }: ReviewCardProps) {
   const clamped = useIsOverflowing(textRef, expanded);
 
   return (
-    <article className="tone-light flex h-full flex-col rounded-2xl border border-line bg-surface p-7 text-ink shadow-card transition-[border-color,box-shadow] duration-(--dur-base) ease-smooth hover:border-gold/50 hover:shadow-lift">
+    <article className="card card-interactive flex h-full flex-col">
       <StarRating rating={review.rating} />
 
       <p
         ref={textRef}
         id={textId}
-        className={`mt-4 text-ui leading-relaxed whitespace-pre-line text-muted ${
+        className={`mt-4 text-ui leading-relaxed whitespace-pre-line text-subtle ${
           expanded ? '' : 'line-clamp-8'
         }`}
       >
@@ -37,7 +37,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           onClick={() => setExpanded((value) => !value)}
           aria-expanded={expanded}
           aria-controls={textId}
-          className="mt-2 inline-flex min-h-11 min-w-11 items-center self-start text-meta font-semibold text-gold-ink transition-colors hover:text-ink"
+          className="mt-2 inline-flex min-h-11 min-w-11 items-center self-start link-arrow text-meta"
         >
           {expanded ? ui.reviews.collapse : ui.reviews.expand}
         </button>

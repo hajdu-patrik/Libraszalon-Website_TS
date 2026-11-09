@@ -25,7 +25,7 @@ export default function HomePage() {
         <Reveal>
           <SectionHeading title={home.services.title} />
         </Reveal>
-        <div className="mt-12 space-y-16 sm:mt-16 sm:space-y-24">
+        <div className="section-body space-y-16 sm:space-y-24">
           {services.map((service, index) => (
             <ServiceCard key={service.title} service={service} index={index} />
           ))}
@@ -36,7 +36,7 @@ export default function HomePage() {
         <Reveal>
           <SectionHeading eyebrow={home.reviews.eyebrow} title={home.reviews.title} lead={reviewsNote} />
         </Reveal>
-        <div className="mt-12 sm:mt-16">
+        <div className="section-body">
           <ReviewsCarousel reviews={publishedReviews} />
         </div>
       </Section>

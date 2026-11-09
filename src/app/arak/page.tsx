@@ -10,7 +10,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { pricesPage } from '@/content/pages/prices';
 import { prices } from '@/content/prices';
 import { pageSeo } from '@/content/seo';
-import { breadcrumbJsonLd, serviceCatalogJsonLd } from '@/lib/jsonld';
+import { breadcrumbJsonLd, serviceCatalogJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.prices);
@@ -27,13 +27,13 @@ export default function PricesPage() {
           <SectionHeading title={pricesPage.heading} lead={pricesPage.lead} />
         </Reveal>
 
-        <div className="mt-12 sm:mt-16">
+        <div className="section-body">
           <FeaturedPriceCard item={firstSession} />
 
           <Reveal className="mt-5 text-center sm:text-right">
             <Link
               href={pageSeo.firstMassage.path}
-              className="group inline-flex min-h-11 items-center gap-2 text-ui font-semibold text-accent transition-colors hover:text-ink"
+              className="link-arrow group inline-flex min-h-11 items-center gap-2 text-ui"
             >
               {pricesPage.firstMassageLinkLabel}
               <ArrowRight
@@ -53,6 +53,7 @@ export default function PricesPage() {
       </Section>
 
       <JsonLd data={serviceCatalogJsonLd()} />
+      <JsonLd data={webPageJsonLd('prices')} />
       <JsonLd data={breadcrumbJsonLd('prices')} />
     </>
   );

@@ -9,7 +9,7 @@ import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { firstMassage } from '@/content/pages/first-massage';
 import { pageSeo } from '@/content/seo';
-import { breadcrumbJsonLd } from '@/lib/jsonld';
+import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/jsonld';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata(pageSeo.firstMassage);
@@ -24,7 +24,7 @@ export default function FirstMassagePage() {
       />
 
       <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-16">
+        <div className="split-gap grid items-start lg:grid-cols-[1fr_minmax(0,26rem)]">
           <Reveal>
             <SectionHeading align="left" title={firstMassage.assessment.heading} />
             <p className="prose-measure mt-6 text-subtle">{firstMassage.assessment.body}</p>
@@ -60,12 +60,14 @@ export default function FirstMassagePage() {
           />
         </Reveal>
 
-        <ol role="list" className="mt-12 grid gap-grid sm:mt-16 sm:grid-cols-2">
+        <ol role="list" className="section-body grid gap-grid sm:grid-cols-2">
           {firstMassage.tips.items.map((tip, index) => (
             <InfoCard key={tip} index={index % 2} marker={<Numeral value={index + 1} />} body={tip} />
           ))}
         </ol>
       </Section>
+
+      <JsonLd data={webPageJsonLd('firstMassage')} />
 
       <JsonLd data={breadcrumbJsonLd('prices', 'firstMassage')} />
     </>

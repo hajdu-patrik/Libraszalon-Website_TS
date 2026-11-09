@@ -14,7 +14,7 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
   const flipped = index % 2 === 1;
 
   return (
-    <article className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    <article className="split-gap grid items-center lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <Reveal variant={flipped ? 'right' : 'left'} className={flipped ? 'lg:order-2' : undefined}>
         <div className="card-interactive overflow-hidden rounded-3xl">
           <Picture

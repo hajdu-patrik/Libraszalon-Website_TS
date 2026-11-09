@@ -138,6 +138,12 @@
     text-wrap: pretty;
   }
 
+  /* The handwriting face is for short quotes: no hyphens, even lines. */
+  .font-script {
+    hyphens: none;
+    text-wrap: balance;
+  }
+
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
@@ -173,13 +179,64 @@
   --subtle: var(--color-muted);
 }
 
+/* Spaced capitals read badly when a word is cut or a last line holds one orphan, so
+   eyebrows never hyphenate and wrap into even lines. */
 @utility eyebrow {
   font-family: var(--font-body);
   font-size: var(--text-eyebrow);
   font-weight: 600;
+  line-height: 1.6;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+  text-wrap: balance;
+  hyphens: none;
   color: var(--accent);
+}
+
+/* Gap between a section's heading block and its content. */
+@utility section-body {
+  margin-top: 3rem;
+
+  @media (width >= 40rem) {
+    margin-top: 4rem;
+  }
+}
+
+/* Gap between the text and media halves of a two-column section. */
+@utility split-gap {
+  gap: 2.5rem;
+
+  @media (width >= 64rem) {
+    gap: 4rem;
+  }
+}
+
+/* Inline text links: accent colour, underlined, ink on hover. `link-arrow` is the same
+   without the underline, for stand-alone "continue" links that end in an arrow. */
+@utility link-inline {
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--color-gold) 50%, transparent);
+  text-underline-offset: 4px;
+  transition:
+    color var(--dur-quick) var(--ease-smooth),
+    text-decoration-color var(--dur-quick) var(--ease-smooth);
+
+  &:hover {
+    color: var(--color-ink);
+    text-decoration-color: color-mix(in oklab, var(--color-ink) 50%, transparent);
+  }
+}
+
+@utility link-arrow {
+  font-weight: 600;
+  color: var(--accent);
+  transition: color var(--dur-quick) var(--ease-smooth);
+
+  &:hover {
+    color: var(--color-ink);
+  }
 }
 
 @utility prose-measure {
@@ -193,6 +250,15 @@
   background-color: var(--color-surface);
   color: var(--color-ink);
   padding: var(--spacing-card);
+}
+
+/* A bordered, lifted surface for content that is not a card of its own: the contact
+   details, the map. Same radius, border and shadow as the cards. */
+@utility panel {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-2xl);
+  background-color: var(--color-cream);
+  box-shadow: var(--shadow-card);
 }
 
 @utility card-interactive {

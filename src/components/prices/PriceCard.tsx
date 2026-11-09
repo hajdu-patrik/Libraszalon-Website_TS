@@ -6,7 +6,7 @@ export function FeaturedPriceCard({ item }: { item: PriceItem }) {
   return (
     <Reveal
       as="article"
-      className="tone-dark relative overflow-hidden rounded-3xl p-card shadow-lift sm:p-10"
+      className="tone-dark relative overflow-hidden rounded-2xl p-card shadow-lift sm:p-10"
     >
       <GoldSignature className="absolute inset-x-0 top-0" />
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-10">

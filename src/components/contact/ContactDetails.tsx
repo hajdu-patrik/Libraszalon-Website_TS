@@ -4,7 +4,7 @@ import { contact } from '@/content/pages/contact';
 
 export function ContactDetails() {
   return (
-    <div className="tone-light relative overflow-hidden rounded-2xl border border-line bg-cream p-card shadow-card">
+    <div className="tone-light panel relative overflow-hidden p-card">
       <GoldSignature className="absolute inset-x-0 top-0" />
 
       <h2 className="text-h3">{contact.detailsHeading}</h2>
